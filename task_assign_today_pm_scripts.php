@@ -245,7 +245,7 @@ if (isset($_POST['type']) && $_POST['type'] == "process")
         while ($assign_task_id_row = $assign_task_id_res->fetch_assoc())
         {
             echo $assign_task_id_row['taskid'] . "\n";
-            $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
+            $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, assign_datepm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
             $update_task_wise->bind_param('ssssss', $username_arr[$j], $fixdate, $process_start_time, $get_time_est_row['estimate_time'], $end_time, $assign_task_id_row['taskid']);
             $update_task_wise->execute();
         }
@@ -279,7 +279,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'workstation')
     $secs = strtotime($time2) - strtotime("00:00:00");
     $end_time = date("H:i:s", strtotime($time) + $secs);
 
-    $update_workstation_task = $conn->prepare('UPDATE task_id SET workstation = ?,user = ?,tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE stageid = ?');
+    $update_workstation_task = $conn->prepare('UPDATE task_id SET workstation = ?,user = ?,assign_datepm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE stageid = ?');
     $update_workstation_task->bind_param('sssssss', $workstation, $get_user_row['username'], $fixdate, $workstation_start_time, $get_time_est_row['estimate_time'], $end_time, $workprocesses);
     $update_workstation_task->execute();
 }
@@ -336,7 +336,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'material')
         while ($assign_task_id_row = $assign_task_id_res->fetch_assoc())
         {
             echo $assign_task_id_row['taskid'] . "\n";
-            $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
+            $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, assign_datepm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
             $update_task_wise->bind_param('ssssss', $material_username_arr[$j], $fixdate, $material_start_time, $get_time_est_row['estimate_time'], $end_time, $assign_task_id_row['taskid']);
             $update_task_wise->execute();
         }
@@ -405,7 +405,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'team')
             echo $get_time_est_row['estimate_time'] . "\n";
             echo $end_time . "\n";
             echo $assign_task_id_row['taskid'] . "\n";
-            $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
+            $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, assign_datepm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
             $update_task_wise->bind_param('ssssss', $team_username_arr[$j], $fixdate, $team_start_time, $get_time_est_row['estimate_time'], $end_time, $assign_task_id_row['taskid']);
             $update_task_wise->execute();
             $conn->error;
@@ -466,7 +466,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'model')
         while ($assign_task_id_row = $assign_task_id_res->fetch_assoc())
         {
             // echo $assign_task_id_row['taskid']."\n";
-            $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
+            $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, assign_datepm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
             $update_task_wise->bind_param('ssssss', $model_username_arr[$j], $fixdate, $model_start_time, $get_time_est_row['estimate_time'], $end_time, $assign_task_id_row['taskid']);
             $update_task_wise->execute();
         }
@@ -886,6 +886,131 @@ if (isset($_POST['type']) && $_POST['type'] == 'model_unit_time')
     echo "<strong>Estimate time to completion :" . $get_task_count_row['estimate_time'] . "</strong><br>";
 }
 // ---------model wise scripts - general shift - end----------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// --------------user wise scripts - general - start--------------
+
+if (isset($_POST['type']) && $_POST['type'] == 'user_fetch')
+{
+
+
+    $fixdate = $_POST['fixdate'];
+
+
+    $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
+    $get_current_batch->execute();
+    $get_current_batch_res = $get_current_batch->get_result();
+    $get_current_batch_row = $get_current_batch_res->fetch_assoc();
+
+    //insert shift in new table with start and end time with shift date
+    $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+    $select_users->execute();
+    $select_users_res = $select_users->get_result();
+
+    while ($select_users_row = $select_users_res->fetch_assoc())
+    {
+        echo $select_users_row['user_name'];
+        $get_sum_time = $conn->prepare('SELECT SEC_TO_TIME(AVG(TIME_TO_SEC(est_complete_time))) AS est_complete_time from task_id WHERE user = ? and batchno = ? and est_complete_time is not null and date(plandtfm) = ?');
+        $get_sum_time->bind_param('sss', $select_users_row['user_name'], $get_current_batch_row['batchno'], $fixdate);
+        $get_sum_time->execute();
+        $get_sum_time_res = $get_sum_time->get_result();
+        $get_sum_time_row = $get_sum_time_res->fetch_assoc();
+
+        if (!empty($get_sum_time_row['est_complete_time']))
+        {
+            $times[] = $get_sum_time_row['est_complete_time'];
+            // $times = ['02:30:00', '03:15:00', '01:45:00', '02:00:00'];
+            print_r($times);
+            // Calculate the total seconds
+            $totalSeconds = 0;
+            foreach ($times as $time)
+            {
+                list($hours, $minutes, $seconds) = explode(':', $time);
+                $totalSeconds += $hours * 3600 + $minutes * 60 + $seconds;
+            }
+
+            // Calculate the total hours
+            $totalHours = $totalSeconds / 3600;
+
+            // Divide by 8 hours to get the integer value
+            $integerValue = (int)($totalHours / 8);
+
+            // Output the result
+            echo "Total Hours: $totalHours\n";
+            echo "Integer Value (Total Hours / 8): $integerValue\n";
+            if ($integerValue < 8)
+            {
+                echo '<option value="' . $select_users_row['user_name'] . '">' . $select_users_row['fullname'] . '/ Total Hours: ' . number_format((float)$totalHours, 2, '.', '') . '</option>';
+            }
+            unset($times);
+        }
+        else
+        {
+        }
+    }
+}
+
+
+
+
+
+if (isset($_POST['type']) && $_POST['type'] == 'user_model')
+{
+    $fixdate = $_POST['fixdate'];
+    $team = $_POST['team'];
+
+    $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
+    $get_current_batch->execute();
+    $get_current_batch_res = $get_current_batch->get_result();
+    $get_current_batch_row = $get_current_batch_res->fetch_assoc();
+    $batch_no = $get_current_batch_row['batchno'];
+
+    $get_team_members = $conn->prepare('SELECT distinct task_id.model_name from model left join task_id on task_id.model_name = model.model_name WHERE teamname = ? and batchno = ? and tdatefm is not null and date(plandtfm)=?');
+    $get_team_members->bind_param('sss', $team, $batch_no, $fixdate);
+    $get_team_members->execute();
+    $get_team_members_res = $get_team_members->get_result();
+    echo '<option value="" selected disabled>Select Model</option>';
+    while ($get_team_members_row = $get_team_members_res->fetch_assoc())
+    {
+        echo '<option value="' . $get_team_members_row['model_name'] . '">' . $get_team_members_row['model_name'] . '</option>';
+    }
+}
+
+
+// --------------user wise scripts - general - end--------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // -------------process shift card - general - start-------------
 if (isset($_POST['type']) && $_POST['type'] == 'shift_cards')
