@@ -36,7 +36,7 @@ if (isset($_POST['type']) && $_POST['type'] == "gen_shift_create")
     $get_current_batch_row = $get_current_batch_res->fetch_assoc();
 
     //insert shift in new table with start and end time with shift date
-    $select_users = $conn->prepare("SELECT * FROM steml1og_stemftest.user_detail where role = 'Associates' and teamname is not null;");
+    $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
     $select_users->execute();
     $select_users_res = $select_users->get_result();
     while ($select_users_row = $select_users_res->fetch_assoc())
@@ -467,7 +467,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'model')
         {
             // echo $assign_task_id_row['taskid']."\n";
             $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
-            $update_task_wise->bind_param('ssssss', $model_username_arr[$j], $fixdate, $team_start_time, $get_time_est_row['estimate_time'], $end_time, $assign_task_id_row['taskid']);
+            $update_task_wise->bind_param('ssssss', $model_username_arr[$j], $fixdate, $model_start_time, $get_time_est_row['estimate_time'], $end_time, $assign_task_id_row['taskid']);
             $update_task_wise->execute();
         }
     }
@@ -479,6 +479,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'model')
 // -------process wise scripts - gen shift - start ------
 if (isset($_POST['type']) && $_POST['type'] == 'model_fetch')
 {
+    $fixdate = $_POST['fixdate'];
     $model_name = $_POST['model_name'];
     $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
     $get_current_batch->execute();
@@ -486,8 +487,8 @@ if (isset($_POST['type']) && $_POST['type'] == 'model_fetch')
     $get_current_batch_row = $get_current_batch_res->fetch_assoc();
     $batch_no = $get_current_batch_row['batchno'];
 
-    $get_process = $conn->prepare("SELECT distinct process_name from task_id where batchno=? and model_name = ? and tdatefm is null");
-    $get_process->bind_param('ss', $batch_no, $model_name);
+    $get_process = $conn->prepare("SELECT distinct process_name from task_id where batchno=? and model_name = ? and tdatefm is not null and date(plandtfm) = ?");
+    $get_process->bind_param('sss', $batch_no, $model_name, $fixdate);
     $get_process->execute();
     $get_process_res = $get_process->get_result();
     echo '<option value="" selected disabled>Select Process</option>';
@@ -511,6 +512,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'model_fetch')
 
 if (isset($_POST['type']) && $_POST['type'] == 'get_parts')
 {
+    $fixdate = $_POST['fixdate'];
     $model_name = $_POST['model_name'];
     $processes = $_POST['processes'];
 
@@ -520,8 +522,8 @@ if (isset($_POST['type']) && $_POST['type'] == 'get_parts')
     $get_current_batch_row = $get_current_batch_res->fetch_assoc();
     $batch_no = $get_current_batch_row['batchno'];
 
-    $get_parts = $conn->prepare("SELECT distinct stageid, part_name from task_id where batchno=? and model_name = ? and process_name = ? and tdatefm is null");
-    $get_parts->bind_param('sss', $batch_no, $model_name, $processes);
+    $get_parts = $conn->prepare("SELECT distinct stageid, part_name from task_id where batchno=? and model_name = ? and process_name = ? and tdatefm is not null and date(plandtfm) = ?");
+    $get_parts->bind_param('ssss', $batch_no, $model_name, $processes, $fixdate);
     $get_parts->execute();
     $get_parts_res = $get_parts->get_result();
     echo '<option value="" selected disabled>Select Part Name</option>';
@@ -585,6 +587,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'process_users')
 // ------------workstation wise scripts - gen shift - start-------------
 if (isset($_POST['type']) && $_POST['type'] == 'work_parts')
 {
+    $fixdate = $_POST['fixdate'];
     $workprocesses = $_POST['workprocesses'];
 
     $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
@@ -593,8 +596,8 @@ if (isset($_POST['type']) && $_POST['type'] == 'work_parts')
     $get_current_batch_row = $get_current_batch_res->fetch_assoc();
     $batch_no = $get_current_batch_row['batchno'];
 
-    $get_parts = $conn->prepare("SELECT distinct stageid, part_name from task_id where batchno=? and model_name = ? and tdatefm is null");
-    $get_parts->bind_param('ss', $batch_no, $workprocesses);
+    $get_parts = $conn->prepare("SELECT distinct stageid, part_name from task_id where batchno=? and model_name = ? and tdatefm is not null and date(plandtfm) = ?");
+    $get_parts->bind_param('sss', $batch_no, $workprocesses, $fixdate);
     $get_parts->execute();
     $get_parts_res = $get_parts->get_result();
     echo '<option value="" selected disabled>Select Part Name</option>';
@@ -629,6 +632,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'work_unit_time')
 // -------------material wise scripts - gen shift - start-------------
 if (isset($_POST['type']) && $_POST['type'] == 'material_models')
 {
+    $fixdate = $_POST['fixdate'];
     $material_name = $_POST['material'];
 
     $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
@@ -637,8 +641,8 @@ if (isset($_POST['type']) && $_POST['type'] == 'material_models')
     $get_current_batch_row = $get_current_batch_res->fetch_assoc();
     $batch_no = $get_current_batch_row['batchno'];
 
-    $material = $conn->prepare('SELECT DISTINCT model_name from task_id where batchno = ? and material_name = ? and tdatefm is null');
-    $material->bind_param('ss', $batch_no, $material_name);
+    $material = $conn->prepare('SELECT DISTINCT model_name from task_id where batchno = ? and material_name = ? and tdatefm is not null and date(plandtfm)=?');
+    $material->bind_param('sss', $batch_no, $material_name, $fixdate);
     $material->execute();
     $material_res = $material->get_result();
     echo '<option value="" selected disabled>Select Model</option>';
@@ -650,6 +654,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'material_models')
 
 if (isset($_POST['type']) && $_POST['type'] == 'material_process')
 {
+    $fixdate = $_POST['fixdate'];
     $material_model = $_POST['material_model'];
 
     $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
@@ -658,8 +663,8 @@ if (isset($_POST['type']) && $_POST['type'] == 'material_process')
     $get_current_batch_row = $get_current_batch_res->fetch_assoc();
     $batch_no = $get_current_batch_row['batchno'];
 
-    $fetch_process = $conn->prepare('SELECT DISTINCT stageid, process_name from task_id where batchno=? and model_name = ? and tdatefm is null');
-    $fetch_process->bind_param('ss', $batch_no, $material_model);
+    $fetch_process = $conn->prepare('SELECT DISTINCT stageid, process_name from task_id where batchno=? and model_name = ? and tdatefm is not null and date(plandtfm)=?');
+    $fetch_process->bind_param('sss', $batch_no, $material_model, $fixdate);
     $fetch_process->execute();
     $fetch_process_res = $fetch_process->get_result();
     echo '<option value="" selected disabled>Select Process</option>';
@@ -722,6 +727,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'material_unit_time')
 // --------------team wise scripts - general - start--------------
 if (isset($_POST['type']) && $_POST['type'] == 'team_model')
 {
+    $fixdate = $_POST['fixdate'];
     $team = $_POST['team'];
 
     $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
@@ -730,8 +736,8 @@ if (isset($_POST['type']) && $_POST['type'] == 'team_model')
     $get_current_batch_row = $get_current_batch_res->fetch_assoc();
     $batch_no = $get_current_batch_row['batchno'];
 
-    $get_team_members = $conn->prepare('SELECT distinct task_id.model_name from model left join task_id on task_id.model_name = model.model_name WHERE teamname = ? and batchno = ?');
-    $get_team_members->bind_param('ss', $team, $batch_no);
+    $get_team_members = $conn->prepare('SELECT distinct task_id.model_name from model left join task_id on task_id.model_name = model.model_name WHERE teamname = ? and batchno = ? and tdatefm is not null and date(plandtfm)=?');
+    $get_team_members->bind_param('sss', $team, $batch_no, $fixdate);
     $get_team_members->execute();
     $get_team_members_res = $get_team_members->get_result();
     echo '<option value="" selected disabled>Select Model</option>';
@@ -743,6 +749,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'team_model')
 
 if (isset($_POST['type']) && $_POST['type'] == 'team_process')
 {
+    $fixdate = $_POST['fixdate'];
     $team_model = $_POST['team_model'];
 
     $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
@@ -751,8 +758,8 @@ if (isset($_POST['type']) && $_POST['type'] == 'team_process')
     $get_current_batch_row = $get_current_batch_res->fetch_assoc();
     $batch_no = $get_current_batch_row['batchno'];
 
-    $team_process = $conn->prepare('SELECT DISTINCT stageid, process_name from task_id where batchno = ? and model_name = ? and tdatefm is null');
-    $team_process->bind_param('ss', $batch_no, $team_model);
+    $team_process = $conn->prepare('SELECT DISTINCT stageid, process_name from task_id where batchno = ? and model_name = ? and tdatefm is not null and date(plandtfm)=?');
+    $team_process->bind_param('sss', $batch_no, $team_model, $fixdate);
     $team_process->execute();
     $team_process_res = $team_process->get_result();
     echo '<option value="" selected disabled>Select Process</option>';
@@ -809,6 +816,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'team_username')
 // ---------model wise scripts - general shift - start----------
 if (isset($_POST['type']) && $_POST['type'] == 'models')
 {
+    $fixdate = $_POST['fixdate'];
     $model_name = $_POST['models'];
 
     $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
@@ -817,36 +825,43 @@ if (isset($_POST['type']) && $_POST['type'] == 'models')
     $get_current_batch_row = $get_current_batch_res->fetch_assoc();
     $batch_no = $get_current_batch_row['batchno'];
 
-    $get_process = $conn->prepare("SELECT distinct process_name from task_id where batchno=? and model_name = ?");
-    $get_process->bind_param('ss', $batch_no, $model_name);
+    $get_process = $conn->prepare("SELECT distinct stageid, process_name from task_id where batchno=? and model_name = ? and tdatefm is not null and date(plandtfm)=?");
+    $get_process->bind_param('sss', $batch_no, $model_name, $fixdate);
     $get_process->execute();
     $get_process_res = $get_process->get_result();
     echo '<option value="" selected disabled>Select Process</option>';
     while ($get_process_row = $get_process_res->fetch_assoc())
     {
-        echo '<option value="' . $get_process_row['process_name'] . '">' . $get_process_row['process_name'] . '</option>';
+        echo '<option value="' . $get_process_row['stageid'] . '">' . $get_process_row['process_name'] . '</option>';
         // $part_name[] = '<option value="'.$get_process_row['stageid'].'">'.$get_process_row['part_name'].'</option>';
     }
 }
 
 if (isset($_POST['type']) && $_POST['type'] == 'model_process')
 {
-    $model_process = $_POST['model_process'];
+    $model_name = $_POST['model_process'];
 
-    $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
-    $get_current_batch->execute();
-    $get_current_batch_res = $get_current_batch->get_result();
-    $get_current_batch_row = $get_current_batch_res->fetch_assoc();
-    $batch_no = $get_current_batch_row['batchno'];
+    $select_team = $conn->prepare("SELECT * FROM model where model_name = ?;");
+    $select_team->bind_param('s', $model_name);
+    $select_team->execute();
+    $select_team_res = $select_team->get_result();
+    $select_team_row = $select_team_res->fetch_assoc();
 
-    $team_process = $conn->prepare('SELECT DISTINCT stageid, process_name from task_id where batchno = ? and model_name = ? and tdatefm is null');
-    $team_process->bind_param('ss', $batch_no, $model_process);
-    $team_process->execute();
-    $team_process_res = $team_process->get_result();
-    echo '<option value="" selected disabled>Select Process</option>';
-    while ($team_process_row = $team_process_res->fetch_assoc())
+    $get_users = $conn->prepare('SELECT * FROM user_detail where teamname = ?');
+    $get_users->bind_param('s', $select_team_row['teamname']);
+    $get_users->execute();
+    $get_users_res = $get_users->get_result();
+    //add only users assigned for shift
+    echo '<option value="" selected disabled>Select Associate</option>';
+    while ($get_users_row = $get_users_res->fetch_assoc())
     {
-        echo '<option value="' . $team_process_row['stageid'] . '">' . $team_process_row['process_name'] . '</option>';
+        // $get_time = $conn->prepare('SELECT DISTINCT start_time, est_complete_time from task_id where user = ?');
+        // $get_time->bind_param('s', $get_users_row['user_name']);
+        // $get_time->execute();
+        // $get_time_res = $get_time->get_result;
+        // $get_time_row = $get_time->fetch_assoc();
+        //better this login; users occupied for that time should not display
+        echo '<option value="' . $get_users_row['user_name'] . '">' . $get_users_row['fullname'] . '</option>';
     }
 }
 
@@ -1205,4 +1220,106 @@ if (isset($_POST['type']) && $_POST['type'] == 'shift_cards')
             }
         }
         // -------------process shift card - general - end-------------
+        // ----------associate guage data start-----------
+        if (isset($_POST['type']) && $_POST['type'] == 'associate_gauge')
+        {
+            //get all Associates
+            //store sum of est_complete_time for each associate; sum array and then divide by 8
+
+            $fixdate = $_POST['fixdate'];
+
+            $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
+            $get_current_batch->execute();
+            $get_current_batch_res = $get_current_batch->get_result();
+            $get_current_batch_row = $get_current_batch_res->fetch_assoc();
+
+            $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+            $select_users->execute();
+            $select_users_res = $select_users->get_result();
+            while ($select_users_row = $select_users_res->fetch_assoc())
+            {
+                $get_sum_time = $conn->prepare('SELECT SEC_TO_TIME(AVG(TIME_TO_SEC(est_complete_time))) AS est_complete_time from task_id WHERE user = ? and batchno = ? and est_complete_time is not null and date(tdatefm) = ?');
+                $get_sum_time->bind_param('sss', $select_users_row['user_name'], $get_current_batch_row['batchno'], $fixdate);
+                $get_sum_time->execute();
+                $get_sum_time_res = $get_sum_time->get_result();
+                $get_sum_time_row = $get_sum_time_res->fetch_assoc();
+
+                if (!empty($get_sum_time_row['est_complete_time']))
+                {
+                    $times[] = $get_sum_time_row['est_complete_time'];
+                }
+            }
+
+            // $times = ['02:30:00', '03:15:00', '01:45:00', '02:00:00'];
+            // print_r($times);
+            // Calculate the total seconds
+            $totalSeconds = 0;
+            foreach ($times as $time)
+            {
+                list($hours, $minutes, $seconds) = explode(':', $time);
+                $totalSeconds += $hours * 3600 + $minutes * 60 + $seconds;
+            }
+
+            // Calculate the total hours
+            $totalHours = $totalSeconds / 3600;
+
+            // Divide by 8 hours to get the integer value
+            $integerValue = (int)($totalHours / 8);
+
+            // Output the result
+            // echo "Total Hours: $totalHours\n";
+            // echo "Integer Value (Total Hours / 8): $integerValue\n";
+            echo $integerValue;
+        }
+        // ----------associate guage data end-----------
+        // ---------workstation guage chart start----------
+        if (isset($_POST['type']) && $_POST['type'] == 'work_gauge')
+        {
+            $fixdate = $_POST['fixdate'];
+
+            $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
+            $get_current_batch->execute();
+            $get_current_batch_res = $get_current_batch->get_result();
+            $get_current_batch_row = $get_current_batch_res->fetch_assoc();
+
+            $select_workstation = $conn->prepare("SELECT * FROM workstation where machine = 'yes';");
+            $select_workstation->execute();
+            $select_workstation_res = $select_workstation->get_result();
+            while ($select_workstation_row = $select_workstation_res->fetch_assoc())
+            {
+                $get_sum_time = $conn->prepare('SELECT SEC_TO_TIME(AVG(TIME_TO_SEC(est_complete_time))) AS est_complete_time from task_id WHERE workstation = ? and batchno = ? and est_complete_time is not null and date(tdatefm) = ?');
+                $get_sum_time->bind_param('sss', $select_workstation_row['name'], $get_current_batch_row['batchno'], $fixdate);
+                $get_sum_time->execute();
+                $get_sum_time_res = $get_sum_time->get_result();
+                $get_sum_time_row = $get_sum_time_res->fetch_assoc();
+
+                if (!empty($get_sum_time_row['est_complete_time']))
+                {
+                    $times[] = $get_sum_time_row['est_complete_time'];
+                }
+            }
+
+
+            // $times = ['02:30:00', '03:15:00', '01:45:00', '02:00:00'];
+            // print_r($times);
+            // Calculate the total seconds
+            $totalSeconds = 0;
+            foreach ($times as $time)
+            {
+                list($hours, $minutes, $seconds) = explode(':', $time);
+                $totalSeconds += $hours * 3600 + $minutes * 60 + $seconds;
+            }
+
+            // Calculate the total hours
+            $totalHours = $totalSeconds / 3600;
+
+            // Divide by 8 hours to get the integer value
+            $integerValue = (int)($totalHours / 8);
+
+            // Output the result
+            // echo "Total Hours: $totalHours\n";
+            // echo "Integer Value (Total Hours / 8): $integerValue\n";
+            echo $integerValue;
+        }
+        // ---------workstation guage chart end----------
                 ?>

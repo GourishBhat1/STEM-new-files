@@ -31,7 +31,7 @@ if (isset($_POST['type']) && $_POST['type'] == "gen_shift_create")
     if ($delete_shift->execute())
     {
         //insert shift in new table with start and end time with shift date
-        $select_users = $conn->prepare("SELECT * FROM steml1og_stemftest.user_detail where role = 'Associates' and teamname is not null;");
+        $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
         $select_users->execute();
         $select_users_res = $select_users->get_result();
         while ($select_users_row = $select_users_res->fetch_assoc())
@@ -48,6 +48,10 @@ if (isset($_POST['type']) && $_POST['type'] == "gen_shift_create")
             echo $conn->error;
         }
         echo 'General shift updated';
+
+        $update_plandate_for_fm = $conn->prepare("UPDATE task_id SET plandtfm = ? WHERE tdatefm = ?");
+        $update_plandate_for_fm->bind_param('ss', $fixdate, $fixdate);
+        $update_plandate_for_fm->execute();
     }
 }
 
@@ -82,7 +86,7 @@ if (isset($_POST['type']) && $_POST['type'] == "multi_shift_create")
         for ($i = 0; $i < count($shift1_user_arr); $i++)
         {
             // shift 1 user insert
-            $insert_shift = $conn->prepare('INSERT INTO shift_user_plan (batchname, shiftdate, shift_type,  start_time,  end_time,  username) VALUES (?,?, "multi", ?,?,?)');
+            $insert_shift = $conn->prepare('INSERT INTO shift_user_plan (batchname, shiftdate, shift_type,  start_time,  end_time,  username) VALUES (?,?, "shift1", ?,?,?)');
             $insert_shift->bind_param('sssss', $get_current_batch_row['batchno'], $fixdate, $shift1starttime, $shift1endtime, $shift1_user_arr[$i]);
             $insert_shift->execute();
         }
@@ -90,10 +94,14 @@ if (isset($_POST['type']) && $_POST['type'] == "multi_shift_create")
         for ($j = 0; $j < count($shift2_user_arr); $j++)
         {
             // shift 2 user insert
-            $insert_shift = $conn->prepare('INSERT INTO shift_user_plan (batchname, shiftdate, shift_type,  start_time,  end_time,  username) VALUES (?,?, "multi", ?,?,?)');
+            $insert_shift = $conn->prepare('INSERT INTO shift_user_plan (batchname, shiftdate, shift_type,  start_time,  end_time,  username) VALUES (?,?, "shift2", ?,?,?)');
             $insert_shift->bind_param('sssss', $get_current_batch_row['batchno'], $fixdate, $shift2starttime, $shift2endtime, $shift2_user_arr[$j]);
             $insert_shift->execute();
         }
+
+        $update_plandate_for_fm = $conn->prepare("UPDATE task_id SET plandtfm = ? WHERE tdatefm = ?");
+        $update_plandate_for_fm->bind_param('ss', $fixdate, $fixdate);
+        $update_plandate_for_fm->execute();
     }
 
 

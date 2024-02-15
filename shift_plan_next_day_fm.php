@@ -8,7 +8,7 @@ $datet = date('Y-m-d H:i:s');
 $update = $conn->prepare('update user_detail set user_type = "Executives" where role = "Executive" or role = "admin";');
 $update->execute();
 
-$get_user_count = $conn->prepare("SELECT COUNT(*) AS user_count FROM steml1og_stemftest.user_detail where role = 'Associates' and teamname is not null;");
+$get_user_count = $conn->prepare("SELECT COUNT(*) AS user_count FROM user_detail where role = 'Associates' and teamname is not null;");
 $get_user_count->execute();
 $get_user_count_res = $get_user_count->get_result();
 $get_user_count_row = $get_user_count_res->fetch_assoc();
@@ -178,6 +178,24 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
                 ?>
 
+
+
+                <?php
+                // code for current details
+                $display_next_day_shift_details = $conn->prepare("SELECT DISTINCT shift_type, start_time, end_time FROM shift_user_plan where DATE(shiftdate) =? ;");
+                $display_next_day_shift_details->bind_param('s', $desiredDate);
+                $display_next_day_shift_details->execute();
+                $display_next_day_shift_details_res = $display_next_day_shift_details->get_result();
+
+
+                // echo $todaysDate;
+
+
+
+                ?>
+
+
+
                 <div class="col-6">
                     <h5>Batch Plan For: <?php echo "Batch Plan For: Day " . $pos_diff; ?></h5>
                     <div class="card bg-success text-dark" style="width: 100%;">
@@ -186,10 +204,44 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><strong>Target Date: </strong>24-02-2024</li>
-                            <li class="list-group-item"><strong>Current Shift: </strong>General Shift</li>
-                            <li class="list-group-item"><strong>Start Time: </strong>10:00</li>
-                            <li class="list-group-item"><strong>End Time: </strong>18:00</li>
+                            <li class="list-group-item"><strong>Shift Date: </strong><?php echo $desiredDate; ?></li>
+
+                            <?php
+
+
+                            while ($display_next_day_shift_details_row = $display_next_day_shift_details_res->fetch_assoc())
+                            {
+
+                                if ($display_next_day_shift_details_row['shift_type'] == 'general')
+                                {
+
+                                    echo ' <li class="list-group-item"><strong>Target Planned Shift: </strong>General Shift</li>
+                                            <li class="list-group-item"><strong>Start Time: </strong>' . $display_next_day_shift_details_row['start_time'] . '</li>
+                                            <li class="list-group-item"><strong>End Time: </strong>' . $display_next_day_shift_details_row['end_time'] . '</li>';
+                                }
+
+                                if ($display_next_day_shift_details_row['shift_type'] == 'shift1')
+                                {
+
+                                    echo ' <li class="list-group-item"><strong>Target Planned Shift: </strong>Shift 1</li>
+                                            <li class="list-group-item"><strong>Start Time: </strong>' . $display_next_day_shift_details_row['start_time'] . '</li>
+                                            <li class="list-group-item"><strong>End Time: </strong>' . $display_next_day_shift_details_row['end_time'] . '</li>';
+                                }
+
+                                if ($display_next_day_shift_details_row['shift_type'] == 'shift2')
+                                {
+
+                                    echo ' <li class="list-group-item"><strong>Target Planned Shift: </strong>Shift 2</li>
+                                            <li class="list-group-item"><strong>Start Time: </strong>' . $display_next_day_shift_details_row['start_time'] . '</li>
+                                            <li class="list-group-item"><strong>End Time: </strong>' . $display_next_day_shift_details_row['end_time'] . '</li>';
+                                }
+                            }
+
+
+
+
+                            ?>
+
                         </ul>
 
                     </div>
@@ -245,7 +297,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         <select class="form-control" id="team_assoc">
                             <?php
                             // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                            $select_users = $conn->prepare("SELECT * FROM steml1og_stemftest.user_detail where role = 'Associates' and teamname is not null;");
+                            $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
                             $select_users->execute();
                             $select_users_res = $select_users->get_result();
                             while ($select_users_row = $select_users_res->fetch_assoc())
@@ -293,7 +345,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         <select class="form-control" id="gen_task_assoc">
                             <?php
                             // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                            $select_users = $conn->prepare("SELECT * FROM steml1og_stemftest.user_detail where role = 'Associates' and teamname is not null;");
+                            $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
                             $select_users->execute();
                             $select_users_res = $select_users->get_result();
                             while ($select_users_row = $select_users_res->fetch_assoc())
@@ -315,7 +367,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         <select class="form-control" id="machin_assoc">
                             <?php
                             // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                            $select_users = $conn->prepare("SELECT * FROM steml1og_stemftest.user_detail where role = 'Associates' and teamname is not null;");
+                            $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
                             $select_users->execute();
                             $select_users_res = $select_users->get_result();
                             while ($select_users_row = $select_users_res->fetch_assoc())
@@ -333,7 +385,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         <select class="form-control" id="machine_workstation">
                             <?php
                             // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                            $select_workstation = $conn->prepare("SELECT * FROM steml1og_stemftest.workstation where machine = 'yes';");
+                            $select_workstation = $conn->prepare("SELECT * FROM workstation where machine = 'yes';");
                             $select_workstation->execute();
                             $select_workstation_res = $select_workstation->get_result();
                             while ($select_workstation_row = $select_workstation_res->fetch_assoc())
@@ -361,7 +413,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         <select class="form-control select" multiple id="shift1username" name="shift1username[]">
                             <?php
                             // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                            $select_users = $conn->prepare("SELECT * FROM steml1og_stemftest.user_detail where role = 'Associates' and teamname is not null;");
+                            $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
                             $select_users->execute();
                             $select_users_res = $select_users->get_result();
                             while ($select_users_row = $select_users_res->fetch_assoc())
@@ -385,7 +437,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         <select class="form-control select" multiple id="shift2username" name="shift2username[]">
                             <?php
                             // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                            $select_users = $conn->prepare("SELECT * FROM steml1og_stemftest.user_detail where role = 'Associates' and teamname is not null;");
+                            $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
                             $select_users->execute();
                             $select_users_res = $select_users->get_result();
                             while ($select_users_row = $select_users_res->fetch_assoc())

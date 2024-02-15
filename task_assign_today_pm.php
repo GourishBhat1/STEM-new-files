@@ -8,7 +8,7 @@ $datet = date('Y-m-d H:i:s');
 $update = $conn->prepare('update user_detail set user_type = "Executives" where role = "Executive" or role = "admin";');
 $update->execute();
 
-$get_user_count = $conn->prepare("SELECT COUNT(*) AS user_count FROM steml1og_stemftest.user_detail where role = 'Associates' and teamname is not null;");
+$get_user_count = $conn->prepare("SELECT COUNT(*) AS user_count FROM user_detail where role = 'Associates' and teamname is not null;");
 $get_user_count->execute();
 $get_user_count_res = $get_user_count->get_result();
 $get_user_count_row = $get_user_count_res->fetch_assoc();
@@ -165,7 +165,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         <select class="form-control" id="gen_task_assoc">
                             <?php
                             // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                            $select_users = $conn->prepare("SELECT * FROM steml1og_stemftest.user_detail where role = 'Associates' and teamname is not null;");
+                            $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
                             $select_users->execute();
                             $select_users_res = $select_users->get_result();
                             while ($select_users_row = $select_users_res->fetch_assoc())
@@ -187,7 +187,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         <select class="form-control" id="machin_assoc">
                             <?php
                             // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                            $select_users = $conn->prepare("SELECT * FROM steml1og_stemftest.user_detail where role = 'Associates' and teamname is not null;");
+                            $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
                             $select_users->execute();
                             $select_users_res = $select_users->get_result();
                             while ($select_users_row = $select_users_res->fetch_assoc())
@@ -205,7 +205,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         <select class="form-control" id="machine_workstation">
                             <?php
                             // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                            $select_workstation = $conn->prepare("SELECT * FROM steml1og_stemftest.workstation where machine = 'yes';");
+                            $select_workstation = $conn->prepare("SELECT * FROM workstation where machine = 'yes';");
                             $select_workstation->execute();
                             $select_workstation_res = $select_workstation->get_result();
                             while ($select_workstation_row = $select_workstation_res->fetch_assoc())
@@ -277,7 +277,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
 
 
-
+                <!-- GENERAL SHIFT -->
 
                 <div class="tab-content">
                     <div class="tab-pane active" id="tabs-1" role="tabpanel">
@@ -292,8 +292,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     <option selected disabled>Select Model</option>
                                     <?php
                                     //assigned task to be removed from stack
-                                    $select_process = $conn->prepare("SELECT distinct model_name from task_id where batchno=?;");
-                                    $select_process->bind_param('s', $batchno);
+                                    $select_process = $conn->prepare("SELECT distinct model_name from task_id where batchno=? and date(plandtfm)=?;");
+                                    $select_process->bind_param('ss', $batchno, $todaysDate);
                                     $select_process->execute();
                                     $select_process_res = $select_process->get_result();
                                     while ($select_process_row = $select_process_res->fetch_assoc())
@@ -306,11 +306,13 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     ?>
                                 </select>
 
+                                <!-- GENERAL SHIFT -->
                                 <label for="">Process</label>
                                 <select class="form-control" id="model_processes">
                                     <option selected disabled>Select Process</option>
                                 </select>
 
+                                <!-- GENERAL SHIFT -->
                                 <label for="">Parts</label>
                                 <select class="form-control" id="process_parts">
                                     <option selected disabled>Select Process</option>
@@ -329,6 +331,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <label for="">Number of Associates</label>
                                 <input type="number" class="form-control" id="process_users">
 
+                                <!-- GENERAL SHIFT -->
                                 <label for="">Associates</label>
                                 <select class="form-control" id="username" name="username[]" multiple>
 
@@ -343,7 +346,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
                         </div>
 
-
+                        <!-- GENERAL -->
                     </div>
                     <div class="tab-pane" id="tabs-2" role="tabpanel">
                         <div class="row">
@@ -356,7 +359,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <select class="form-control" id="workstation">
                                     <?php
                                     // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                                    $select_workstation = $conn->prepare("SELECT * FROM steml1og_stemftest.workstation where machine = 'yes';");
+                                    $select_workstation = $conn->prepare("SELECT * FROM workstation where machine = 'yes';");
                                     $select_workstation->execute();
                                     $select_workstation_res = $select_workstation->get_result();
                                     while ($select_workstation_row = $select_workstation_res->fetch_assoc())
@@ -387,8 +390,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     <option selected disabled>Select Process</option>
                                     <?php
                                     //assigned task to be removed from stack
-                                    $select_workprocess = $conn->prepare("SELECT distinct model_name from task_id where batchno=?;");
-                                    $select_workprocess->bind_param('s', $batchno);
+                                    $select_workprocess = $conn->prepare("SELECT distinct model_name from task_id where batchno=? and date(plandtfm)=?;");
+                                    $select_workprocess->bind_param('ss', $batchno, $todaysDate);
                                     $select_workprocess->execute();
                                     $select_workprocess_res = $select_workprocess->get_result();
                                     while ($select_workprocess_row = $select_workprocess_res->fetch_assoc())
@@ -400,6 +403,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     }
                                     ?>
                                 </select>
+                                <!-- GENERAL SHIFT -->
                                 <label for="">Part Name</label>
                                 <select class="form-control" id="work_parts">
                                 </select>
@@ -425,6 +429,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     <center>Material Batch Plan</center>
                                 </header>
                                 <hr>
+                                <!-- GENERAL SHIFT -->
                                 <label for="">Material: </label>
                                 <select class="form-control" id="material">
                                     <option selected disabled>Select Material</option>
@@ -432,8 +437,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     //assigned task to be removed from stack
 
                                     //material->part name == assign to user
-                                    $select_process = $conn->prepare("SELECT distinct material_name from task_id where batchno=?;");
-                                    $select_process->bind_param('s', $batchno);
+                                    $select_process = $conn->prepare("SELECT distinct material_name from task_id where batchno=? and date(plandtfm)=?;");
+                                    $select_process->bind_param('ss', $batchno, $todaysDate);
                                     $select_process->execute();
                                     $select_process_res = $select_process->get_result();
                                     while ($select_process_row = $select_process_res->fetch_assoc())
@@ -518,7 +523,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     }
                                     ?>
                                 </select>
-
+                                <!-- GENERAL SHIFT -->
                                 <label for="">Model: </label>
                                 <select class="form-control" id="team_model">
                                 </select>
@@ -567,6 +572,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     <center>Model Batch Plan</center>
                                 </header>
                                 <hr>
+                                <!-- GENERAL SHIFT -->
                                 <label for="">Model: </label>
                                 <select class="form-control" id="models">
                                     <option selected disabled>Select Model</option>
@@ -574,8 +580,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     //assigned task to be removed from stack
 
                                     //material->part name == assign to user
-                                    $select_process = $conn->prepare("SELECT distinct model_name from task_id where batchno=?;");
-                                    $select_process->bind_param('s', $batchno);
+                                    $select_process = $conn->prepare("SELECT distinct model_name from task_id where batchno=? and date(plandtfm)=?;");
+                                    $select_process->bind_param('ss', $batchno, $todaysDate);
                                     $select_process->execute();
                                     $select_process_res = $select_process->get_result();
                                     while ($select_process_row = $select_process_res->fetch_assoc())
@@ -673,8 +679,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     <option selected disabled>Select Model</option>
                                     <?php
                                     //assigned task to be removed from stack
-                                    $select_process = $conn->prepare("SELECT distinct model_name from task_id where batchno=?;");
-                                    $select_process->bind_param('s', $batchno);
+                                    $select_process = $conn->prepare("SELECT distinct model_name from task_id where batchno=? and date(plandtfm)=?;");
+                                    $select_process->bind_param('ss', $batchno, $todaysDate);
                                     $select_process->execute();
                                     $select_process_res = $select_process->get_result();
                                     while ($select_process_row = $select_process_res->fetch_assoc())
@@ -691,7 +697,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <select class="form-control" id="model_processes1">
                                     <option selected disabled>Select Process</option>
                                 </select>
-
+                                <!-- SHIFT 1 -->
                                 <label for="">Parts</label>
                                 <select class="form-control" id="process_parts1">
                                     <option selected disabled>Select Process</option>
@@ -709,7 +715,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <input type="time" class="form-control" id="process_start_time1">
                                 <label for="">Number of Associates</label>
                                 <input type="number" class="form-control" id="process_users1">
-
+                                <!-- SHIFT 1 -->
                                 <label for="">Associates</label>
                                 <select class="form-control" id="username1" name="username[]" multiple>
 
@@ -727,7 +733,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
                     </div>
                     <div class="tab-pane" id="tabs-22" role="tabpanel">
-
+                        <!-- SHIFT 1 -->
                         <div class="row">
                             <div class="col-sm col-md-6 col-lg-6 card card-primary card-outline">
                                 <header>
@@ -738,7 +744,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <select class="form-control" id="workstation1">
                                     <?php
                                     // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                                    $select_workstation = $conn->prepare("SELECT * FROM steml1og_stemftest.workstation where machine = 'yes';");
+                                    $select_workstation = $conn->prepare("SELECT * FROM workstation where machine = 'yes';");
                                     $select_workstation->execute();
                                     $select_workstation_res = $select_workstation->get_result();
                                     while ($select_workstation_row = $select_workstation_res->fetch_assoc())
@@ -769,8 +775,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     <option selected disabled>Select Process</option>
                                     <?php
                                     //assigned task to be removed from stack
-                                    $select_workprocess = $conn->prepare("SELECT distinct model_name from task_id where batchno=?;");
-                                    $select_workprocess->bind_param('s', $batchno);
+                                    $select_workprocess = $conn->prepare("SELECT distinct model_name from task_id where batchno=? and date(plandtfm)=?;");
+                                    $select_workprocess->bind_param('ss', $batchno, $todaysDate);
                                     $select_workprocess->execute();
                                     $select_workprocess_res = $select_workprocess->get_result();
                                     while ($select_workprocess_row = $select_workprocess_res->fetch_assoc())
@@ -782,6 +788,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     }
                                     ?>
                                 </select>
+                                <!-- SHIFT 1 -->
                                 <label for="">Part Name</label>
                                 <select class="form-control" id="work_parts1">
                                 </select>
@@ -807,6 +814,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     <center>Material Batch Plan</center>
                                 </header>
                                 <hr>
+                                <!-- SHIFT 1 -->
                                 <label for="">Material: </label>
                                 <select class="form-control" id="material1">
                                     <option selected disabled>Select Material</option>
@@ -814,8 +822,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     //assigned task to be removed from stack
 
                                     //material->part name == assign to user
-                                    $select_process = $conn->prepare("SELECT distinct material_name from task_id where batchno=?;");
-                                    $select_process->bind_param('s', $batchno);
+                                    $select_process = $conn->prepare("SELECT distinct material_name from task_id where batchno=? and date(plandtfm)=?;");
+                                    $select_process->bind_param('ss', $batchno, $todaysDate);
                                     $select_process->execute();
                                     $select_process_res = $select_process->get_result();
                                     while ($select_process_row = $select_process_res->fetch_assoc())
@@ -900,7 +908,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     }
                                     ?>
                                 </select>
-
+                                <!-- SHIFT 1 -->
                                 <label for="">Model: </label>
                                 <select class="form-control" id="team_model1">
                                 </select>
@@ -949,6 +957,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     <center>Model Batch Plan</center>
                                 </header>
                                 <hr>
+                                <!-- SHIFT 1 -->
                                 <label for="">Model: </label>
                                 <select class="form-control" id="models1">
                                     <option selected disabled>Select Model</option>
@@ -956,8 +965,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     //assigned task to be removed from stack
 
                                     //material->part name == assign to user
-                                    $select_process = $conn->prepare("SELECT distinct model_name from task_id where batchno=?;");
-                                    $select_process->bind_param('s', $batchno);
+                                    $select_process = $conn->prepare("SELECT distinct model_name from task_id where batchno=? and date(plandtfm)=?;");
+                                    $select_process->bind_param('ss', $batchno, $todaysDate);
                                     $select_process->execute();
                                     $select_process_res = $select_process->get_result();
                                     while ($select_process_row = $select_process_res->fetch_assoc())
@@ -1056,8 +1065,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     <option selected disabled>Select Model</option>
                                     <?php
                                     //assigned task to be removed from stack
-                                    $select_process = $conn->prepare("SELECT distinct model_name from task_id where batchno=?;");
-                                    $select_process->bind_param('s', $batchno);
+                                    $select_process = $conn->prepare("SELECT distinct model_name from task_id where batchno=? and date(plandtfm)=?;");
+                                    $select_process->bind_param('ss', $batchno, $todaysDate);
                                     $select_process->execute();
                                     $select_process_res = $select_process->get_result();
                                     while ($select_process_row = $select_process_res->fetch_assoc())
@@ -1074,6 +1083,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <select class="form-control" id="model_processes2">
                                     <option selected disabled>Select Process</option>
                                 </select>
+
+                                <!-- SHIFT 1 -->
 
                                 <label for="">Parts</label>
                                 <select class="form-control" id="process_parts2">
@@ -1093,6 +1104,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <label for="">Number of Associates</label>
                                 <input type="number" class="form-control" id="process_users2">
 
+                                <!-- SHIFT 1 -->
+
                                 <label for="">Associates</label>
                                 <select class="form-control" id="username2" name="username[]" multiple>
 
@@ -1109,7 +1122,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         </div>
 
                     </div>
-
+                    <!-- SHIFT 2 -->
                     <div class="tab-pane" id="tabs-23" role="tabpanel">
 
                         <div class="row">
@@ -1122,7 +1135,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <select class="form-control" id="workstation2">
                                     <?php
                                     // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                                    $select_workstation = $conn->prepare("SELECT * FROM steml1og_stemftest.workstation where machine = 'yes';");
+                                    $select_workstation = $conn->prepare("SELECT * FROM workstation where machine = 'yes';");
                                     $select_workstation->execute();
                                     $select_workstation_res = $select_workstation->get_result();
                                     while ($select_workstation_row = $select_workstation_res->fetch_assoc())
@@ -1153,8 +1166,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     <option selected disabled>Select Process</option>
                                     <?php
                                     //assigned task to be removed from stack
-                                    $select_workprocess = $conn->prepare("SELECT distinct model_name from task_id where batchno=?;");
-                                    $select_workprocess->bind_param('s', $batchno);
+                                    $select_workprocess = $conn->prepare("SELECT distinct model_name from task_id where batchno=? and date(plandtfm)=?;");
+                                    $select_workprocess->bind_param('ss', $batchno, $todaysDate);
                                     $select_workprocess->execute();
                                     $select_workprocess_res = $select_workprocess->get_result();
                                     while ($select_workprocess_row = $select_workprocess_res->fetch_assoc())
@@ -1166,6 +1179,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     }
                                     ?>
                                 </select>
+                                <!-- SHIFT 2 -->
                                 <label for="">Part Name</label>
                                 <select class="form-control" id="work_parts2">
                                 </select>
@@ -1191,6 +1205,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     <center>Material Batch Plan</center>
                                 </header>
                                 <hr>
+                                <!-- SHIFT 2 -->
                                 <label for="">Material: </label>
                                 <select class="form-control" id="material2">
                                     <option selected disabled>Select Material</option>
@@ -1198,8 +1213,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     //assigned task to be removed from stack
 
                                     //material->part name == assign to user
-                                    $select_process = $conn->prepare("SELECT distinct material_name from task_id where batchno=?;");
-                                    $select_process->bind_param('s', $batchno);
+                                    $select_process = $conn->prepare("SELECT distinct material_name from task_id where batchno=? and date(plandtfm)=?;");
+                                    $select_process->bind_param('ss', $batchno, $todaysDate);
                                     $select_process->execute();
                                     $select_process_res = $select_process->get_result();
                                     while ($select_process_row = $select_process_res->fetch_assoc())
@@ -1284,7 +1299,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     }
                                     ?>
                                 </select>
-
+                                <!-- SHIFT 2 -->
                                 <label for="">Model: </label>
                                 <select class="form-control" id="team_model2">
                                 </select>
@@ -1333,6 +1348,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     <center>Model Batch Plan</center>
                                 </header>
                                 <hr>
+                                <!-- SHIFT 2 -->
                                 <label for="">Model: </label>
                                 <select class="form-control" id="models2">
                                     <option selected disabled>Select Model</option>
@@ -1340,8 +1356,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     //assigned task to be removed from stack
 
                                     //material->part name == assign to user
-                                    $select_process = $conn->prepare("SELECT distinct model_name from task_id where batchno=?;");
-                                    $select_process->bind_param('s', $batchno);
+                                    $select_process = $conn->prepare("SELECT distinct model_name from task_id where batchno=? and date(plandtfm)=?;");
+                                    $select_process->bind_param('ss', $batchno, $todaysDate);
                                     $select_process->execute();
                                     $select_process_res = $select_process->get_result();
                                     while ($select_process_row = $select_process_res->fetch_assoc())
@@ -1457,7 +1473,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         // console.log(res);
@@ -1506,7 +1522,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1528,7 +1544,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1550,7 +1566,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1573,7 +1589,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1610,7 +1626,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1645,7 +1661,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1661,15 +1677,17 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             });
             // ----------multi shift create end----------
 
+            // GENERAL SHIFT
+
             // --------- processwise - general shift---------
             $('#processes').on('change', function() {
                 var model_name = $('#processes').val();
                 var fixdate = $('#fixdate').val();
-                var data = "model_name=" + model_name + "&type=model_fetch";
+                var data = "model_name=" + model_name + "&fixdate=" + fixdate + "&type=model_fetch";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1687,7 +1705,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "task_assign_today_pm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -1706,15 +1724,18 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 $('#process_start_time').val('00:00');
             });
 
+            // GENERAL SHIFT
+
             $('#model_processes').on('change', function() {
+                var fixdate = $('#fixdate').val();
                 var model_name = $('#processes').val();
                 var processes = $('#model_processes').val();
 
-                var data = "model_name=" + model_name + "&processes=" + processes + "&type=get_parts";
+                var data = "model_name=" + model_name + "&processes=" + processes + "&fixdate=" + fixdate + "&type=get_parts";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1724,6 +1745,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 });
             });
 
+            // GENERAL SHIFT
+
             $('#process_parts').on('change', function() {
                 var parts = $('#process_parts').val();
 
@@ -1731,7 +1754,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1741,13 +1764,15 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 });
             });
 
+            // GENERAL SHIFT
+
             $('#process_users').on('change', function() {
                 var model_name = $('#processes').val();
                 var process_start_time = $('#process_start_time').val();
                 var data = "model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_users";
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1774,7 +1799,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1790,11 +1815,11 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#processes1').on('change', function() {
                 var model_name = $('#processes1').val();
                 var fixdate = $('#fixdate').val();
-                var data = "model_name=" + model_name + "&type=model_fetch";
+                var data = "model_name=" + model_name + "&fixdate=" + fixdate + "&type=model_fetch";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1812,7 +1837,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "task_assign_today_pm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -1831,15 +1856,18 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 $('#process_start_time1').val('00:00');
             });
 
+            // SHIFT 1
+
             $('#model_processes1').on('change', function() {
+                var fixdate = $('#fixdate').val();
                 var model_name = $('#processes1').val();
                 var processes = $('#model_processes1').val();
 
-                var data = "model_name=" + model_name + "&processes=" + processes + "&type=get_parts";
+                var data = "model_name=" + model_name + "&processes=" + processes + "&fixdate=" + fixdate + "&type=get_parts";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1849,6 +1877,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 });
             });
 
+            // SHIFT 1
+
             $('#process_parts1').on('change', function() {
                 var parts = $('#process_parts1').val();
 
@@ -1856,7 +1886,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1872,7 +1902,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 var data = "model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_users";
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1899,7 +1929,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1915,11 +1945,11 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#processes2').on('change', function() {
                 var model_name = $('#processes2').val();
                 var fixdate = $('#fixdate').val();
-                var data = "model_name=" + model_name + "&type=model_fetch";
+                var data = "model_name=" + model_name + "&fixdate=" + fixdate + "&type=model_fetch";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1937,7 +1967,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "task_assign_today_pm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -1956,15 +1986,18 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 $('#process_start_time2').val('00:00');
             });
 
+            // SHIFT 2
+
             $('#model_processes2').on('change', function() {
+                var fixdate = $('#fixdate').val();
                 var model_name = $('#processes2').val();
                 var processes = $('#model_processes2').val();
 
-                var data = "model_name=" + model_name + "&processes=" + processes + "&type=get_parts";
+                var data = "model_name=" + model_name + "&processes=" + processes + "&fixdate=" + fixdate + "&type=get_parts";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1974,6 +2007,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 });
             });
 
+            // SHIFT 2
+
             $('#process_parts2').on('change', function() {
                 var parts = $('#process_parts2').val();
 
@@ -1981,7 +2016,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1997,7 +2032,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 var data = "model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_users";
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -2024,7 +2059,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2038,12 +2073,13 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             // ---------workstation selection data -general-start----------
             $('#workprocesses').on('change', function() {
                 var workprocesses = $('#workprocesses').val();
+                var fixdate = $('#fixdate').val();
 
-                var data = "workprocesses=" + workprocesses + "&type=work_parts";
+                var data = "workprocesses=" + workprocesses + "&fixdate=" + fixdate + "&type=work_parts";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2054,7 +2090,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "task_assign_today_pm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -2064,7 +2100,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     }
                 });
             });
-
+            // GENERAL SHIFT
             $('#work_parts').on('change', function() {
                 var work_parts = $('#work_parts').val();
 
@@ -2072,7 +2108,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -2096,7 +2132,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2113,12 +2149,13 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             // ---------workstation selection data -shift 1-start----------
             $('#workprocesses1').on('change', function() {
                 var workprocesses = $('#workprocesses1').val();
+                var fixdate = $('#fixdate').val();
 
-                var data = "workprocesses=" + workprocesses + "&type=work_parts";
+                var data = "workprocesses=" + workprocesses + "&fixdate=" + fixdate + "&type=work_parts";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2128,7 +2165,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "task_assign_today_pm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -2139,7 +2176,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     }
                 });
             });
-
+            // SHIFT 1
             $('#work_parts1').on('change', function() {
                 var work_parts = $('#work_parts1').val();
 
@@ -2147,7 +2184,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -2171,7 +2208,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2188,12 +2225,13 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             // ---------workstation selection data -shift 2-start----------
             $('#workprocesses2').on('change', function() {
                 var workprocesses = $('#workprocesses2').val();
+                var fixdate = $('#fixdate').val();
 
-                var data = "workprocesses=" + workprocesses + "&type=work_parts";
+                var data = "workprocesses=" + workprocesses + "&fixdate=" + fixdate + "&type=work_parts";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2203,7 +2241,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "task_assign_today_pm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -2214,7 +2252,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     }
                 });
             });
-
+            // SHIFT 2
             $('#work_parts2').on('change', function() {
                 var work_parts = $('#work_parts2').val();
 
@@ -2222,7 +2260,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -2246,7 +2284,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2260,15 +2298,17 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             });
             // -----------workstation wise shift 2 end-----------
 
+            // GENERAL SHIFT
             // ------------material wise data fetch -general-start-----------
             $('#material').on('change', function() {
                 var material = $('#material').val();
+                var fixdate = $('#fixdate').val();
 
-                var data = "material=" + material + "&type=material_models";
+                var data = "material=" + material + "&fixdate=" + fixdate + "&type=material_models";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2278,7 +2318,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "task_assign_today_pm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -2293,15 +2333,16 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 $('#material_unit_time').empty();
                 $('#material_user_count').val('');
             });
-
+            // GENERAL SHIFT
             $('#material_model').on('change', function() {
+                var fixdate = $('#fixdate').val();
                 var material_model = $('#material_model').val();
 
-                var data = "material_model=" + material_model + "&type=material_process";
+                var data = "material_model=" + material_model + "&fixdate=" + fixdate + "&type=material_process";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2318,7 +2359,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2334,7 +2375,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -2359,7 +2400,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2378,15 +2419,17 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             });
             // ---------material wise end---------
 
+            // SHIFT 1
             // ------------material wise data fetch -shift 1-start-----------
             $('#material1').on('change', function() {
                 var material = $('#material1').val();
+                var fixdate = $('#fixdate').val();
 
-                var data = "material=" + material + "&type=material_models";
+                var data = "material=" + material + "&fixdate=" + fixdate + "&type=material_models";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2396,7 +2439,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "task_assign_today_pm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -2412,15 +2455,16 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 $('#material_unit_time1').empty();
                 $('#material_user_count1').val('');
             });
-
+            // SHIFT 1
             $('#material_model1').on('change', function() {
+                var fixdate = $('#fixdate').val();
                 var material_model = $('#material_model1').val();
 
-                var data = "material_model=" + material_model + "&type=material_process";
+                var data = "material_model=" + material_model + "&fixdate=" + fixdate + "&type=material_process";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2437,7 +2481,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2453,7 +2497,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -2478,7 +2522,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2497,15 +2541,17 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             });
             // ---------material wise shift 1 end---------
 
+            // SHIFT 2
             // ------------material wise data fetch -shift 2-start-----------
             $('#material2').on('change', function() {
                 var material = $('#material2').val();
+                var fixdate = $('#fixdate').val();
 
-                var data = "material=" + material + "&type=material_models";
+                var data = "material=" + material + "&fixdate=" + fixdate + "&type=material_models";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2515,7 +2561,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "task_assign_today_pm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -2531,15 +2577,16 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 $('#material_unit_time2').empty();
                 $('#material_user_count2').val('');
             });
-
+            // SHIFT 2
             $('#material_model2').on('change', function() {
+                var fixdate = $('#fixdate').val();
                 var material_model = $('#material_model2').val();
 
-                var data = "material_model=" + material_model + "&type=material_process";
+                var data = "material_model=" + material_model + "&fixdate=" + fixdate + "&type=material_process";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2556,7 +2603,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2572,7 +2619,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -2597,7 +2644,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2618,7 +2665,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
             // ---------team selection data - general- start---------
             $('#teams').on('change', function() {
+
                 var team = $('#teams').val();
+                var fixdate = $('#fixdate').val();
 
                 $('#team_model').empty();
                 $('#team_process').empty();
@@ -2627,11 +2676,11 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 $('#team_start_time').val('00:00');
                 $('#team_username').empty();
 
-                var data = "team=" + team + "&type=team_model";
+                var data = "team=" + team + "&fixdate=" + fixdate + "&type=team_model";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2641,7 +2690,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "task_assign_today_pm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -2651,15 +2700,16 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     }
                 });
             });
-
+            // GENERAL SHIFT
             $('#team_model').on('change', function() {
+                var fixdate = $('#fixdate').val();
                 var team_model = $('#team_model').val();
 
-                var data = "team_model=" + team_model + "&type=team_process";
+                var data = "team_model=" + team_model + "&fixdate=" + fixdate + "&type=team_process";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2675,7 +2725,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -2692,7 +2742,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2717,7 +2767,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2742,6 +2792,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             // ---------team selection data - shift 1- start---------
             $('#teams1').on('change', function() {
                 var team = $('#teams1').val();
+                var fixdate = $('#fixdate').val();
 
                 $('#team_model1').empty();
                 $('#team_process1').empty();
@@ -2750,11 +2801,11 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 $('#team_start_time1').val('00:00');
                 $('#team_username1').empty();
 
-                var data = "team=" + team + "&type=team_model";
+                var data = "team=" + team + "&fixdate=" + fixdate + "&type=team_model";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2764,7 +2815,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "task_assign_today_pm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -2775,15 +2826,16 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     }
                 });
             });
-
+            // SHIFT 1
             $('#team_model1').on('change', function() {
+                var fixdate = $('#fixdate').val();
                 var team_model = $('#team_model1').val();
 
-                var data = "team_model=" + team_model + "&type=team_process";
+                var data = "team_model=" + team_model + "&fixdate=" + fixdate + "&type=team_process";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2799,7 +2851,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -2816,7 +2868,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2841,7 +2893,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2866,6 +2918,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             // ---------team selection data - shift 2- start---------
             $('#teams2').on('change', function() {
                 var team = $('#teams2').val();
+                var fixdate = $('#fixdate').val();
 
                 $('#team_model2').empty();
                 $('#team_process2').empty();
@@ -2874,11 +2927,11 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 $('#team_start_time2').val('00:00');
                 $('#team_username2').empty();
 
-                var data = "team=" + team + "&type=team_model";
+                var data = "team=" + team + "&fixdate=" + fixdate + "&type=team_model";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2888,7 +2941,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "task_assign_today_pm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -2899,15 +2952,16 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     }
                 });
             });
-
+            // SHIFT 2
             $('#team_model2').on('change', function() {
+                var fixdate = $('#fixdate').val();
                 var team_model = $('#team_model2').val();
 
-                var data = "team_model=" + team_model + "&type=team_process";
+                var data = "team_model=" + team_model + "&fixdate=" + fixdate + "&type=team_process";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2923,7 +2977,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -2940,7 +2994,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2965,7 +3019,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2990,12 +3044,20 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             // ----------model wise selection data start----------
             $('#models').on('change', function() {
                 var models = $('#models').val();
+                var fixdate = $('#fixdate').val();
 
-                var data = "models=" + models + "&type=models";
+                $('#model_process').empty();
+
+                $('#model_unit_time').empty();
+                $('#model_user_count').empty();
+                $('#model_start_time').val('00:00');
+                $('#model_username').empty();
+
+                var data = "models=" + models + "&fixdate=" + fixdate + "&type=models";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -3005,7 +3067,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "task_assign_today_pm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -3023,7 +3085,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -3039,7 +3101,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -3068,13 +3130,18 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
-                        $('#model').val('').trigger('change');
-                        $('#model_process').val('').trigger('change');
-                        $('#model_username').val('').trigger('change');
+                        $('#models').val('').trigger('change');
+                        $('#model_process').empty();
+
+                        $('#model_unit_time').empty();
+                        $('#model_user_count').empty();
+                        $('#model_start_time').val('00:00');
+                        $('#model_username').empty();
+
                     }
                 });
 
@@ -3088,12 +3155,20 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             // ----------model wise selection data - shift 1-  start----------
             $('#models1').on('change', function() {
                 var models = $('#models1').val();
+                var fixdate = $('#fixdate').val();
 
-                var data = "models=" + models + "&type=models";
+                $('#model_process1').empty();
+
+                $('#model_unit_time1').empty();
+                $('#model_user_count1').empty();
+                $('#model_start_time1').val('00:00');
+                $('#model_username1').empty();
+
+                var data = "models=" + models + "&fixdate=" + fixdate + "&type=models";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -3103,7 +3178,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "task_assign_today_pm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -3122,7 +3197,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -3149,13 +3224,18 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
-                        $('#model1').val('').trigger('change');
-                        $('#model_process1').val('').trigger('change');
-                        $('#model_username1').val('').trigger('change');
+                        $('#models1').val('').trigger('change');
+                        $('#model_process1').empty();
+
+                        $('#model_unit_time1').empty();
+                        $('#model_user_count1').empty();
+                        $('#model_start_time1').val('00:00');
+                        $('#model_username1').empty();
+
                     }
                 });
 
@@ -3169,12 +3249,20 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             // ----------model wise selection data - shift 2-  start----------
             $('#models2').on('change', function() {
                 var models = $('#models2').val();
+                var fixdate = $('#fixdate').val();
 
-                var data = "models=" + models + "&type=models";
+                $('#model_process2').empty();
+
+                $('#model_unit_time2').empty();
+                $('#model_user_count2').empty();
+                $('#model_start_time2').val('00:00');
+                $('#model_username2').empty();
+
+                var data = "models=" + models + "&fixdate=" + fixdate + "&type=models";
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -3184,7 +3272,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "task_assign_today_pm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -3203,7 +3291,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -3230,13 +3318,18 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "task_assign_today_pm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
-                        $('#model2').val('').trigger('change');
-                        $('#model_process2').val('').trigger('change');
-                        $('#model_username2').val('').trigger('change');
+                        $('#models2').val('').trigger('change');
+                        $('#model_process2').empty();
+
+                        $('#model_unit_time2').empty();
+                        $('#model_user_count2').empty();
+                        $('#model_start_time2').val('00:00');
+                        $('#model_username2').empty();
+
                     }
                 });
 
@@ -3317,27 +3410,60 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
                 var options = {
                     redFrom: 0,
-                    redTo: 30,
-                    yellowFrom: 30,
-                    yellowTo: 60,
-                    greenFrom: 60,
-                    greenTo: 90,
-                    majorTicks: 40,
-                    max: 90
+                    redTo: 2,
+                    yellowFrom: 2,
+                    yellowTo: 6,
+                    greenFrom: 6,
+                    greenTo: 8,
+                    majorTicks: 2,
+                    max: 8
                 };
 
                 var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
 
                 chart.draw(data, options);
 
-                // setInterval(function() {
-                //   data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
-                //   chart.draw(data, options);
-                // }, 3000);
-                // setInterval(function() {
-                //   data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
-                //   chart.draw(data, options);
-                // }, 3000);
+                function updateUserChart(value) {
+                    data.setValue(1, 1, value);
+                    chart.draw(data, options);
+                }
+
+                function updateWorkChart(value) {
+                    data.setValue(0, 1, value);
+                    chart.draw(data, options);
+                }
+
+                setInterval(function() {
+                    var fixdate = $('#fixdate').val();
+                    var data = "fixdate=" + fixdate + "&type=associate_gauge";
+                    console.log(data);
+                    $.ajax({
+                        type: "POST",
+                        url: "task_planning_scripts.php",
+                        data: data,
+                        success: function(res) {
+                            console.log(res);
+                            var numericValue = parseInt(res);
+                            updateUserChart(numericValue);
+                        }
+                    });
+
+                }, 3000);
+                setInterval(function() {
+                    var fixdate = $('#fixdate').val();
+                    var data = "fixdate=" + fixdate + "&type=work_gauge";
+                    console.log(data);
+                    $.ajax({
+                        type: "POST",
+                        url: "task_planning_scripts.php",
+                        data: data,
+                        success: function(res) {
+                            console.log(res);
+                            var numericValue = parseInt(res);
+                            updateWorkChart(numericValue);
+                        }
+                    });
+                }, 3000);
             }
         </script>
 
