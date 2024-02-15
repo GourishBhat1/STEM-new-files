@@ -16,7 +16,7 @@ if (isset($_POST['type']) && $_POST['type'] == "batch_diff")
   $later = new DateTime($fixdate);
 
   $pos_diff = $earlier->diff($later)->format("%r%a"); //3
-  echo "Batch Plan For: Day ".$pos_diff;
+  echo "Batch Plan For: Day " . $pos_diff;
 }
 
 //gen shift create
@@ -36,10 +36,10 @@ if (isset($_POST['type']) && $_POST['type'] == "gen_shift_create")
   $get_current_batch_row = $get_current_batch_res->fetch_assoc();
 
   //insert shift in new table with start and end time with shift date
-  $select_users = $conn->prepare("SELECT * FROM steml1og_stemftest.user_detail where role = 'Associates' and teamname is not null;");
+  $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
   $select_users->execute();
   $select_users_res = $select_users->get_result();
-  while($select_users_row = $select_users_res->fetch_assoc())
+  while ($select_users_row = $select_users_res->fetch_assoc())
   {
     // echo $get_current_batch_row['batchno']."\n";
     // echo $fixdate."\n";
@@ -74,7 +74,7 @@ if (isset($_POST['type']) && $_POST['type'] == "multi_shift_create")
   $get_current_batch_res = $get_current_batch->get_result();
   $get_current_batch_row = $get_current_batch_res->fetch_assoc();
 
-  for ($i=0; $i < count($shift1_user_arr); $i++)
+  for ($i = 0; $i < count($shift1_user_arr); $i++)
   {
     // shift 1 user insert
     $insert_shift = $conn->prepare('INSERT INTO shift_user_plan (batchname, shiftdate, shift_type,  start_time,  end_time,  username) VALUES (?,?, "shift1", ?,?,?)');
@@ -82,7 +82,7 @@ if (isset($_POST['type']) && $_POST['type'] == "multi_shift_create")
     $insert_shift->execute();
   }
 
-  for ($j=0; $j < count($shift2_user_arr); $j++)
+  for ($j = 0; $j < count($shift2_user_arr); $j++)
   {
     // shift 2 user insert
     $insert_shift = $conn->prepare('INSERT INTO shift_user_plan (batchname, shiftdate, shift_type,  start_time,  end_time,  username) VALUES (?,?, "shift2", ?,?,?)');
@@ -118,7 +118,7 @@ if (isset($_POST['type']) && $_POST['type'] == "exec_role")
   $get_shift_detail_res = $get_shift_detail->get_result();
   if ($get_shift_detail_res->num_rows > 1)
   {
-    while($get_shift_detail_row = $get_shift_detail_res->fetch_assoc())
+    while ($get_shift_detail_row = $get_shift_detail_res->fetch_assoc())
     {
       // echo $get_current_batch_row['batchno'];
       // echo $fixdate;
@@ -133,7 +133,7 @@ if (isset($_POST['type']) && $_POST['type'] == "exec_role")
   }
   else
   {
-    while($get_shift_detail_row = $get_shift_detail_res->fetch_assoc())
+    while ($get_shift_detail_row = $get_shift_detail_res->fetch_assoc())
     {
       // echo $get_current_batch_row['batchno'];
       // echo $fixdate;
@@ -190,7 +190,7 @@ if (isset($_POST['type']) && $_POST['type'] == "machine_assign")
   $machine_workstation = $_POST['machine_workstation'];
 
   $update_machine = $conn->prepare('UPDATE workstation SET username = ? WHERE name = ?');
-  $update_machine->bind_param('ss',$machin_assoc, $machine_workstation);
+  $update_machine->bind_param('ss', $machin_assoc, $machine_workstation);
   $update_machine->execute();
   $conn->error;
 }
@@ -212,7 +212,7 @@ if (isset($_POST['type']) && $_POST['type'] == "process")
   $get_tasks->execute();
   $get_tasks_res = $get_tasks->get_result();
 
-  $task_split_count = ($get_tasks_res->num_rows/count($username_arr));
+  $task_split_count = ($get_tasks_res->num_rows / count($username_arr));
   // echo $get_tasks_res->num_rows.'\n';
   // echo count($username_arr).'\n';
   // echo $task_split_count;
@@ -228,33 +228,33 @@ if (isset($_POST['type']) && $_POST['type'] == "process")
   $time = $process_start_time;
   $time2 = $get_time_est_row['estimate_time'];
 
-  $secs = strtotime($time2)-strtotime("00:00:00");
-  $end_time = date("H:i:s",strtotime($time)+$secs);
+  $secs = strtotime($time2) - strtotime("00:00:00");
+  $end_time = date("H:i:s", strtotime($time) + $secs);
 
-  for ($j=0; $j < count($username_arr); $j++)
+  for ($j = 0; $j < count($username_arr); $j++)
+  {
+    // echo $username_arr[$j];
+    // echo $fixdate;
+    // echo "\n";
+
+    // echo "SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".$task_split_count.";";
+    $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit " . ceil($task_split_count) . ";");
+    $assign_task_id->bind_param('s', $processes);
+    $assign_task_id->execute();
+    $assign_task_id_res = $assign_task_id->get_result();
+    while ($assign_task_id_row = $assign_task_id_res->fetch_assoc())
     {
-      // echo $username_arr[$j];
-      // echo $fixdate;
-      // echo "\n";
-
-      // echo "SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".$task_split_count.";";
-      $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".ceil($task_split_count).";");
-      $assign_task_id->bind_param('s', $processes);
-      $assign_task_id->execute();
-      $assign_task_id_res = $assign_task_id->get_result();
-      while($assign_task_id_row = $assign_task_id_res->fetch_assoc())
-      {
-        echo $assign_task_id_row['taskid']."\n";
-        $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
-        $update_task_wise->bind_param('ssssss', $username_arr[$j], $fixdate, $process_start_time, $get_time_est_row['estimate_time'], $end_time, $assign_task_id_row['taskid']);
-        $update_task_wise->execute();
-      }
+      echo $assign_task_id_row['taskid'] . "\n";
+      $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
+      $update_task_wise->bind_param('ssssss', $username_arr[$j], $fixdate, $process_start_time, $get_time_est_row['estimate_time'], $end_time, $assign_task_id_row['taskid']);
+      $update_task_wise->execute();
     }
+  }
   echo 'Process task assign loop complete';
 }
 
 //workstation wise
-if(isset($_POST['type']) && $_POST['type'] == 'workstation')
+if (isset($_POST['type']) && $_POST['type'] == 'workstation')
 {
   $workstation = $_POST['workstation'];
   $workprocesses = $_POST['workprocesses'];
@@ -276,8 +276,8 @@ if(isset($_POST['type']) && $_POST['type'] == 'workstation')
   $time = $workstation_start_time;
   $time2 = $get_time_est_row['estimate_time'];
 
-  $secs = strtotime($time2)-strtotime("00:00:00");
-  $end_time = date("H:i:s",strtotime($time)+$secs);
+  $secs = strtotime($time2) - strtotime("00:00:00");
+  $end_time = date("H:i:s", strtotime($time) + $secs);
 
   $update_workstation_task = $conn->prepare('UPDATE task_id SET workstation = ?,user = ?,tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE stageid = ?');
   $update_workstation_task->bind_param('sssssss', $workstation, $get_user_row['username'], $fixdate, $workstation_start_time, $get_time_est_row['estimate_time'], $end_time, $workprocesses);
@@ -303,7 +303,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'material')
   $get_tasks->execute();
   $get_tasks_res = $get_tasks->get_result();
 
-  $task_split_count = ($get_tasks_res->num_rows/count($material_username_arr));
+  $task_split_count = ($get_tasks_res->num_rows / count($material_username_arr));
   // echo $get_tasks_res->num_rows.'\n';
   // echo count($material_username_arr).'\n';
   // echo $task_split_count;
@@ -319,28 +319,28 @@ if (isset($_POST['type']) && $_POST['type'] == 'material')
   $time = $material_start_time;
   $time2 = $get_time_est_row['estimate_time'];
 
-  $secs = strtotime($time2)-strtotime("00:00:00");
-  $end_time = date("H:i:s",strtotime($time)+$secs);
+  $secs = strtotime($time2) - strtotime("00:00:00");
+  $end_time = date("H:i:s", strtotime($time) + $secs);
 
-  for ($j=0; $j < count($material_username_arr); $j++)
+  for ($j = 0; $j < count($material_username_arr); $j++)
+  {
+    // echo $material_username_arr[$j];
+    // echo $fixdate;
+    // echo "\n";
+
+    // echo "SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".$task_split_count.";";
+    $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit " . ceil($task_split_count) . ";");
+    $assign_task_id->bind_param('s', $material_model);
+    $assign_task_id->execute();
+    $assign_task_id_res = $assign_task_id->get_result();
+    while ($assign_task_id_row = $assign_task_id_res->fetch_assoc())
     {
-      // echo $material_username_arr[$j];
-      // echo $fixdate;
-      // echo "\n";
-
-      // echo "SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".$task_split_count.";";
-      $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".ceil($task_split_count).";");
-      $assign_task_id->bind_param('s', $material_model);
-      $assign_task_id->execute();
-      $assign_task_id_res = $assign_task_id->get_result();
-      while($assign_task_id_row = $assign_task_id_res->fetch_assoc())
-      {
-        echo $assign_task_id_row['taskid']."\n";
-        $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
-        $update_task_wise->bind_param('ssssss', $material_username_arr[$j], $fixdate, $material_start_time, $get_time_est_row['estimate_time'], $end_time, $assign_task_id_row['taskid']);
-        $update_task_wise->execute();
-      }
+      echo $assign_task_id_row['taskid'] . "\n";
+      $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
+      $update_task_wise->bind_param('ssssss', $material_username_arr[$j], $fixdate, $material_start_time, $get_time_est_row['estimate_time'], $end_time, $assign_task_id_row['taskid']);
+      $update_task_wise->execute();
     }
+  }
   echo 'material task assign loop complete';
 }
 
@@ -354,21 +354,21 @@ if (isset($_POST['type']) && $_POST['type'] == 'team')
   $fixdate = $_POST['fixdate'];
   $team_start_time = $_POST['team_start_time'];
 
-  echo $teams."\n";
-  echo $team_model."\n";
-  echo $team_process."\n";
+  echo $teams . "\n";
+  echo $team_model . "\n";
+  echo $team_process . "\n";
   print_r($team_username_arr);
-  echo $fixdate."\n";
-  echo $team_start_time."\n";
+  echo $fixdate . "\n";
+  echo $team_start_time . "\n";
 
   $get_tasks = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ?");
   $get_tasks->bind_param('s', $team_process);
   $get_tasks->execute();
   $get_tasks_res = $get_tasks->get_result();
 
-  $task_split_count = ($get_tasks_res->num_rows/count($team_username_arr));
-  echo $get_tasks_res->num_rows.'\n';
-  echo count($team_username_arr).'\n';
+  $task_split_count = ($get_tasks_res->num_rows / count($team_username_arr));
+  echo $get_tasks_res->num_rows . '\n';
+  echo count($team_username_arr) . '\n';
   echo $task_split_count;
 
   $no_usr = count($team_username_arr);
@@ -382,35 +382,35 @@ if (isset($_POST['type']) && $_POST['type'] == 'team')
   $time = $team_start_time;
   $time2 = $get_time_est_row['estimate_time'];
 
-  $secs = strtotime($time2)-strtotime("00:00:00");
-  $end_time = date("H:i:s",strtotime($time)+$secs);
+  $secs = strtotime($time2) - strtotime("00:00:00");
+  $end_time = date("H:i:s", strtotime($time) + $secs);
 
-  for ($j=0; $j < count($team_username_arr); $j++)
+  for ($j = 0; $j < count($team_username_arr); $j++)
+  {
+    // echo $team_username_arr[$j];
+    // echo $fixdate;
+    // echo "\n";
+
+    // echo "SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".$task_split_count.";";
+    $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit " . ceil($task_split_count) . ";");
+    $assign_task_id->bind_param('s', $team_process);
+    $assign_task_id->execute();
+    $assign_task_id_res = $assign_task_id->get_result();
+    while ($assign_task_id_row = $assign_task_id_res->fetch_assoc())
     {
-      // echo $team_username_arr[$j];
-      // echo $fixdate;
-      // echo "\n";
-
-      // echo "SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".$task_split_count.";";
-      $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".ceil($task_split_count).";");
-      $assign_task_id->bind_param('s', $team_process);
-      $assign_task_id->execute();
-      $assign_task_id_res = $assign_task_id->get_result();
-      while($assign_task_id_row = $assign_task_id_res->fetch_assoc())
-      {
-        echo $assign_task_id_row['taskid']."\n";
-        echo $team_username_arr[$j]."\n";
-        echo $fixdate."\n";
-        echo $team_start_time."\n";
-        echo $get_time_est_row['estimate_time']."\n";
-        echo $end_time."\n";
-        echo $assign_task_id_row['taskid']."\n";
-        $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
-        $update_task_wise->bind_param('ssssss', $team_username_arr[$j], $fixdate, $team_start_time, $get_time_est_row['estimate_time'], $end_time, $assign_task_id_row['taskid']);
-        $update_task_wise->execute();
-        $conn->error;
-      }
+      echo $assign_task_id_row['taskid'] . "\n";
+      echo $team_username_arr[$j] . "\n";
+      echo $fixdate . "\n";
+      echo $team_start_time . "\n";
+      echo $get_time_est_row['estimate_time'] . "\n";
+      echo $end_time . "\n";
+      echo $assign_task_id_row['taskid'] . "\n";
+      $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
+      $update_task_wise->bind_param('ssssss', $team_username_arr[$j], $fixdate, $team_start_time, $get_time_est_row['estimate_time'], $end_time, $assign_task_id_row['taskid']);
+      $update_task_wise->execute();
+      $conn->error;
     }
+  }
   echo 'team task assign loop complete';
 }
 
@@ -433,7 +433,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'model')
   $get_tasks->execute();
   $get_tasks_res = $get_tasks->get_result();
 
-  $task_split_count = ($get_tasks_res->num_rows/count($model_username_arr));
+  $task_split_count = ($get_tasks_res->num_rows / count($model_username_arr));
   // echo $get_tasks_res->num_rows.'\n';
   // echo count($model_username_arr).'\n';
   // echo $task_split_count;
@@ -449,28 +449,28 @@ if (isset($_POST['type']) && $_POST['type'] == 'model')
   $time = $model_start_time;
   $time2 = $get_time_est_row['estimate_time'];
 
-  $secs = strtotime($time2)-strtotime("00:00:00");
-  $end_time = date("H:i:s",strtotime($time)+$secs);
+  $secs = strtotime($time2) - strtotime("00:00:00");
+  $end_time = date("H:i:s", strtotime($time) + $secs);
 
-  for ($j=0; $j < count($model_username_arr); $j++)
+  for ($j = 0; $j < count($model_username_arr); $j++)
+  {
+    // echo $model_username_arr[$j];
+    // echo $fixdate;
+    // echo "\n";
+
+    // echo "SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".$task_split_count.";";
+    $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit " . ceil($task_split_count) . ";");
+    $assign_task_id->bind_param('s', $model_process);
+    $assign_task_id->execute();
+    $assign_task_id_res = $assign_task_id->get_result();
+    while ($assign_task_id_row = $assign_task_id_res->fetch_assoc())
     {
-      // echo $model_username_arr[$j];
-      // echo $fixdate;
-      // echo "\n";
-
-      // echo "SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".$task_split_count.";";
-      $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".ceil($task_split_count).";");
-      $assign_task_id->bind_param('s', $model_process);
-      $assign_task_id->execute();
-      $assign_task_id_res = $assign_task_id->get_result();
-      while($assign_task_id_row = $assign_task_id_res->fetch_assoc())
-      {
-        // echo $assign_task_id_row['taskid']."\n";
-        $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
-        $update_task_wise->bind_param('ssssss', $model_username_arr[$j], $fixdate, $team_start_time, $get_time_est_row['estimate_time'], $end_time, $assign_task_id_row['taskid']);
-        $update_task_wise->execute();
-      }
+      // echo $assign_task_id_row['taskid']."\n";
+      $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE taskid = ?');
+      $update_task_wise->bind_param('ssssss', $model_username_arr[$j], $fixdate, $model_start_time, $get_time_est_row['estimate_time'], $end_time, $assign_task_id_row['taskid']);
+      $update_task_wise->execute();
     }
+  }
   echo 'model task assign loop complete';
 }
 
@@ -491,9 +491,9 @@ if (isset($_POST['type']) && $_POST['type'] == 'model_fetch')
   $get_process->execute();
   $get_process_res = $get_process->get_result();
   echo '<option value="" selected disabled>Select Process</option>';
-  while($get_process_row = $get_process_res->fetch_assoc())
+  while ($get_process_row = $get_process_res->fetch_assoc())
   {
-    echo '<option value="'.$get_process_row['process_name'].'">'.$get_process_row['process_name'].'</option>';
+    echo '<option value="' . $get_process_row['process_name'] . '">' . $get_process_row['process_name'] . '</option>';
     // $part_name[] = '<option value="'.$get_process_row['stageid'].'">'.$get_process_row['part_name'].'</option>';
   }
   //
@@ -525,9 +525,9 @@ if (isset($_POST['type']) && $_POST['type'] == 'get_parts')
   $get_parts->execute();
   $get_parts_res = $get_parts->get_result();
   echo '<option value="" selected disabled>Select Part Name</option>';
-  while($get_parts_row = $get_parts_res->fetch_assoc())
+  while ($get_parts_row = $get_parts_res->fetch_assoc())
   {
-    echo '<option value="'.$get_parts_row['stageid'].'">'.$get_parts_row['part_name'].'</option>';
+    echo '<option value="' . $get_parts_row['stageid'] . '">' . $get_parts_row['part_name'] . '</option>';
   }
 }
 
@@ -547,9 +547,9 @@ if (isset($_POST['type']) && $_POST['type'] == 'unit_time')
   $get_unit_time_res = $get_unit_time->get_result();
   $get_unit_time_row = $get_unit_time_res->fetch_assoc();
 
-  echo "<strong>Number of Tasks:".$get_task_count_row['task_count']."</strong><br>";
-  echo "<strong>Unit Time:".$get_unit_time_row['unit_time']."</strong><br>";
-  echo "<strong>Estimate time to completion :".$get_task_count_row['estimate_time']."</strong><br>";
+  echo "<strong>Number of Tasks:" . $get_task_count_row['task_count'] . "</strong><br>";
+  echo "<strong>Unit Time:" . $get_unit_time_row['unit_time'] . "</strong><br>";
+  echo "<strong>Estimate time to completion :" . $get_task_count_row['estimate_time'] . "</strong><br>";
 }
 
 if (isset($_POST['type']) && $_POST['type'] == 'process_users')
@@ -569,7 +569,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'process_users')
   $get_users_res = $get_users->get_result();
   //add only users assigned for shift
   echo '<option value="" selected disabled>Select Associate</option>';
-  while($get_users_row = $get_users_res->fetch_assoc())
+  while ($get_users_row = $get_users_res->fetch_assoc())
   {
     // $get_time = $conn->prepare('SELECT DISTINCT start_time, est_complete_time from task_id where user = ?');
     // $get_time->bind_param('s', $get_users_row['user_name']);
@@ -577,7 +577,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'process_users')
     // $get_time_res = $get_time->get_result;
     // $get_time_row = $get_time->fetch_assoc();
     //better this login; users occupied for that time should not display
-    echo '<option value="'.$get_users_row['user_name'].'">'.$get_users_row['fullname'].'</option>';
+    echo '<option value="' . $get_users_row['user_name'] . '">' . $get_users_row['fullname'] . '</option>';
   }
 }
 // -------process wise scripts - gen shift - end ------
@@ -598,9 +598,9 @@ if (isset($_POST['type']) && $_POST['type'] == 'work_parts')
   $get_parts->execute();
   $get_parts_res = $get_parts->get_result();
   echo '<option value="" selected disabled>Select Part Name</option>';
-  while($get_parts_row = $get_parts_res->fetch_assoc())
+  while ($get_parts_row = $get_parts_res->fetch_assoc())
   {
-    echo '<option value="'.$get_parts_row['stageid'].'">'.$get_parts_row['part_name'].'</option>';
+    echo '<option value="' . $get_parts_row['stageid'] . '">' . $get_parts_row['part_name'] . '</option>';
   }
 }
 
@@ -620,9 +620,9 @@ if (isset($_POST['type']) && $_POST['type'] == 'work_unit_time')
   $get_unit_time_res = $get_unit_time->get_result();
   $get_unit_time_row = $get_unit_time_res->fetch_assoc();
 
-  echo "<strong>Number of Tasks:".$get_task_count_row['task_count']."</strong><br>";
-  echo "<strong>Unit Time:".$get_unit_time_row['unit_time']."</strong><br>";
-  echo "<strong>Estimate time to completion :".$get_task_count_row['estimate_time']."</strong><br>";
+  echo "<strong>Number of Tasks:" . $get_task_count_row['task_count'] . "</strong><br>";
+  echo "<strong>Unit Time:" . $get_unit_time_row['unit_time'] . "</strong><br>";
+  echo "<strong>Estimate time to completion :" . $get_task_count_row['estimate_time'] . "</strong><br>";
 }
 // ------------workstation wise scripts - gen shift - end-------------
 
@@ -642,9 +642,9 @@ if (isset($_POST['type']) && $_POST['type'] == 'material_models')
   $material->execute();
   $material_res = $material->get_result();
   echo '<option value="" selected disabled>Select Model</option>';
-  while($material_row = $material_res->fetch_assoc())
+  while ($material_row = $material_res->fetch_assoc())
   {
-    echo '<option value="'.$material_row['model_name'].'">'.$material_row['model_name'].'</option>';
+    echo '<option value="' . $material_row['model_name'] . '">' . $material_row['model_name'] . '</option>';
   }
 }
 
@@ -663,9 +663,9 @@ if (isset($_POST['type']) && $_POST['type'] == 'material_process')
   $fetch_process->execute();
   $fetch_process_res = $fetch_process->get_result();
   echo '<option value="" selected disabled>Select Process</option>';
-  while($fetch_process_row = $fetch_process_res->fetch_assoc())
+  while ($fetch_process_row = $fetch_process_res->fetch_assoc())
   {
-    echo '<option value="'.$fetch_process_row['stageid'].'">'.$fetch_process_row['process_name'].'</option>';
+    echo '<option value="' . $fetch_process_row['stageid'] . '">' . $fetch_process_row['process_name'] . '</option>';
   }
 }
 
@@ -686,7 +686,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'material_users')
   $get_users_res = $get_users->get_result();
   //add only users assigned for shift
   echo '<option value="" selected disabled>Select Associate</option>';
-  while($get_users_row = $get_users_res->fetch_assoc())
+  while ($get_users_row = $get_users_res->fetch_assoc())
   {
     // $get_time = $conn->prepare('SELECT DISTINCT start_time, est_complete_time from task_id where user = ?');
     // $get_time->bind_param('s', $get_users_row['user_name']);
@@ -694,7 +694,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'material_users')
     // $get_time_res = $get_time->get_result;
     // $get_time_row = $get_time->fetch_assoc();
     //better this login; users occupied for that time should not display
-    echo '<option value="'.$get_users_row['user_name'].'">'.$get_users_row['fullname'].'</option>';
+    echo '<option value="' . $get_users_row['user_name'] . '">' . $get_users_row['fullname'] . '</option>';
   }
 }
 
@@ -714,9 +714,9 @@ if (isset($_POST['type']) && $_POST['type'] == 'material_unit_time')
   $get_unit_time_res = $get_unit_time->get_result();
   $get_unit_time_row = $get_unit_time_res->fetch_assoc();
 
-  echo "<strong>Number of Tasks:".$get_task_count_row['task_count']."</strong><br>";
-  echo "<strong>Unit Time:".$get_unit_time_row['unit_time']."</strong><br>";
-  echo "<strong>Estimate time to completion :".$get_task_count_row['estimate_time']."</strong><br>";
+  echo "<strong>Number of Tasks:" . $get_task_count_row['task_count'] . "</strong><br>";
+  echo "<strong>Unit Time:" . $get_unit_time_row['unit_time'] . "</strong><br>";
+  echo "<strong>Estimate time to completion :" . $get_task_count_row['estimate_time'] . "</strong><br>";
 }
 // -------------material wise scripts - gen shift - end-------------
 // --------------team wise scripts - general - start--------------
@@ -735,9 +735,9 @@ if (isset($_POST['type']) && $_POST['type'] == 'team_model')
   $get_team_members->execute();
   $get_team_members_res = $get_team_members->get_result();
   echo '<option value="" selected disabled>Select Model</option>';
-  while($get_team_members_row = $get_team_members_res->fetch_assoc())
+  while ($get_team_members_row = $get_team_members_res->fetch_assoc())
   {
-    echo '<option value="'.$get_team_members_row['model_name'].'">'.$get_team_members_row['model_name'].'</option>';
+    echo '<option value="' . $get_team_members_row['model_name'] . '">' . $get_team_members_row['model_name'] . '</option>';
   }
 }
 
@@ -756,9 +756,9 @@ if (isset($_POST['type']) && $_POST['type'] == 'team_process')
   $team_process->execute();
   $team_process_res = $team_process->get_result();
   echo '<option value="" selected disabled>Select Process</option>';
-  while($team_process_row = $team_process_res->fetch_assoc())
+  while ($team_process_row = $team_process_res->fetch_assoc())
   {
-    echo '<option value="'.$team_process_row['stageid'].'">'.$team_process_row['process_name'].'</option>';
+    echo '<option value="' . $team_process_row['stageid'] . '">' . $team_process_row['process_name'] . '</option>';
   }
 }
 
@@ -778,9 +778,9 @@ if (isset($_POST['type']) && $_POST['type'] == 'team_unit_time')
   $get_unit_time_res = $get_unit_time->get_result();
   $get_unit_time_row = $get_unit_time_res->fetch_assoc();
 
-  echo "<strong>Number of Tasks:".$get_task_count_row['task_count']."</strong><br>";
-  echo "<strong>Unit Time:".$get_unit_time_row['unit_time']."</strong><br>";
-  echo "<strong>Estimate time to completion :".$get_task_count_row['estimate_time']."</strong><br>";
+  echo "<strong>Number of Tasks:" . $get_task_count_row['task_count'] . "</strong><br>";
+  echo "<strong>Unit Time:" . $get_unit_time_row['unit_time'] . "</strong><br>";
+  echo "<strong>Estimate time to completion :" . $get_task_count_row['estimate_time'] . "</strong><br>";
 }
 
 if (isset($_POST['type']) && $_POST['type'] == 'team_username')
@@ -793,7 +793,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'team_username')
   $get_users_res = $get_users->get_result();
   //add only users assigned for shift
   echo '<option value="" selected disabled>Select Associate</option>';
-  while($get_users_row = $get_users_res->fetch_assoc())
+  while ($get_users_row = $get_users_res->fetch_assoc())
   {
     // $get_time = $conn->prepare('SELECT DISTINCT start_time, est_complete_time from task_id where user = ?');
     // $get_time->bind_param('s', $get_users_row['user_name']);
@@ -801,7 +801,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'team_username')
     // $get_time_res = $get_time->get_result;
     // $get_time_row = $get_time->fetch_assoc();
     //better this login; users occupied for that time should not display
-    echo '<option value="'.$get_users_row['user_name'].'">'.$get_users_row['fullname'].'</option>';
+    echo '<option value="' . $get_users_row['user_name'] . '">' . $get_users_row['fullname'] . '</option>';
   }
 }
 
@@ -817,36 +817,43 @@ if (isset($_POST['type']) && $_POST['type'] == 'models')
   $get_current_batch_row = $get_current_batch_res->fetch_assoc();
   $batch_no = $get_current_batch_row['batchno'];
 
-  $get_process = $conn->prepare("SELECT distinct process_name from task_id where batchno=? and model_name = ?");
+  $get_process = $conn->prepare("SELECT distinct stageid, process_name from task_id where batchno=? and model_name = ? and tdatefm is null");
   $get_process->bind_param('ss', $batch_no, $model_name);
   $get_process->execute();
   $get_process_res = $get_process->get_result();
   echo '<option value="" selected disabled>Select Process</option>';
-  while($get_process_row = $get_process_res->fetch_assoc())
+  while ($get_process_row = $get_process_res->fetch_assoc())
   {
-    echo '<option value="'.$get_process_row['process_name'].'">'.$get_process_row['process_name'].'</option>';
+    echo '<option value="' . $get_process_row['stageid'] . '">' . $get_process_row['process_name'] . '</option>';
     // $part_name[] = '<option value="'.$get_process_row['stageid'].'">'.$get_process_row['part_name'].'</option>';
   }
 }
 
 if (isset($_POST['type']) && $_POST['type'] == 'model_process')
 {
-  $model_process = $_POST['model_process'];
+  $model_name = $_POST['model_process'];
 
-  $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
-  $get_current_batch->execute();
-  $get_current_batch_res = $get_current_batch->get_result();
-  $get_current_batch_row = $get_current_batch_res->fetch_assoc();
-  $batch_no = $get_current_batch_row['batchno'];
+  $select_team = $conn->prepare("SELECT * FROM model where model_name = ?;");
+  $select_team->bind_param('s', $model_name);
+  $select_team->execute();
+  $select_team_res = $select_team->get_result();
+  $select_team_row = $select_team_res->fetch_assoc();
 
-  $team_process = $conn->prepare('SELECT DISTINCT stageid, process_name from task_id where batchno = ? and model_name = ? and tdatefm is null');
-  $team_process->bind_param('ss', $batch_no, $model_process);
-  $team_process->execute();
-  $team_process_res = $team_process->get_result();
-  echo '<option value="" selected disabled>Select Process</option>';
-  while($team_process_row = $team_process_res->fetch_assoc())
+  $get_users = $conn->prepare('SELECT * FROM user_detail where teamname = ?');
+  $get_users->bind_param('s', $select_team_row['teamname']);
+  $get_users->execute();
+  $get_users_res = $get_users->get_result();
+  //add only users assigned for shift
+  echo '<option value="" selected disabled>Select Associate</option>';
+  while ($get_users_row = $get_users_res->fetch_assoc())
   {
-    echo '<option value="'.$team_process_row['stageid'].'">'.$team_process_row['process_name'].'</option>';
+    // $get_time = $conn->prepare('SELECT DISTINCT start_time, est_complete_time from task_id where user = ?');
+    // $get_time->bind_param('s', $get_users_row['user_name']);
+    // $get_time->execute();
+    // $get_time_res = $get_time->get_result;
+    // $get_time_row = $get_time->fetch_assoc();
+    //better this login; users occupied for that time should not display
+    echo '<option value="' . $get_users_row['user_name'] . '">' . $get_users_row['fullname'] . '</option>';
   }
 }
 
@@ -866,9 +873,9 @@ if (isset($_POST['type']) && $_POST['type'] == 'model_unit_time')
   $get_unit_time_res = $get_unit_time->get_result();
   $get_unit_time_row = $get_unit_time_res->fetch_assoc();
 
-  echo "<strong>Number of Tasks:".$get_task_count_row['task_count']."</strong><br>";
-  echo "<strong>Unit Time:".$get_unit_time_row['unit_time']."</strong><br>";
-  echo "<strong>Estimate time to completion :".$get_task_count_row['estimate_time']."</strong><br>";
+  echo "<strong>Number of Tasks:" . $get_task_count_row['task_count'] . "</strong><br>";
+  echo "<strong>Unit Time:" . $get_unit_time_row['unit_time'] . "</strong><br>";
+  echo "<strong>Estimate time to completion :" . $get_task_count_row['estimate_time'] . "</strong><br>";
 }
 // ---------model wise scripts - general shift - end----------
 
@@ -892,38 +899,38 @@ if (isset($_POST['type']) && $_POST['type'] == 'shift_cards')
   $user = '';
   $model_name = '';
 
-if(isset($_POST['shift']))
-{
-  $get_shift = $conn->prepare("SELECT distinct date(shiftdate) as shiftdate, start_time, end_time from shift_user_plan where shiftdate = date(?) and shift_type = ?;");
-  $get_shift->bind_param('ss', $target_date, $_POST['shift']);
-  $get_shift->execute();
-  $get_shift_res = $get_shift->get_result();
-  $get_shift_row = $get_shift_res->fetch_assoc();
+  if (isset($_POST['shift']))
+  {
+    $get_shift = $conn->prepare("SELECT distinct date(shiftdate) as shiftdate, start_time, end_time from shift_user_plan where shiftdate = date(?) and shift_type = ?;");
+    $get_shift->bind_param('ss', $target_date, $_POST['shift']);
+    $get_shift->execute();
+    $get_shift_res = $get_shift->get_result();
+    $get_shift_row = $get_shift_res->fetch_assoc();
 
-  $temp_s_time = $get_shift_row['shiftdate']." ".$get_shift_row['start_time'];
-  $temp_e_time = $get_shift_row['shiftdate']." ".$get_shift_row['end_time'];
+    $temp_s_time = $get_shift_row['shiftdate'] . " " . $get_shift_row['start_time'];
+    $temp_e_time = $get_shift_row['shiftdate'] . " " . $get_shift_row['end_time'];
 
-  // echo $temp_s_time."\n";
-  // echo $temp_e_time."\n";
+    // echo $temp_s_time."\n";
+    // echo $temp_e_time."\n";
 
-  $startTime=strtotime($temp_s_time);
-  $endTime=strtotime($temp_e_time);
-  $intervel="120";
+    $startTime = strtotime($temp_s_time);
+    $endTime = strtotime($temp_e_time);
+    $intervel = "120";
 
-  $time=$startTime;
+    $time = $startTime;
 
-  ?><h5 class="text-center">Assigned Associates</h5>
-  <div class="card-deck">
-    <?php
-    while ($time < $endTime)
-    {
-      $s_time = date('H:i', $time);
-      $time = strtotime('+'.$intervel.' minutes', $time);
-      $e_time =  date('H:i', $time);
+?><h5 class="text-center">Assigned Associates</h5>
+    <div class="card-deck">
+      <?php
+      while ($time < $endTime)
+      {
+        $s_time = date('H:i', $time);
+        $time = strtotime('+' . $intervel . ' minutes', $time);
+        $e_time =  date('H:i', $time);
 
-      $tdate = date("Y-m-d", strtotime($get_shift_row['shiftdate']));
+        $tdate = date("Y-m-d", strtotime($get_shift_row['shiftdate']));
 
-      $get_assigned = $conn->prepare('SELECT DISTINCT
+        $get_assigned = $conn->prepare('SELECT DISTINCT
           t.stageid,
           t.process_name,
           t.workstation,
@@ -945,140 +952,140 @@ if(isset($_POST['shift']))
               (? <= t.start_time AND ? >= t.end_time) OR
               (? >= t.start_time AND ? <= t.end_time)
           );');
-      $get_assigned->bind_param('sssssss', $tdate, $s_time, $e_time, $s_time, $e_time, $s_time, $e_time);
-      $get_assigned->execute();
-      $get_assigned_res = $get_assigned->get_result();
+        $get_assigned->bind_param('sssssss', $tdate, $s_time, $e_time, $s_time, $e_time, $s_time, $e_time);
+        $get_assigned->execute();
+        $get_assigned_res = $get_assigned->get_result();
 
-      $gen_assign_header = '<div class="card">
+        $gen_assign_header = '<div class="card">
         <div class="card-body">
-          <h5 class="card-title font-weight-bold">Shift Time: '.$s_time." - ".$e_time.'</h5>';
+          <h5 class="card-title font-weight-bold">Shift Time: ' . $s_time . " - " . $e_time . '</h5>';
 
-          //init variable for concat
-          $process = '';
-          $workstation = '';
-          $material_name = '';
-          $user = '';
-          $model_name = '';
+        //init variable for concat
+        $process = '';
+        $workstation = '';
+        $material_name = '';
+        $user = '';
+        $model_name = '';
 
-          $process .= $gen_assign_header;
-          $workstation .= $gen_assign_header;
-          $material_name .= $gen_assign_header;
-          $user .= $gen_assign_header;
-          $model_name .= $gen_assign_header;
+        $process .= $gen_assign_header;
+        $workstation .= $gen_assign_header;
+        $material_name .= $gen_assign_header;
+        $user .= $gen_assign_header;
+        $model_name .= $gen_assign_header;
 
-          while($get_assigned_row = $get_assigned_res->fetch_assoc())
+        while ($get_assigned_row = $get_assigned_res->fetch_assoc())
+        {
+          if (!empty($get_assigned_row['process_name']))
           {
-            if (!empty($get_assigned_row['process_name']))
-            {
-              $process .= '<span class="badge badge-success text-wrap">'.$get_assigned_row['process_name'].': '.$get_assigned_row['start_time'].'-'.$get_assigned_row['end_time'].'</span>';
-            }
-            if (!empty($get_assigned_row['workstation']))
-            {
-              $workstation .= '<span class="badge badge-success text-wrap">'.$get_assigned_row['workstation'].': '.$get_assigned_row['start_time'].'-'.$get_assigned_row['end_time'].'</span>';
-            }
-            if (!empty($get_assigned_row['material_name']))
-            {
-              $material_name .= '<span class="badge badge-success text-wrap">'.$get_assigned_row['material_name'].': '.$get_assigned_row['start_time'].'-'.$get_assigned_row['end_time'].'</span>';
-            }
-            if (!empty($get_assigned_row['user']))
-            {
-              $user .= '<span class="badge badge-success text-wrap">'.$get_assigned_row['user'].': '.$get_assigned_row['start_time'].'-'.$get_assigned_row['end_time'].'</span>';
-            }
-            if (!empty($get_assigned_row['model_name']))
-            {
-              $model_name .= '<span class="badge badge-success text-wrap">'.$get_assigned_row['model_name'].': '.$get_assigned_row['start_time'].'-'.$get_assigned_row['end_time'].'</span>';
-            }
+            $process .= '<span class="badge badge-success text-wrap">' . $get_assigned_row['process_name'] . ': ' . $get_assigned_row['start_time'] . '-' . $get_assigned_row['end_time'] . '</span>';
           }
-          $gen_assign_footer = '</div></div>';
+          if (!empty($get_assigned_row['workstation']))
+          {
+            $workstation .= '<span class="badge badge-success text-wrap">' . $get_assigned_row['workstation'] . ': ' . $get_assigned_row['start_time'] . '-' . $get_assigned_row['end_time'] . '</span>';
+          }
+          if (!empty($get_assigned_row['material_name']))
+          {
+            $material_name .= '<span class="badge badge-success text-wrap">' . $get_assigned_row['material_name'] . ': ' . $get_assigned_row['start_time'] . '-' . $get_assigned_row['end_time'] . '</span>';
+          }
+          if (!empty($get_assigned_row['user']))
+          {
+            $user .= '<span class="badge badge-success text-wrap">' . $get_assigned_row['user'] . ': ' . $get_assigned_row['start_time'] . '-' . $get_assigned_row['end_time'] . '</span>';
+          }
+          if (!empty($get_assigned_row['model_name']))
+          {
+            $model_name .= '<span class="badge badge-success text-wrap">' . $get_assigned_row['model_name'] . ': ' . $get_assigned_row['start_time'] . '-' . $get_assigned_row['end_time'] . '</span>';
+          }
+        }
+        $gen_assign_footer = '</div></div>';
 
-          $process .= $gen_assign_footer;
-          $workstation .= $gen_assign_footer;
-          $material_name .= $gen_assign_footer;
-          $user .= $gen_assign_footer;
-          $model_name .= $gen_assign_footer;
+        $process .= $gen_assign_footer;
+        $workstation .= $gen_assign_footer;
+        $material_name .= $gen_assign_footer;
+        $user .= $gen_assign_footer;
+        $model_name .= $gen_assign_footer;
 
-          if ($_POST['card'] == 'process')
-          {
-            echo $process;
-          }
-          if ($_POST['card'] == 'workstation')
-          {
-            echo $workstation;
-          }
-          if ($_POST['card'] == 'material')
-          {
-            echo $material_name;
-          }
-          if ($_POST['card'] == 'team')
-          {
-            echo $user;
-          }
-          if ($_POST['card'] == 'model')
-          {
-            echo $model_name;
-          }
-    }
+        if ($_POST['card'] == 'process')
+        {
+          echo $process;
+        }
+        if ($_POST['card'] == 'workstation')
+        {
+          echo $workstation;
+        }
+        if ($_POST['card'] == 'material')
+        {
+          echo $material_name;
+        }
+        if ($_POST['card'] == 'team')
+        {
+          echo $user;
+        }
+        if ($_POST['card'] == 'model')
+        {
+          echo $model_name;
+        }
+      }
 
 
-    $startTime=strtotime($temp_s_time);
-    $endTime=strtotime($temp_e_time);
-    $intervel="120";
+      $startTime = strtotime($temp_s_time);
+      $endTime = strtotime($temp_e_time);
+      $intervel = "120";
 
-    $time=$startTime;
-    ?>
-  </div>
-  <h5 class="text-center">Unassigned Associates</h5>
-  <div class="card-deck">
-    <?php
-    while ($time < $endTime)
-    {
-      $s_time = date('H:i', $time);
-      $time = strtotime('+'.$intervel.' minutes', $time);
-      $e_time =  date('H:i', $time);
+      $time = $startTime;
+      ?>
+    </div>
+    <h5 class="text-center">Unassigned Associates</h5>
+    <div class="card-deck">
+      <?php
+      while ($time < $endTime)
+      {
+        $s_time = date('H:i', $time);
+        $time = strtotime('+' . $intervel . ' minutes', $time);
+        $e_time =  date('H:i', $time);
 
       ?><div class="card">
-        <div class="card-body">
-          <h5 class="card-title font-weight-bold">Shift Time: <?php echo $s_time." - ".$e_time; ?></h5>
-        </div>
-      </div><?php
+          <div class="card-body">
+            <h5 class="card-title font-weight-bold">Shift Time: <?php echo $s_time . " - " . $e_time; ?></h5>
+          </div>
+        </div><?php
 
-    }
-    ?>
-  </div><?php
-}
-else
-{
-  $get_shift = $conn->prepare("SELECT distinct date(shiftdate) as shiftdate, start_time, end_time from shift_user_plan where shiftdate = date(?);");
-  $get_shift->bind_param('s', $target_date);
-  $get_shift->execute();
-  $get_shift_res = $get_shift->get_result();
-  $get_shift_row = $get_shift_res->fetch_assoc();
+            }
+              ?>
+    </div><?php
+        }
+        else
+        {
+          $get_shift = $conn->prepare("SELECT distinct date(shiftdate) as shiftdate, start_time, end_time from shift_user_plan where shiftdate = date(?);");
+          $get_shift->bind_param('s', $target_date);
+          $get_shift->execute();
+          $get_shift_res = $get_shift->get_result();
+          $get_shift_row = $get_shift_res->fetch_assoc();
 
-  print_r($get_shift_row);
-  $temp_s_time = $get_shift_row['shiftdate']." ".$get_shift_row['start_time'];
-  $temp_e_time = $get_shift_row['shiftdate']." ".$get_shift_row['end_time'];
+          print_r($get_shift_row);
+          $temp_s_time = $get_shift_row['shiftdate'] . " " . $get_shift_row['start_time'];
+          $temp_e_time = $get_shift_row['shiftdate'] . " " . $get_shift_row['end_time'];
 
-  // echo $temp_s_time."\n";
-  // echo $temp_e_time."\n";
+          // echo $temp_s_time."\n";
+          // echo $temp_e_time."\n";
 
-  $startTime=strtotime($temp_s_time);
-  $endTime=strtotime($temp_e_time);
-  $intervel="120";
+          $startTime = strtotime($temp_s_time);
+          $endTime = strtotime($temp_e_time);
+          $intervel = "120";
 
-  $time=$startTime;
+          $time = $startTime;
 
-  ?><h5 class="text-center">Assigned Associates</h5>
-  <div class="card-deck">
-    <?php
-    while ($time < $endTime)
-    {
-      $s_time = date('H:i', $time);
-      $time = strtotime('+'.$intervel.' minutes', $time);
-      $e_time =  date('H:i', $time);
+          ?><h5 class="text-center">Assigned Associates</h5>
+    <div class="card-deck">
+      <?php
+          while ($time < $endTime)
+          {
+            $s_time = date('H:i', $time);
+            $time = strtotime('+' . $intervel . ' minutes', $time);
+            $e_time =  date('H:i', $time);
 
-      $tdate = date("Y-m-d", strtotime($get_shift_row['shiftdate']));
+            $tdate = date("Y-m-d", strtotime($get_shift_row['shiftdate']));
 
-      $get_assigned = $conn->prepare('SELECT DISTINCT
+            $get_assigned = $conn->prepare('SELECT DISTINCT
           t.stageid,
           t.process_name,
           t.workstation,
@@ -1100,112 +1107,211 @@ else
               (? <= t.start_time AND ? >= t.end_time) OR
               (? >= t.start_time AND ? <= t.end_time)
           );');
-      $get_assigned->bind_param('sssssss', $tdate, $s_time, $e_time, $s_time, $e_time, $s_time, $e_time);
-      $get_assigned->execute();
-      $get_assigned_res = $get_assigned->get_result();
+            $get_assigned->bind_param('sssssss', $tdate, $s_time, $e_time, $s_time, $e_time, $s_time, $e_time);
+            $get_assigned->execute();
+            $get_assigned_res = $get_assigned->get_result();
 
-      $gen_assign_header = '<div class="card">
+            $gen_assign_header = '<div class="card">
         <div class="card-body">
-          <h5 class="card-title font-weight-bold">Shift Time: '.$s_time." - ".$e_time.'</h5>';
+          <h5 class="card-title font-weight-bold">Shift Time: ' . $s_time . " - " . $e_time . '</h5>';
 
-          //init variable for concat
-          $process = '';
-          $workstation = '';
-          $material_name = '';
-          $user = '';
-          $model_name = '';
+            //init variable for concat
+            $process = '';
+            $workstation = '';
+            $material_name = '';
+            $user = '';
+            $model_name = '';
 
-          $process .= $gen_assign_header;
-          $workstation .= $gen_assign_header;
-          $material_name .= $gen_assign_header;
-          $user .= $gen_assign_header;
-          $model_name .= $gen_assign_header;
+            $process .= $gen_assign_header;
+            $workstation .= $gen_assign_header;
+            $material_name .= $gen_assign_header;
+            $user .= $gen_assign_header;
+            $model_name .= $gen_assign_header;
 
-          while($get_assigned_row = $get_assigned_res->fetch_assoc())
-          {
-            if (!empty($get_assigned_row['process_name']))
+            while ($get_assigned_row = $get_assigned_res->fetch_assoc())
             {
-              $process .= '<span class="badge badge-success text-wrap">'.$get_assigned_row['process_name'].': '.$get_assigned_row['start_time'].'-'.$get_assigned_row['end_time'].'</span>';
+              if (!empty($get_assigned_row['process_name']))
+              {
+                $process .= '<span class="badge badge-success text-wrap">' . $get_assigned_row['process_name'] . ': ' . $get_assigned_row['start_time'] . '-' . $get_assigned_row['end_time'] . '</span>';
+              }
+              if (!empty($get_assigned_row['workstation']))
+              {
+                $workstation .= '<span class="badge badge-success text-wrap">' . $get_assigned_row['workstation'] . ': ' . $get_assigned_row['start_time'] . '-' . $get_assigned_row['end_time'] . '</span>';
+              }
+              if (!empty($get_assigned_row['material_name']))
+              {
+                $material_name .= '<span class="badge badge-success text-wrap">' . $get_assigned_row['material_name'] . ': ' . $get_assigned_row['start_time'] . '-' . $get_assigned_row['end_time'] . '</span>';
+              }
+              if (!empty($get_assigned_row['user']))
+              {
+                $user .= '<span class="badge badge-success text-wrap">' . $get_assigned_row['user'] . ': ' . $get_assigned_row['start_time'] . '-' . $get_assigned_row['end_time'] . '</span>';
+              }
+              if (!empty($get_assigned_row['model_name']))
+              {
+                $model_name .= '<span class="badge badge-success text-wrap">' . $get_assigned_row['model_name'] . ': ' . $get_assigned_row['start_time'] . '-' . $get_assigned_row['end_time'] . '</span>';
+              }
             }
-            if (!empty($get_assigned_row['workstation']))
+            $gen_assign_footer = '</div></div>';
+
+            $process .= $gen_assign_footer;
+            $workstation .= $gen_assign_footer;
+            $material_name .= $gen_assign_footer;
+            $user .= $gen_assign_footer;
+            $model_name .= $gen_assign_footer;
+
+            if ($_POST['card'] == 'process')
             {
-              $workstation .= '<span class="badge badge-success text-wrap">'.$get_assigned_row['workstation'].': '.$get_assigned_row['start_time'].'-'.$get_assigned_row['end_time'].'</span>';
+              echo $process;
             }
-            if (!empty($get_assigned_row['material_name']))
+            if ($_POST['card'] == 'workstation')
             {
-              $material_name .= '<span class="badge badge-success text-wrap">'.$get_assigned_row['material_name'].': '.$get_assigned_row['start_time'].'-'.$get_assigned_row['end_time'].'</span>';
+              echo $workstation;
             }
-            if (!empty($get_assigned_row['user']))
+            if ($_POST['card'] == 'material')
             {
-              $user .= '<span class="badge badge-success text-wrap">'.$get_assigned_row['user'].': '.$get_assigned_row['start_time'].'-'.$get_assigned_row['end_time'].'</span>';
+              echo $material_name;
             }
-            if (!empty($get_assigned_row['model_name']))
+            if ($_POST['card'] == 'team')
             {
-              $model_name .= '<span class="badge badge-success text-wrap">'.$get_assigned_row['model_name'].': '.$get_assigned_row['start_time'].'-'.$get_assigned_row['end_time'].'</span>';
+              echo $user;
+            }
+            if ($_POST['card'] == 'model')
+            {
+              echo $model_name;
             }
           }
-          $gen_assign_footer = '</div></div>';
-
-          $process .= $gen_assign_footer;
-          $workstation .= $gen_assign_footer;
-          $material_name .= $gen_assign_footer;
-          $user .= $gen_assign_footer;
-          $model_name .= $gen_assign_footer;
-
-          if ($_POST['card'] == 'process')
-          {
-            echo $process;
-          }
-          if ($_POST['card'] == 'workstation')
-          {
-            echo $workstation;
-          }
-          if ($_POST['card'] == 'material')
-          {
-            echo $material_name;
-          }
-          if ($_POST['card'] == 'team')
-          {
-            echo $user;
-          }
-          if ($_POST['card'] == 'model')
-          {
-            echo $model_name;
-          }
-    }
 
 
-    $startTime=strtotime($temp_s_time);
-    $endTime=strtotime($temp_e_time);
-    $intervel="120";
+          $startTime = strtotime($temp_s_time);
+          $endTime = strtotime($temp_e_time);
+          $intervel = "120";
 
-    $time=$startTime;
-    ?>
-  </div>
-  <h5 class="text-center">Unassigned Associates</h5>
-  <div class="card-deck">
-    <?php
-    while ($time < $endTime)
-    {
-      $s_time = date('H:i', $time);
-      $time = strtotime('+'.$intervel.' minutes', $time);
-      $e_time =  date('H:i', $time);
+          $time = $startTime;
+      ?>
+    </div>
+    <h5 class="text-center">Unassigned Associates</h5>
+    <div class="card-deck">
+      <?php
+          while ($time < $endTime)
+          {
+            $s_time = date('H:i', $time);
+            $time = strtotime('+' . $intervel . ' minutes', $time);
+            $e_time =  date('H:i', $time);
 
       ?><div class="card">
-        <div class="card-body">
-          <h5 class="card-title font-weight-bold">Shift Time: <?php echo $s_time." - ".$e_time; ?></h5>
-        </div>
-      </div><?php
+          <div class="card-body">
+            <h5 class="card-title font-weight-bold">Shift Time: <?php echo $s_time . " - " . $e_time; ?></h5>
+          </div>
+        </div><?php
 
-    }
-    ?>
-  </div><?php
-
-
-}
+            }
+              ?>
+    </div><?php
 
 
+        }
+      }
+      // -------------process shift card - general - end-------------
+      // ----------associate guage data start-----------
+      if (isset($_POST['type']) && $_POST['type'] == 'associate_gauge')
+      {
+        //get all Associates
+        //store sum of est_complete_time for each associate; sum array and then divide by 8
 
-}
-// -------------process shift card - general - end-------------
-?>
+        $fixdate = $_POST['fixdate'];
+
+        $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
+        $get_current_batch->execute();
+        $get_current_batch_res = $get_current_batch->get_result();
+        $get_current_batch_row = $get_current_batch_res->fetch_assoc();
+
+        $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+        $select_users->execute();
+        $select_users_res = $select_users->get_result();
+        while ($select_users_row = $select_users_res->fetch_assoc())
+        {
+          $get_sum_time = $conn->prepare('SELECT SEC_TO_TIME(AVG(TIME_TO_SEC(est_complete_time))) AS est_complete_time from task_id WHERE user = ? and batchno = ? and est_complete_time is not null and date(tdatefm) = ?');
+          $get_sum_time->bind_param('sss', $select_users_row['user_name'], $get_current_batch_row['batchno'], $fixdate);
+          $get_sum_time->execute();
+          $get_sum_time_res = $get_sum_time->get_result();
+          $get_sum_time_row = $get_sum_time_res->fetch_assoc();
+
+          if (!empty($get_sum_time_row['est_complete_time']))
+          {
+            $times[] = $get_sum_time_row['est_complete_time'];
+          }
+        }
+
+        // $times = ['02:30:00', '03:15:00', '01:45:00', '02:00:00'];
+        // print_r($times);
+        // Calculate the total seconds
+        $totalSeconds = 0;
+        foreach ($times as $time)
+        {
+          list($hours, $minutes, $seconds) = explode(':', $time);
+          $totalSeconds += $hours * 3600 + $minutes * 60 + $seconds;
+        }
+
+        // Calculate the total hours
+        $totalHours = $totalSeconds / 3600;
+
+        // Divide by 8 hours to get the integer value
+        $integerValue = (int)($totalHours / 8);
+
+        // Output the result
+        // echo "Total Hours: $totalHours\n";
+        // echo "Integer Value (Total Hours / 8): $integerValue\n";
+        echo $integerValue;
+      }
+      // ----------associate guage data end-----------
+      // ---------workstation guage chart start----------
+      if (isset($_POST['type']) && $_POST['type'] == 'work_gauge')
+      {
+        $fixdate = $_POST['fixdate'];
+
+        $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
+        $get_current_batch->execute();
+        $get_current_batch_res = $get_current_batch->get_result();
+        $get_current_batch_row = $get_current_batch_res->fetch_assoc();
+
+        $select_workstation = $conn->prepare("SELECT * FROM workstation where machine = 'yes';");
+        $select_workstation->execute();
+        $select_workstation_res = $select_workstation->get_result();
+        while ($select_workstation_row = $select_workstation_res->fetch_assoc())
+        {
+          $get_sum_time = $conn->prepare('SELECT SEC_TO_TIME(AVG(TIME_TO_SEC(est_complete_time))) AS est_complete_time from task_id WHERE workstation = ? and batchno = ? and est_complete_time is not null and date(tdatefm) = ?');
+          $get_sum_time->bind_param('sss', $select_workstation_row['name'], $get_current_batch_row['batchno'], $fixdate);
+          $get_sum_time->execute();
+          $get_sum_time_res = $get_sum_time->get_result();
+          $get_sum_time_row = $get_sum_time_res->fetch_assoc();
+
+          if (!empty($get_sum_time_row['est_complete_time']))
+          {
+            $times[] = $get_sum_time_row['est_complete_time'];
+          }
+        }
+
+
+        // $times = ['02:30:00', '03:15:00', '01:45:00', '02:00:00'];
+        // print_r($times);
+        // Calculate the total seconds
+        $totalSeconds = 0;
+        foreach ($times as $time)
+        {
+          list($hours, $minutes, $seconds) = explode(':', $time);
+          $totalSeconds += $hours * 3600 + $minutes * 60 + $seconds;
+        }
+
+        // Calculate the total hours
+        $totalHours = $totalSeconds / 3600;
+
+        // Divide by 8 hours to get the integer value
+        $integerValue = (int)($totalHours / 8);
+
+        // Output the result
+        // echo "Total Hours: $totalHours\n";
+        // echo "Integer Value (Total Hours / 8): $integerValue\n";
+        echo $integerValue;
+      }
+      // ---------workstation guage chart end----------
+          ?>
