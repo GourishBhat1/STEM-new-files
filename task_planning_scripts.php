@@ -593,7 +593,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'work_parts')
   $get_current_batch_row = $get_current_batch_res->fetch_assoc();
   $batch_no = $get_current_batch_row['batchno'];
 
-  $get_parts = $conn->prepare("SELECT distinct stageid, part_name from task_id where batchno=? and model_name = ? and tdatefm is null");
+  $get_parts = $conn->prepare("SELECT distinct stageid, part_name, process_name from task_id where batchno=? and model_name = ? and tdatefm is null and process_name LIKE '%laser%' ");
   $get_parts->bind_param('ss', $batch_no, $workprocesses);
   $get_parts->execute();
   $get_parts_res = $get_parts->get_result();

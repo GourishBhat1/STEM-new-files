@@ -596,7 +596,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'work_parts')
     $get_current_batch_row = $get_current_batch_res->fetch_assoc();
     $batch_no = $get_current_batch_row['batchno'];
 
-    $get_parts = $conn->prepare("SELECT distinct stageid, part_name from task_id where batchno=? and model_name = ? and tdatefm is not null and date(plandtfm) = ?");
+    $get_parts = $conn->prepare("SELECT distinct stageid, part_name from task_id where batchno=? and model_name = ? and tdatefm is not null and date(plandtfm) = ? and process_name LIKE '%laser%'");
     $get_parts->bind_param('sss', $batch_no, $workprocesses, $fixdate);
     $get_parts->execute();
     $get_parts_res = $get_parts->get_result();
@@ -920,9 +920,11 @@ if (isset($_POST['type']) && $_POST['type'] == 'user_fetch')
     $select_users->execute();
     $select_users_res = $select_users->get_result();
 
+    echo '<option selected disabled>Select Associates</option>';
+
     while ($select_users_row = $select_users_res->fetch_assoc())
     {
-        echo $select_users_row['user_name'];
+        // echo $select_users_row['user_name'];
         $get_sum_time = $conn->prepare('SELECT SEC_TO_TIME(AVG(TIME_TO_SEC(est_complete_time))) AS est_complete_time from task_id WHERE user = ? and batchno = ? and est_complete_time is not null and date(plandtfm) = ?');
         $get_sum_time->bind_param('sss', $select_users_row['user_name'], $get_current_batch_row['batchno'], $fixdate);
         $get_sum_time->execute();
@@ -949,8 +951,8 @@ if (isset($_POST['type']) && $_POST['type'] == 'user_fetch')
             $integerValue = (int)($totalHours / 8);
 
             // Output the result
-            echo "Total Hours: $totalHours\n";
-            echo "Integer Value (Total Hours / 8): $integerValue\n";
+            // echo "Total Hours: $totalHours\n";
+            // echo "Integer Value (Total Hours / 8): $integerValue\n";
             if ($integerValue < 8)
             {
                 echo '<option value="' . $select_users_row['user_name'] . '">' . $select_users_row['fullname'] . '/ Total Hours: ' . number_format((float)$totalHours, 2, '.', '') . '</option>';
@@ -959,6 +961,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'user_fetch')
         }
         else
         {
+            echo '<option value="' . $select_users_row['user_name'] . '">' . $select_users_row['fullname'] . '/ Total Hours: Unassigned</option>';
         }
     }
 }

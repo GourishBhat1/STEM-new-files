@@ -272,6 +272,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#tabs-5" role="tab">Model Planner</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#tabs-6" role="tab">User Planner</a>
+                    </li>
                 </ul><!-- Tab panes -->
 
 
@@ -626,6 +629,86 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
                         </div>
                     </div>
+
+
+
+
+
+
+
+                    <div class="tab-pane" id="tabs-6" role="tabpanel">
+                        <div class="row">
+                            <div class="col-sm col-md-6 col-lg-6 card card-primary card-outline">
+                                <header>
+                                    <center>Associate Wise Tab</center>
+                                </header>
+                                <hr>
+                                <label for="">Associates Having Less Than 8 Hours Work</label>
+                                <select class="form-control" id="user" name="user">
+
+                                </select>
+
+                                <!-- GENERAL SHIFT -->
+                                <label for="">Select User Models</label>
+                                <select class="form-control" id="user_models">
+                                    <option selected disabled>Select Models</option>
+                                </select>
+
+                                <!-- GENERAL SHIFT -->
+                                <label for="">Select User Process</label>
+                                <select class="form-control" id="user_process">
+                                    <option selected disabled>Select Process</option>
+                                </select>
+
+                                <div id="unit_time_details">
+
+                                </div>
+
+
+                                <!-- GENERAL SHIFT -->
+                                <label for="">Select User Parts</label>
+                                <select class="form-control" id="model_processes">
+                                    <option selected disabled>Select Parts</option>
+                                </select>
+
+
+
+                            </div>
+                            <div class="col-sm col-md-6 col-lg-6 card card-danger card-outline">
+                                <header>
+                                    <center>Displaying Time</center>
+                                </header>
+                                <hr>
+                                <label for="">Start Time</label>
+                                <input type="time" class="form-control" id="process_start_time">
+
+                                <label for="">Unit Time</label>
+                                <div id="user_unit_time"></div>
+
+
+
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-primary" id="process_assign">Assign</button>
+                            </div>
+
+                        </div>
+                        <div id="process_gen_card" class="shift_assign_unassign">
+
+                        </div>
+
+                        <!-- GENERAL -->
+                    </div>
+
+
+
+
+
+
+
+
+
+
                 </div>
             </div>
             <hr>
@@ -3339,6 +3422,57 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
             });
             // ---------model wise shift 2 end---------
+
+
+
+            // ----------------------user wise general start----------------------
+
+
+            // GENERAL
+            // select associates
+
+            // in the below code, in "data: data", left side data is ajax syntax & right side data is the value in the data variable
+            $(document).ready(function() {
+                var fixdate = $('#fixdate').val();
+
+                var data = "fixdate=" + fixdate + "&type=user_fetch";
+                console.log(data);
+                $.ajax({
+                    type: "POST",
+                    url: "task_assign_today_pm_scripts.php",
+                    data: data,
+                    success: function(res) {
+                        console.log(res);
+                        $('#user').html(res);
+                    }
+                });
+            });
+
+
+
+
+
+
+            // GENERAL SHIFT
+            $('#user_models').on('change', function() {
+                var fixdate = $('#fixdate').val();
+                var user_models = $('#user_models').val();
+
+                var data = "user_models=" + user_models + "&fixdate=" + fixdate + "&type=user_model";
+                console.log(data);
+                $.ajax({
+                    type: "POST",
+                    url: "task_assign_today_pm_scripts.php",
+                    data: data,
+                    success: function(res) {
+                        console.log(res);
+                        $('#team_process').html(res);
+                    }
+                });
+            });
+
+
+            // ----------------------user wise general end----------------------
         </script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script>
