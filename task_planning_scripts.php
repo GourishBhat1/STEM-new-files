@@ -267,20 +267,20 @@ if (isset($_POST['type']) && $_POST['type'] == 'workstation')
   $get_user_res = $get_user->get_result();
   $get_user_row = $get_user_res->fetch_assoc();
 
-  $get_time_est = $conn->prepare("SELECT SEC_TO_TIME( SUM( TIME_TO_SEC( unit_time ) ) ) AS estimate_time from task_id where stageid = ?");
+  $get_time_est = $conn->prepare("SELECT distinct unit_time from task_id where sheettask_id = ?");
   $get_time_est->bind_param('s', $workprocesses);
   $get_time_est->execute();
   $get_time_est_res = $get_time_est->get_result();
   $get_time_est_row = $get_time_est_res->fetch_assoc();
 
   $time = $workstation_start_time;
-  $time2 = $get_time_est_row['estimate_time'];
+  $time2 = $get_time_est_row['unit_time'];
 
   $secs = strtotime($time2) - strtotime("00:00:00");
   $end_time = date("H:i:s", strtotime($time) + $secs);
 
-  $update_workstation_task = $conn->prepare('UPDATE task_id SET workstation = ?,user = ?,tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE stageid = ?');
-  $update_workstation_task->bind_param('sssssss', $workstation, $get_user_row['username'], $fixdate, $workstation_start_time, $get_time_est_row['estimate_time'], $end_time, $workprocesses);
+  $update_workstation_task = $conn->prepare('UPDATE task_id SET workstation = ?,user = ?,tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE sheettask_id = ?');
+  $update_workstation_task->bind_param('sssssss', $workstation, $get_user_row['username'], $fixdate, $workstation_start_time, $get_time_est_row['unit_time'], $end_time, $workprocesses);
   $update_workstation_task->execute();
 }
 
@@ -593,36 +593,40 @@ if (isset($_POST['type']) && $_POST['type'] == 'work_parts')
   $get_current_batch_row = $get_current_batch_res->fetch_assoc();
   $batch_no = $get_current_batch_row['batchno'];
 
-  $get_parts = $conn->prepare("SELECT distinct stageid, part_name, process_name from task_id where batchno=? and model_name = ? and tdatefm is null and process_name LIKE '%laser%' ");
+
+  // SELECT DISTINCT sheettask_id FROM `task_id` where comb_grpid='test-roh-A32-laser_Combination 1' and process_name='laser cutting';
+
+
+  $get_parts = $conn->prepare("SELECT distinct sheettask_id, part_name from task_id where batchno=? and comb_grpid = ? and tdatefm is null and process_name='laser cutting'");
   $get_parts->bind_param('ss', $batch_no, $workprocesses);
   $get_parts->execute();
   $get_parts_res = $get_parts->get_result();
   echo '<option value="" selected disabled>Select Part Name</option>';
   while ($get_parts_row = $get_parts_res->fetch_assoc())
   {
-    echo '<option value="' . $get_parts_row['stageid'] . '">' . $get_parts_row['part_name'] . '</option>';
+    echo '<option value="' . $get_parts_row['sheettask_id'] . '">' . $get_parts_row['part_name'] . '</option>';
   }
 }
 
 if (isset($_POST['type']) && $_POST['type'] == 'work_unit_time')
 {
-  $stageid = $_POST['work_parts'];
+  $sheetid = $_POST['work_parts'];
 
-  $get_task_count = $conn->prepare("SELECT count(taskid) as task_count, SEC_TO_TIME( SUM( TIME_TO_SEC( unit_time ) ) ) AS estimate_time from task_id where stageid = ?");
-  $get_task_count->bind_param('s', $stageid);
+  $get_task_count = $conn->prepare("SELECT count(taskid) as task_count from task_id where sheettask_id = ?");
+  $get_task_count->bind_param('s', $sheetid);
   $get_task_count->execute();
   $get_task_count_res = $get_task_count->get_result();
   $get_task_count_row = $get_task_count_res->fetch_assoc();
 
-  $get_unit_time = $conn->prepare('SELECT DISTINCT unit_time from task_id WHERE stageid = ?');
-  $get_unit_time->bind_param('s', $stageid);
+  $get_unit_time = $conn->prepare('SELECT DISTINCT unit_time from task_id WHERE sheettask_id = ?');
+  $get_unit_time->bind_param('s', $sheetid);
   $get_unit_time->execute();
   $get_unit_time_res = $get_unit_time->get_result();
   $get_unit_time_row = $get_unit_time_res->fetch_assoc();
 
   echo "<strong>Number of Tasks:" . $get_task_count_row['task_count'] . "</strong><br>";
   echo "<strong>Unit Time:" . $get_unit_time_row['unit_time'] . "</strong><br>";
-  echo "<strong>Estimate time to completion :" . $get_task_count_row['estimate_time'] . "</strong><br>";
+  echo "<strong>Estimate time to completion :" . $get_unit_time_row['unit_time'] . "</strong><br>";
 }
 // ------------workstation wise scripts - gen shift - end-------------
 
