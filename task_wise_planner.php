@@ -859,7 +859,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                   <option selected disabled>Select Process</option>
                   <?php
                   //assigned task to be removed from stack
-                  $select_workprocess = $conn->prepare("SELECT distinct model_name from task_id where batchno=?;");
+                  $select_workprocess = $conn->prepare("SELECT distinct comb_grpid, combination from task_id where batchno=?;");
                   $select_workprocess->bind_param('s', $batchno);
                   $select_workprocess->execute();
                   $select_workprocess_res = $select_workprocess->get_result();
@@ -867,7 +867,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                   {
                     // $process[] = $select_process_row['process_name'];
                   ?>
-                    <option value="<?php echo $select_workprocess_row['model_name']; ?>"><?php echo $select_workprocess_row['model_name']; ?></option>
+                    <option value="<?php echo $select_workprocess_row['comb_grpid']; ?>"><?php echo $select_workprocess_row['combination']; ?></option>
                   <?php
                   }
                   ?>
@@ -1235,7 +1235,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                   <option selected disabled>Select Process</option>
                   <?php
                   //assigned task to be removed from stack
-                  $select_workprocess = $conn->prepare("SELECT distinct model_name from task_id where batchno=?;");
+                  $select_workprocess = $conn->prepare("SELECT distinct comb_grpid, combination from task_id where batchno=?;");
                   $select_workprocess->bind_param('s', $batchno);
                   $select_workprocess->execute();
                   $select_workprocess_res = $select_workprocess->get_result();
@@ -1243,7 +1243,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                   {
                     // $process[] = $select_process_row['process_name'];
                   ?>
-                    <option value="<?php echo $select_workprocess_row['model_name']; ?>"><?php echo $select_workprocess_row['model_name']; ?></option>
+                    <option value="<?php echo $select_workprocess_row['comb_grpid']; ?>"><?php echo $select_workprocess_row['combination']; ?></option>
                   <?php
                   }
                   ?>
