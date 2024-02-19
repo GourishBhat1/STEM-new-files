@@ -64,6 +64,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
               </select>
             </div>
           </div>
+          <div class="text-center font-weight-bold">
+            <p>Total Head Count: <?php echo $get_user_count_row['user_count']; ?> Associates</p>
+          </div>
           <div class="form-row form-inline" id="gen_shift_time">
             <div class="col">
               <label for="">Shift start time</label>
@@ -481,10 +484,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <hr>
                 <label for="">Process</label>
                 <select class="form-control" id="workprocesses">
-                  <option selected disabled>Select Process</option>
+                  <option selected disabled>Select Combination</option>
                   <?php
                   //assigned task to be removed from stack
-                  $select_workprocess = $conn->prepare("SELECT distinct comb_grpid, combination from task_id where batchno=?;");
+                  $select_workprocess = $conn->prepare("SELECT distinct comb_grpid, combination from task_id where batchno=? and process_name='laser cutting';");//only laser tasks are being output here. after workstation to combination linking table is done, has to be changed to take that data
                   $select_workprocess->bind_param('s', $batchno);
                   $select_workprocess->execute();
                   $select_workprocess_res = $select_workprocess->get_result();
@@ -856,10 +859,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <hr>
                 <label for="">Process</label>
                 <select class="form-control" id="workprocesses1">
-                  <option selected disabled>Select Process</option>
+                  <option selected disabled>Select Combination</option>
                   <?php
                   //assigned task to be removed from stack
-                  $select_workprocess = $conn->prepare("SELECT distinct comb_grpid, combination from task_id where batchno=?;");
+                  $select_workprocess = $conn->prepare("SELECT distinct comb_grpid, combination from task_id where batchno=? and process_name='laser cutting';");
                   $select_workprocess->bind_param('s', $batchno);
                   $select_workprocess->execute();
                   $select_workprocess_res = $select_workprocess->get_result();
@@ -1232,10 +1235,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <hr>
                 <label for="">Process</label>
                 <select class="form-control" id="workprocesses2">
-                  <option selected disabled>Select Process</option>
+                  <option selected disabled>Select Combination</option>
                   <?php
                   //assigned task to be removed from stack
-                  $select_workprocess = $conn->prepare("SELECT distinct comb_grpid, combination from task_id where batchno=?;");
+                  $select_workprocess = $conn->prepare("SELECT distinct comb_grpid, combination from task_id where batchno=? and process_name='laser cutting';");
                   $select_workprocess->bind_param('s', $batchno);
                   $select_workprocess->execute();
                   $select_workprocess_res = $select_workprocess->get_result();
