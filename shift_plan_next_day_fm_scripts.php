@@ -215,3 +215,19 @@ if (isset($_POST['type']) && $_POST['type'] == "machine_assign")
     $update_machine->execute();
     $conn->error;
 }
+
+//machine assign refresh
+if (isset($_POST['type']) && $_POST['type'] == "machine_assign_refresh")
+{
+    $select_workstation = $conn->prepare("SELECT * FROM workstation where machine = 'yes';");
+    $select_workstation->execute();
+    $select_workstation_res = $select_workstation->get_result();
+    while ($select_workstation_row = $select_workstation_res->fetch_assoc())
+    {
+        // $barcode[] = $select_users_row['barcode'];
+        // $username[] = $select_users_row['fullname'];
+
+
+        echo '<option value="' .  $select_workstation_row['name'] . '">' . $select_workstation_row['name'] . ' / ' . $select_workstation_row['username'] . '</option>';
+    }
+}

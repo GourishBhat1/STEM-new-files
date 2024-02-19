@@ -527,7 +527,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         // console.log(res);
@@ -635,11 +635,15 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             // ---------machine assign start--------
 
 
+            // encoding variable in js
             $('#machine_assign').on('click', function() {
                 var machin_assoc = $('#machin_assoc').val();
                 var machine_workstation = $('#machine_workstation').val();
 
-                var data = "machin_assoc=" + machin_assoc + "&machine_workstation=" + machine_workstation + "&type=machine_assign";
+                var machine_workstation_encoded = encodeURIComponent(machine_workstation);
+                console.log(machine_workstation_encoded);
+
+                var data = "machin_assoc=" + machin_assoc + "&machine_workstation=" + machine_workstation_encoded + "&type=machine_assign";
                 console.log(data);
                 $.ajax({
                     type: "POST",
@@ -647,6 +651,23 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     data: data,
                     success: function(res) {
                         console.log(res);
+
+
+                        // var fixdate = $('#fixdate').val();
+                        var data1 = "type=machine_assign_refresh";
+                        console.log(data1);
+                        $.ajax({
+                            type: "POST",
+                            url: "shift_plan_next_day_fm_scripts.php",
+                            data: data1,
+                            success: function(res1) {
+                                console.log(res1);
+                                $('#machine_workstation').html(res1);
+                            }
+                        });
+
+
+
                     }
                 });
 
@@ -749,7 +770,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "shift_plan_next_day_fm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -778,7 +799,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -796,7 +817,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         console.log(data1);
                         $.ajax({
                             type: "POST",
-                            url: "task_planning_scripts.php",
+                            url: "shift_plan_next_day_fm_scripts.php",
                             data: data1,
                             success: function(res1) {
                                 console.log(res1);
@@ -823,7 +844,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -840,7 +861,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -856,7 +877,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 var data = "model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_users";
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -883,7 +904,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -903,7 +924,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -936,7 +957,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -953,7 +974,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -969,7 +990,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 var data = "model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_users";
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -996,7 +1017,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1016,7 +1037,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1049,7 +1070,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1066,7 +1087,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1082,7 +1103,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 var data = "model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_users";
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1109,7 +1130,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1128,7 +1149,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1144,7 +1165,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1168,7 +1189,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1190,7 +1211,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1206,7 +1227,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1230,7 +1251,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1252,7 +1273,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1268,7 +1289,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1292,7 +1313,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1314,7 +1335,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1335,7 +1356,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1352,7 +1373,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1368,7 +1389,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1393,7 +1414,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1420,7 +1441,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1441,7 +1462,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1458,7 +1479,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1474,7 +1495,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1499,7 +1520,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1526,7 +1547,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1547,7 +1568,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1564,7 +1585,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1580,7 +1601,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1605,7 +1626,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1639,7 +1660,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1655,7 +1676,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1671,7 +1692,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1688,7 +1709,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1713,7 +1734,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1750,7 +1771,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1766,7 +1787,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1782,7 +1803,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1799,7 +1820,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1824,7 +1845,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1861,7 +1882,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1877,7 +1898,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1893,7 +1914,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     dateType: 'JSON',
                     data: data,
                     success: function(res) {
@@ -1910,7 +1931,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1935,7 +1956,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1965,7 +1986,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1981,7 +2002,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -1997,7 +2018,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2026,7 +2047,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2051,7 +2072,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2067,7 +2088,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2094,7 +2115,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2119,7 +2140,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2135,7 +2156,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);
@@ -2162,7 +2183,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 console.log(data);
                 $.ajax({
                     type: "POST",
-                    url: "task_planning_scripts.php",
+                    url: "shift_plan_next_day_fm_scripts.php",
                     data: data,
                     success: function(res) {
                         console.log(res);

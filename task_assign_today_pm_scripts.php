@@ -195,6 +195,22 @@ if (isset($_POST['type']) && $_POST['type'] == "machine_assign")
     $conn->error;
 }
 
+//machine assign refresh
+if (isset($_POST['type']) && $_POST['type'] == "machine_assign_refresh")
+{
+    $select_workstation = $conn->prepare("SELECT * FROM workstation where machine = 'yes';");
+    $select_workstation->execute();
+    $select_workstation_res = $select_workstation->get_result();
+    while ($select_workstation_row = $select_workstation_res->fetch_assoc())
+    {
+        // $barcode[] = $select_users_row['barcode'];
+        // $username[] = $select_users_row['fullname'];
+
+
+        echo '<option value="' .  $select_workstation_row['name'] . '">' . $select_workstation_row['name'] . ' / ' . $select_workstation_row['username'] . '</option>';
+    }
+}
+
 // ---------------------------------task inserting scripts---------------------------------
 //processwise update
 if (isset($_POST['type']) && $_POST['type'] == "process")
@@ -724,6 +740,29 @@ if (isset($_POST['type']) && $_POST['type'] == 'material_unit_time')
     echo "<strong>Estimate time to completion :" . $get_task_count_row['estimate_time'] . "</strong><br>";
 }
 // -------------material wise scripts - gen shift - end-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // --------------team wise scripts - general - start--------------
 if (isset($_POST['type']) && $_POST['type'] == 'team_model')
 {
@@ -903,6 +942,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'model_unit_time')
 
 // --------------user wise scripts - general - start--------------
 
+// 1. Script for select associates with less than 8 hours of work
 if (isset($_POST['type']) && $_POST['type'] == 'user_fetch')
 {
 
@@ -969,11 +1009,23 @@ if (isset($_POST['type']) && $_POST['type'] == 'user_fetch')
 
 
 
-
+// 2. Select option from associates and output in user models
 if (isset($_POST['type']) && $_POST['type'] == 'user_model')
 {
+
+    // $team = $_POST['team'];
+
     $fixdate = $_POST['fixdate'];
-    $team = $_POST['team'];
+    $user = $_POST['user'];
+
+
+    $select_user_teamname = $conn->prepare("SELECT teamname FROM user_detail where role = 'Associates' and user_name=?;");
+    $select_user_teamname->bind_param('s', $user);
+    $select_user_teamname->execute();
+    $select_user_teamname_res = $select_user_teamname->get_result();
+    $select_user_teamname_row = $select_user_teamname_res->fetch_assoc();
+    $team_name = $select_user_teamname_row['teamname'];
+
 
     $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
     $get_current_batch->execute();
@@ -982,7 +1034,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'user_model')
     $batch_no = $get_current_batch_row['batchno'];
 
     $get_team_members = $conn->prepare('SELECT distinct task_id.model_name from model left join task_id on task_id.model_name = model.model_name WHERE teamname = ? and batchno = ? and tdatefm is not null and date(plandtfm)=?');
-    $get_team_members->bind_param('sss', $team, $batch_no, $fixdate);
+    $get_team_members->bind_param('sss', $team_name, $batch_no, $fixdate);
     $get_team_members->execute();
     $get_team_members_res = $get_team_members->get_result();
     echo '<option value="" selected disabled>Select Model</option>';
@@ -991,6 +1043,34 @@ if (isset($_POST['type']) && $_POST['type'] == 'user_model')
         echo '<option value="' . $get_team_members_row['model_name'] . '">' . $get_team_members_row['model_name'] . '</option>';
     }
 }
+
+
+
+// 3. Get option from models and output options in process
+if (isset($_POST['type']) && $_POST['type'] == 'user_process')
+{
+    $fixdate = $_POST['fixdate'];
+    $user_model = $_POST['user_model'];
+
+    $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
+    $get_current_batch->execute();
+    $get_current_batch_res = $get_current_batch->get_result();
+    $get_current_batch_row = $get_current_batch_res->fetch_assoc();
+    $batch_no = $get_current_batch_row['batchno'];
+
+    $team_process = $conn->prepare('SELECT DISTINCT stageid, process_name from task_id where batchno = ? and model_name = ? and tdatefm is not null and date(plandtfm)=?');
+    $team_process->bind_param('sss', $batch_no, $user_model, $fixdate);
+    $team_process->execute();
+    $team_process_res = $team_process->get_result();
+    echo '<option value="" selected disabled>Select Process</option>';
+    while ($team_process_row = $team_process_res->fetch_assoc())
+    {
+        echo '<option value="' . $team_process_row['stageid'] . '">' . $team_process_row['process_name'] . '</option>';
+    }
+}
+
+
+
 
 
 // --------------user wise scripts - general - end--------------

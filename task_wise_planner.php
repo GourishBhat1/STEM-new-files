@@ -268,7 +268,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
               ?>
             </select>
             <label for="">Workstation</label>
-            <select class="form-control" id="machine_workstation">
+            <select class="form-control machine_workstation_class" id="machine_workstation">
               <?php
               // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
               $select_workstation = $conn->prepare("SELECT * FROM workstation where machine = 'yes';");
@@ -450,7 +450,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 </header>
                 <hr>
                 <label for="">Workstation</label>
-                <select class="form-control" id="workstation">
+                <select class="form-control machine_workstation_class" id="workstation">
                   <?php
                   // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
                   $select_workstation = $conn->prepare("SELECT * FROM workstation where machine = 'yes';");
@@ -825,7 +825,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 </header>
                 <hr>
                 <label for="">Workstation</label>
-                <select class="form-control" id="workstation1">
+                <select class="form-control machine_workstation_class" id="workstation1">
                   <?php
                   // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
                   $select_workstation = $conn->prepare("SELECT * FROM workstation where machine = 'yes';");
@@ -1201,7 +1201,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 </header>
                 <hr>
                 <label for="">Workstation</label>
-                <select class="form-control" id="workstation2">
+                <select class="form-control machine_workstation_class" id="workstation2">
                   <?php
                   // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
                   $select_workstation = $conn->prepare("SELECT * FROM workstation where machine = 'yes';");
@@ -1649,11 +1649,15 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       // ---------machine assign start--------
 
 
+      // encoding variable in js
       $('#machine_assign').on('click', function() {
         var machin_assoc = $('#machin_assoc').val();
         var machine_workstation = $('#machine_workstation').val();
 
-        var data = "machin_assoc=" + machin_assoc + "&machine_workstation=" + machine_workstation + "&type=machine_assign";
+        var machine_workstation_encoded = encodeURIComponent(machine_workstation);
+        console.log(machine_workstation_encoded);
+
+        var data = "machin_assoc=" + machin_assoc + "&machine_workstation=" + machine_workstation_encoded + "&type=machine_assign";
         console.log(data);
         $.ajax({
           type: "POST",
@@ -1661,6 +1665,23 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
           data: data,
           success: function(res) {
             console.log(res);
+
+
+            // var fixdate = $('#fixdate').val();
+            var data1 = "type=machine_assign_refresh";
+            console.log(data1);
+            $.ajax({
+              type: "POST",
+              url: "task_planning_scripts.php",
+              data: data1,
+              success: function(res1) {
+                console.log(res1);
+                $('.machine_workstation_class').html(res1);
+              }
+            });
+
+
+
           }
         });
 

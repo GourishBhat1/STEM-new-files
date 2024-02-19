@@ -187,12 +187,29 @@ if (isset($_POST['type']) && $_POST['type'] == "gen_task")
 if (isset($_POST['type']) && $_POST['type'] == "machine_assign")
 {
   $machin_assoc = $_POST['machin_assoc'];
-  $machine_workstation = $_POST['machine_workstation'];
+  $machine_workstation_encoded = $_POST['machine_workstation'];
+  $machine_workstation = urldecode($machine_workstation_encoded);
 
   $update_machine = $conn->prepare('UPDATE workstation SET username = ? WHERE name = ?');
   $update_machine->bind_param('ss', $machin_assoc, $machine_workstation);
   $update_machine->execute();
   $conn->error;
+}
+
+//machine assign refresh
+if (isset($_POST['type']) && $_POST['type'] == "machine_assign_refresh")
+{
+  $select_workstation = $conn->prepare("SELECT * FROM workstation where machine = 'yes';");
+  $select_workstation->execute();
+  $select_workstation_res = $select_workstation->get_result();
+  while ($select_workstation_row = $select_workstation_res->fetch_assoc())
+  {
+    // $barcode[] = $select_users_row['barcode'];
+    // $username[] = $select_users_row['fullname'];
+
+
+    echo '<option value="' .  $select_workstation_row['name'] . '">' . $select_workstation_row['name'] . ' / ' . $select_workstation_row['username'] . '</option>';
+  }
 }
 
 // ---------------------------------task inserting scripts---------------------------------
