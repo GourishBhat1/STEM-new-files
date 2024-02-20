@@ -635,7 +635,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'work_unit_time')
   $get_task_count_res = $get_task_count->get_result();
   $get_task_count_row = $get_task_count_res->fetch_assoc();
 
-  $get_unit_time = $conn->prepare('SELECT DISTINCT unit_time from task_id WHERE sheettask_id = ?');
+  $get_unit_time = $conn->prepare('SELECT DISTINCT unit_time from task_id WHERE sheettask_id = ? and unit_time!=""');//added unit time is not blank to get unit time of only main task; subtask unit is blank
   $get_unit_time->bind_param('s', $sheetid);
   $get_unit_time->execute();
   $get_unit_time_res = $get_unit_time->get_result();
