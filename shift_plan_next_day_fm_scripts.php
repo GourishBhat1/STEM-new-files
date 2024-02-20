@@ -6,6 +6,10 @@ $conn = new mysqli("stemlearning.in", "steml1og_stemftest", "7V2WDw385ykQ+)N", "
 
 
 
+// [[ old script for general shift create - this is to be replaced with new code similar to multi shift ]]
+
+
+
 // ********************************************************************
 //gen shift create
 if (isset($_POST['type']) && $_POST['type'] == "gen_shift_create")
@@ -54,6 +58,126 @@ if (isset($_POST['type']) && $_POST['type'] == "gen_shift_create")
         $update_plandate_for_fm->execute();
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// [[ new script for general shift create ]]
+
+
+if (
+    isset($_POST['type']) && $_POST['type'] == "gen_shift_create_new"
+)
+{
+    $fixdate = $_POST['fixdate'];
+    $gen_shift_start_time = $_POST['gen_shift_start_time'];
+    $gen_shift_end_time = $_POST['gen_shift_end_time'];
+
+
+    // new variable of array
+    $gen_shift_user_arr = json_decode($_POST["gen_shift_user_arr"]);
+
+
+    // echo $fixdate."\n";
+    // echo $gen_shift_start_time."\n";
+    // echo $gen_shift_end_time."\n";
+
+    $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
+    $get_current_batch->execute();
+    $get_current_batch_res = $get_current_batch->get_result();
+    $get_current_batch_row = $get_current_batch_res->fetch_assoc();
+
+
+    // |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+    // Deleting old entries of general shift before inserting new ones
+    $delete_shift = $conn->prepare("DELETE FROM shift_user_plan WHERE DATE(shiftdate)=?");
+    $delete_shift->bind_param('s', $fixdate);
+    if ($delete_shift->execute())
+    {
+        //insert shift in new table with start and end time with shift date
+        $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+        $select_users->execute();
+        $select_users_res = $select_users->get_result();
+
+
+        for ($i = 0; $i < count($gen_shift_user_arr); $i++)
+        {
+
+            $insert_shift = $conn->prepare('INSERT INTO shift_user_plan (batchname, shiftdate, shift_type,  start_time,  end_time,  username) VALUES (?,?, "general", ?,?,?)');
+            $insert_shift->bind_param('sssss', $get_current_batch_row['batchno'], $fixdate, $gen_shift_start_time, $gen_shift_end_time, $gen_shift_user_arr[$i]);
+            $insert_shift->execute();
+        }
+
+
+
+
+
+
+
+        echo 'New General shift updated';
+
+        $update_plandate_for_fm = $conn->prepare("UPDATE task_id SET plandtfm = ? WHERE tdatefm = ?");
+        $update_plandate_for_fm->bind_param('ss', $fixdate, $fixdate);
+        $update_plandate_for_fm->execute();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// [[  script for multi shift create - refer to this to create new script for general shift  ]]
+
+
 
 // ***************************************************************************************************************
 //multi shift create
@@ -114,6 +238,33 @@ if (isset($_POST['type']) && $_POST['type'] == "multi_shift_create")
     // print_r($shift1_user_arr);
     // print_r($shift2_user_arr);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // **************************************************************************
 //executive role change

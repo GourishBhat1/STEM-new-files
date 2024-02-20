@@ -67,15 +67,57 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
           <div class="text-center font-weight-bold">
             <p>Total Head Count: <?php echo $get_user_count_row['user_count']; ?> Associates</p>
           </div>
+
+
+
+
+
+
+
           <div class="form-row form-inline" id="gen_shift_time">
             <div class="col">
               <label for="">Shift start time</label>
               <input type="time" name="" id="gen_shift_start_time">
               <label for="">Shift end time</label>
               <input type="time" name="" id="gen_shift_end_time">
+
+
+              <br>
+              <br>
+
+              <label for="">Enter Number of Associates</label>
+              <input id="gen_no_of_associates" type="number">
+
+
+              <br>
+              <br>
+
+              <!-- [[ new button for general shift submit ]] -->
+              <button type="button" id="gen_shift_submit_new" name="button">Create Shift</button>
+
+
             </div>
-            <button type="button" id="gen_shift_submit" name="button">Create Shift</button>
+
+
+
+
+
+
+
+            <!-- [[ old submission for general shift - to be replaced ]] -->
+            <!-- <button type="button" id="gen_shift_submit" name="button">Create Shift</button> -->
+
+
           </div>
+
+
+
+
+
+
+
+
+
           <div id="shift_time_form" style="display:none;">
 
             <div class="form-row text-center">
@@ -125,8 +167,25 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
               </div>
             </div>
 
+            <!-- [[ button for multi shift submit - use this to change general shift code]] -->
             <button type="button" id="multi_shift_submit" name="button">Create Shift</button>
           </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
           <!-- <label for=""></label>
@@ -295,6 +354,81 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
       </div>
       <hr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- [[  selecting general shift associates - newly added code ]] -->
+
+
+      <div class="container border border-secondary shadow-sm p-3 mb-5 bg-white rounded" id="gen_shift_users" style="display:none;">
+        <div class="form-row">
+          <div class="col">
+            <label for="">Select General Shift Associates</label>
+            <select class="form-control select" multiple id="genshiftusername" name="genshiftusername[]">
+              <?php
+              // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
+              $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+              $select_users->execute();
+              $select_users_res = $select_users->get_result();
+              while ($select_users_row = $select_users_res->fetch_assoc())
+              {
+                // $barcode[] = $select_users_row['barcode'];
+                // $username[] = $select_users_row['fullname'];
+              ?>
+                <option value="<?php echo $select_users_row['user_name']; ?>"><?php echo $select_users_row['fullname']; ?></option>
+              <?php
+              }
+              //selected users to be removed from stack
+              ?>
+            </select>
+            <span id="shift1display"></span>
+          </div>
+        </div>
+
+
+
+        <div class="form-row">
+          <div class="col">
+
+            <!-- [[ button to assign shift associates general shift]] -->
+            <button type="button" id="gen_submit">Assign Shift Associates</button>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- [[ selecting shift 1 associates - use this code in general shift]] -->
+
+
       <div class="container border border-secondary shadow-sm p-3 mb-5 bg-white rounded" id="shift_users" style="display:none;">
         <div class="form-row">
           <div class="col">
@@ -346,10 +480,34 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
         <div class="form-row">
           <div class="col">
+
+            <!-- [[ button to assign shift associates in multi shift - use this in general shift]] -->
             <button type="button" id="multi_submit">Assign Shift Associates</button>
           </div>
         </div>
       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <hr>
       <div class="container border border-secondary shadow-sm p-3 mb-5 bg-white rounded shift1_card" style="display:none;">
 
@@ -487,7 +645,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                   <option selected disabled>Select Combination</option>
                   <?php
                   //assigned task to be removed from stack
-                  $select_workprocess = $conn->prepare("SELECT distinct comb_grpid, combination from task_id where batchno=? and process_name='laser cutting';");//only laser tasks are being output here. after workstation to combination linking table is done, has to be changed to take that data
+                  $select_workprocess = $conn->prepare("SELECT distinct comb_grpid, combination from task_id where batchno=? and process_name='laser cutting';"); //only laser tasks are being output here. after workstation to combination linking table is done, has to be changed to take that data
                   $select_workprocess->bind_param('s', $batchno);
                   $select_workprocess->execute();
                   $select_workprocess_res = $select_workprocess->get_result();
@@ -1467,12 +1625,14 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             </div>
 
 
+
             <div id="model_shift2_card" class="shift2_assign_unassign">
 
             </div>
 
           </div>
         </div>
+
 
         <br><br>
 
@@ -1485,6 +1645,15 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
 
     <div id="modellogs"></div>
+
+
+
+    <div class="text-center"> <a href="task_wise_planner.php" class="btn btn-success">Close Planning For Day</a></div>
+
+    <br>
+    <br>
+    <br>
+    <br>
 
 
 
@@ -1554,12 +1723,26 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       });
 
       // ----------shift card display start----------
+      // [[old code - no longer needed]]
       $('#gen_shift_submit').on('click', function() {
         $('.shift1_card').show();
       });
 
+      // [[changes made for new code]]
+      $('#gen_submit').on('click', function() {
+        $('.shift1_card').show();
+      });
+
+      // [[ new code added for general shift ]]
+      $('#gen_shift_submit_new').on('click', function() {
+        $('#gen_shift_users').show();
+        $('#shift_users').hide();
+      });
+
+      // [[changes made]]
       $('#multi_shift_submit').on('click', function() {
         $('#shift_users').show();
+        $('#gen_shift_users').hide();
       });
 
       $('#multi_submit').on('click', function() {
@@ -1708,6 +1891,35 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       });
       // ---------shift timings toggle end----------
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      // [[ old ajax for general shift submit to be changed and replicated like multi shift submit]]
+
+
+
+
       // ---------gen shift create---------
       $('#gen_shift_submit').on('click', function() {
         var fixdate = $('#fixdate').val();
@@ -1731,6 +1943,96 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       });
       // ---------gen shift create---------
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      // [[ new ajax for general shift submit ]]
+
+
+
+
+      // ---------gen shift create---------
+      $('#gen_submit').on('click', function() {
+        var fixdate = $('#fixdate').val();
+        var gen_shift_start_time = $('#gen_shift_start_time').val();
+        var gen_shift_end_time = $('#gen_shift_end_time').val();
+
+        // new variables of general shift associates
+        var gen_shift_user_arr = $('#genshiftusername option:selected').toArray().map(item => item.value);
+        var gen_shift_user_arr = JSON.stringify(gen_shift_user_arr);
+
+        var data = "gen_shift_start_time=" + gen_shift_start_time + "&gen_shift_end_time=" + gen_shift_end_time + "&gen_shift_user_arr=" + gen_shift_user_arr + "&fixdate=" + fixdate + "&type=gen_shift_create_new";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data,
+          success: function(res) {
+            console.log(res);
+          }
+        });
+
+        // console.log(fixdate);
+        // console.log(gen_shift_start_time);
+        // console.log(gen_shift_end_time);
+      });
+      // ---------gen shift create---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      // [[ajax for multi shift submit - use this in general]]
 
       // ----------multi shift create start----------
 
@@ -1768,6 +2070,30 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
         // console.log(shift2_user_arr);
       });
       // ----------multi shift create end----------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       // --------- processwise - general shift---------
       $('#processes').on('change', function() {
@@ -3538,3 +3864,61 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 </div><!-- app-main__outer close -->
 
 <?php include 'footer.php'; ?>
+
+
+<!-- !! testing limits-->
+
+<!-- <script>
+  $('#gen_shift_submit_new').on('click', function() {
+
+    var last_valid_selection = null;
+
+    var value = $('#gen_no_of_associates').val();
+
+    $('#genshiftusername').change(function(event) {
+
+      if ($(this).val().length > value) {
+
+        $(this).val(last_valid_selection);
+      } else {
+        last_valid_selection = $(this).val();
+      }
+    });
+  });
+</script> -->
+
+<!-- <script>
+  $(document).ready(function() {
+
+    var last_valid_selection = null;
+
+    var value = $('#gen_no_of_associates').val();
+
+    $('#genshiftusername').change(function(event) {
+
+      if ($(this).val().length > value) {
+
+        $(this).val(last_valid_selection);
+      } else {
+        last_valid_selection = $(this).val();
+      }
+    });
+  });
+</script> -->
+
+<script>
+  $(document).ready(function() {
+    $('#gen_shift_submit_new').on('click', function() {
+      // Dynamically get the value inside the change event handler
+      $('#genshiftusername').off('change').on('change', function(event) {
+        var value = $('#gen_no_of_associates').val(); // Move inside to always get the current value
+        var currentValue = $(this).val();
+        if (currentValue.length > value) {
+          $(this).val(last_valid_selection);
+        } else {
+          last_valid_selection = currentValue;
+        }
+      });
+    });
+  });
+</script>

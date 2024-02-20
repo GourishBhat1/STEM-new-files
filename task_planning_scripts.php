@@ -19,6 +19,36 @@ if (isset($_POST['type']) && $_POST['type'] == "batch_diff")
   echo "Batch Plan For: Day " . $pos_diff;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// [[ old script for general shift create - this is to be replaced with new code similar to multi shift ]]
+
+
+
 //gen shift create
 if (isset($_POST['type']) && $_POST['type'] == "gen_shift_create")
 {
@@ -54,6 +84,89 @@ if (isset($_POST['type']) && $_POST['type'] == "gen_shift_create")
   }
   echo 'General shift created';
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// [[ new script for general shift create ]]
+
+
+
+//gen shift create
+if (isset($_POST['type']) && $_POST['type'] == "gen_shift_create_new")
+{
+  $fixdate = $_POST['fixdate'];
+  $gen_shift_start_time = $_POST['gen_shift_start_time'];
+  $gen_shift_end_time = $_POST['gen_shift_end_time'];
+
+  // new variable of array
+  $gen_shift_user_arr = json_decode($_POST["gen_shift_user_arr"]);
+
+  // echo $fixdate."\n";
+  // echo $gen_shift_start_time."\n";
+  // echo $gen_shift_end_time."\n";
+
+  $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
+  $get_current_batch->execute();
+  $get_current_batch_res = $get_current_batch->get_result();
+  $get_current_batch_row = $get_current_batch_res->fetch_assoc();
+
+  //insert shift in new table with start and end time with shift date
+  $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+  $select_users->execute();
+  $select_users_res = $select_users->get_result();
+
+  for ($i = 0; $i < count($gen_shift_user_arr); $i++)
+  {
+
+
+    $insert_shift = $conn->prepare('INSERT INTO shift_user_plan (batchname, shiftdate, shift_type,  start_time,  end_time,  username) VALUES (?,?, "general", ?,?,?)');
+    $insert_shift->bind_param('sssss', $get_current_batch_row['batchno'], $fixdate, $gen_shift_start_time, $gen_shift_end_time, $gen_shift_user_arr[$i]);
+    $insert_shift->execute();
+    echo $conn->error;
+  }
+  echo 'New General shift created';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// [[  script for multi shift create - refer to this to create new script for general shift  ]]
+
 
 //multi shift create
 if (isset($_POST['type']) && $_POST['type'] == "multi_shift_create")
@@ -98,6 +211,29 @@ if (isset($_POST['type']) && $_POST['type'] == "multi_shift_create")
   // print_r($shift1_user_arr);
   // print_r($shift2_user_arr);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //executive role change
 if (isset($_POST['type']) && $_POST['type'] == "exec_role")
@@ -635,7 +771,8 @@ if (isset($_POST['type']) && $_POST['type'] == 'work_unit_time')
   $get_task_count_res = $get_task_count->get_result();
   $get_task_count_row = $get_task_count_res->fetch_assoc();
 
-  $get_unit_time = $conn->prepare('SELECT DISTINCT unit_time from task_id WHERE sheettask_id = ? and unit_time!=""');//added unit time is not blank to get unit time of only main task; subtask unit is blank
+  // $get_unit_time = $conn->prepare('SELECT DISTINCT unit_time from task_id WHERE sheettask_id = ?');
+  $get_unit_time = $conn->prepare('SELECT DISTINCT unit_time from task_id WHERE sheettask_id = ? and unit_time!=""'); //added unit time is not blank to get unit time of only main task; subtask unit is blank
   $get_unit_time->bind_param('s', $sheetid);
   $get_unit_time->execute();
   $get_unit_time_res = $get_unit_time->get_result();
