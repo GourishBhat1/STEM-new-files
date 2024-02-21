@@ -332,7 +332,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <label for="">Start Time</label>
                                 <input type="time" class="form-control" id="process_start_time">
                                 <label for="">Number of Associates</label>
-                                <input type="number" class="form-control" id="process_users">
+                                <!-- \\ -->
+                                <input type="number" class="form-control" id="process_users" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
 
                                 <!-- GENERAL SHIFT -->
                                 <label for="">Associates</label>
@@ -481,7 +482,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <label for="">Start Time</label>
                                 <input type="time" class="form-control" id="material_start_time">
                                 <label for="">Number of Associates</label>
-                                <input type="number" class="form-control" id="material_user_count">
+                                <!-- \\ -->
+                                <input type="number" class="form-control" id="material_user_count" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
                                 <label for="">Associates</label>
                                 <select class="form-control" multiple id="material_username">
 
@@ -549,7 +551,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <label for="">Start Time</label>
                                 <input type="time" id="team_start_time">
                                 <label for="">No of Associates</label>
-                                <input type="number" id="team_count">
+                                <!-- \\ -->
+                                <input type="number" id="team_count" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
                                 <label for="">Associates</label>
                                 <select class="form-control" multiple id="team_username">
                                 </select>
@@ -614,7 +617,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <label for="">Start time</label>
                                 <input type="time" id="model_start_time">
                                 <label for="">No of Associates</label>
-                                <input type="number" id="model_user_count">
+                                <!-- \\ -->
+                                <input type="number" id="model_user_count" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
                                 <label for="">Associates</label>
                                 <select class="form-control" multiple id="model_username">
                                 </select>
@@ -797,7 +801,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <label for="">Start Time</label>
                                 <input type="time" class="form-control" id="process_start_time1">
                                 <label for="">Number of Associates</label>
-                                <input type="number" class="form-control" id="process_users1">
+                                <!-- \\ -->
+                                <input type="number" class="form-control" id="process_users1" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
                                 <!-- SHIFT 1 -->
                                 <label for="">Associates</label>
                                 <select class="form-control" id="username1" name="username[]" multiple>
@@ -946,7 +951,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <label for="">Start Time</label>
                                 <input type="time" class="form-control" id="material_start_time1">
                                 <label for="">Number of Associates</label>
-                                <input type="number" class="form-control" id="material_user_count1">
+                                <!-- \\ -->
+                                <input type="number" class="form-control" id="material_user_count1" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
                                 <label for="">Associates</label>
                                 <select class="form-control" multiple id="material_username1">
 
@@ -1014,7 +1020,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <label for="">Start Time</label>
                                 <input type="time" id="team_start_time1">
                                 <label for="">No of Associates</label>
-                                <input type="number" id="team_count1">
+                                <!-- \\ -->
+                                <input type="number" id="team_count1" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
                                 <label for="">Associates</label>
                                 <select class="form-control" multiple id="team_username1">
                                 </select>
@@ -1079,7 +1086,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <label for="">Start time</label>
                                 <input type="time" id="model_start_time1">
                                 <label for="">No of Associates</label>
-                                <input type="number" id="model_user_count1">
+                                <!-- \\ -->
+                                <input type="number" id="model_user_count1" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
                                 <label for="">Associates</label>
                                 <select class="form-control" multiple id="model_username1">
                                 </select>
@@ -1185,7 +1193,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <label for="">Start Time</label>
                                 <input type="time" class="form-control" id="process_start_time2">
                                 <label for="">Number of Associates</label>
-                                <input type="number" class="form-control" id="process_users2">
+                                <!-- \\ -->
+                                <input type="number" class="form-control" id="process_users2" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
 
                                 <!-- SHIFT 1 -->
 
@@ -1337,7 +1346,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <label for="">Start Time</label>
                                 <input type="time" class="form-control" id="material_start_time2">
                                 <label for="">Number of Associates</label>
-                                <input type="number" class="form-control" id="material_user_count2">
+                                <!-- \\ -->
+                                <input type="number" class="form-control" id="material_user_count2" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
                                 <label for="">Associates</label>
                                 <select class="form-control" multiple id="material_username2">
 
@@ -1405,7 +1415,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <label for="">Start Time</label>
                                 <input type="time" id="team_start_time2">
                                 <label for="">No of Associates</label>
-                                <input type="number" id="team_count2">
+                                <!-- \\ -->
+                                <input type="number" id="team_count2" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
                                 <label for="">Associates</label>
                                 <select class="form-control" multiple id="team_username2">
                                 </select>
@@ -1470,7 +1481,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <label for="">Start time</label>
                                 <input type="time" id="model_start_time2">
                                 <label for="">No of Associates</label>
-                                <input type="number" id="model_user_count2">
+                                <!-- \\ -->
+                                <input type="number" id="model_user_count2" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
                                 <label for="">Associates</label>
                                 <select class="form-control" multiple id="model_username2">
                                 </select>
@@ -3186,7 +3198,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             });
 
             $('#model_process').on('change', function() {
-                var model_process = $('#model_process').val();
+                var model_process = $('#models').val();
 
                 var data = "model_process=" + model_process + "&type=model_process";
                 console.log(data);
@@ -3298,7 +3310,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             });
 
             $('#model_process1').on('change', function() {
-                var model_process = $('#model_process1').val();
+                var model_process = $('#models1').val();
 
                 var data = "model_process=" + model_process + "&type=model_process";
                 console.log(data);
@@ -3392,7 +3404,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             });
 
             $('#model_process2').on('change', function() {
-                var model_process = $('#model_process2').val();
+                var model_process = $('#models2').val();
 
                 var data = "model_process=" + model_process + "&type=model_process";
                 console.log(data);
@@ -3651,3 +3663,263 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 </div><!-- app-main__outer close -->
 
 <?php include 'footer.php'; ?>
+
+
+
+
+<!-- !! scripts for limits-->
+
+
+
+
+<!-- 2 shift card process planner -->
+
+<script>
+    $(document).ready(function() {
+        var last_valid_selection2 = null;
+        $('#process_users').on('input', function() {});
+        $('#username').on('input', function() {
+            var value2 = parseInt($('#process_users').val(), 10);
+            var currentValue2 = $(this).val();
+            if (currentValue2.length > value2) {
+                $(this).val(last_valid_selection2);
+            } else {
+                last_valid_selection2 = currentValue2;
+            }
+        });
+    });
+</script>
+
+<!-- 3 shift card material planner -->
+
+<script>
+    $(document).ready(function() {
+        var last_valid_selection3 = null;
+        $('#material_user_count').on('input', function() {});
+        $('#material_username').on('input', function() {
+            var value3 = parseInt($('#material_user_count').val(), 10);
+            var currentValue3 = $(this).val();
+            if (currentValue3.length > value3) {
+                $(this).val(last_valid_selection3);
+            } else {
+                last_valid_selection3 = currentValue3;
+            }
+        });
+    });
+</script>
+
+<!-- 4 shift card team Planner -->
+
+<script>
+    $(document).ready(function() {
+        var last_valid_selection4 = null;
+        $('#team_count').on('input', function() {});
+        $('#team_username').on('input', function() {
+            var value4 = parseInt($('#team_count').val(), 10);
+            var currentValue4 = $(this).val();
+            if (currentValue4.length > value4) {
+                $(this).val(last_valid_selection4);
+            } else {
+                last_valid_selection4 = currentValue4;
+            }
+        });
+    });
+</script>
+
+<!-- 5 shift card model Planner -->
+
+<script>
+    $(document).ready(function() {
+        var last_valid_selection5 = null;
+        $('#model_user_count').on('input', function() {});
+        $('#model_username').on('input', function() {
+            var value5 = parseInt($('#model_user_count').val(), 10);
+            var currentValue5 = $(this).val();
+            if (currentValue5.length > value5) {
+                $(this).val(last_valid_selection5);
+            } else {
+                last_valid_selection5 = currentValue5;
+            }
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 8 shift 1 process planner -->
+
+<script>
+    $(document).ready(function() {
+        var last_valid_selection8 = null;
+        $('#process_users1').on('input', function() {});
+        $('#username1').on('input', function() {
+            var value8 = parseInt($('#process_users1').val(), 10);
+            var currentValue8 = $(this).val();
+            if (currentValue8.length > value8) {
+                $(this).val(last_valid_selection8);
+            } else {
+                last_valid_selection8 = currentValue8;
+            }
+        });
+    });
+</script>
+
+
+<!-- 9 shift 1 material planner -->
+
+<script>
+    $(document).ready(function() {
+        var last_valid_selection9 = null;
+        $('#material_user_count1').on('input', function() {});
+        $('#material_username1').on('input', function() {
+            var value9 = parseInt($('#material_user_count1').val(), 10);
+            var currentValue9 = $(this).val();
+            if (currentValue9.length > value9) {
+                $(this).val(last_valid_selection9);
+            } else {
+                last_valid_selection9 = currentValue9;
+            }
+        });
+    });
+</script>
+
+
+<!-- 10 shift 1 team planner -->
+
+<script>
+    $(document).ready(function() {
+        var last_valid_selection10 = null;
+        $('#team_count1').on('input', function() {});
+        $('#team_username1').on('input', function() {
+            var value10 = parseInt($('#team_count1').val(), 10);
+            var currentValue10 = $(this).val();
+            if (currentValue10.length > value10) {
+                $(this).val(last_valid_selection10);
+            } else {
+                last_valid_selection10 = currentValue10;
+            }
+        });
+    });
+</script>
+
+
+<!-- 11 shift 1 model planner -->
+
+<script>
+    $(document).ready(function() {
+        var last_valid_selection11 = null;
+        $('#model_user_count1').on('input', function() {});
+        $('#model_username1').on('input', function() {
+            var value11 = parseInt($('#model_user_count1').val(), 10);
+            var currentValue11 = $(this).val();
+            if (currentValue11.length > value11) {
+                $(this).val(last_valid_selection11);
+            } else {
+                last_valid_selection11 = currentValue11;
+            }
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 12 shift 2 process planner -->
+
+<script>
+    $(document).ready(function() {
+        var last_valid_selection12 = null;
+        $('#process_users2').on('input', function() {});
+        $('#username2').on('input', function() {
+            var value12 = parseInt($('#process_users2').val(), 10);
+            var currentValue12 = $(this).val();
+            if (currentValue12.length > value12) {
+                $(this).val(last_valid_selection12);
+            } else {
+                last_valid_selection12 = currentValue12;
+            }
+        });
+    });
+</script>
+
+
+<!-- 13 shift 2 material planner -->
+
+<script>
+    $(document).ready(function() {
+        var last_valid_selection13 = null;
+        $('#material_user_count2').on('input', function() {});
+        $('#material_username2').on('input', function() {
+            var value13 = parseInt($('#material_user_count2').val(), 10);
+            var currentValue13 = $(this).val();
+            if (currentValue13.length > value13) {
+                $(this).val(last_valid_selection13);
+            } else {
+                last_valid_selection13 = currentValue13;
+            }
+        });
+    });
+</script>
+
+
+<!-- 14 shift 2 team planner -->
+
+<script>
+    $(document).ready(function() {
+        var last_valid_selection14 = null;
+        $('#team_count2').on('input', function() {});
+        $('#team_username2').on('input', function() {
+            var value14 = parseInt($('#team_count2').val(), 10);
+            var currentValue14 = $(this).val();
+            if (currentValue14.length > value14) {
+                $(this).val(last_valid_selection14);
+            } else {
+                last_valid_selection14 = currentValue14;
+            }
+        });
+    });
+</script>
+
+
+<!-- 15 shift 2 model planner -->
+
+<script>
+    $(document).ready(function() {
+        var last_valid_selection15 = null;
+        $('#model_user_count2').on('input', function() {});
+        $('#model_username2').on('input', function() {
+            var value15 = parseInt($('#model_user_count2').val(), 10);
+            var currentValue15 = $(this).val();
+            if (currentValue15.length > value15) {
+                $(this).val(last_valid_selection15);
+            } else {
+                last_valid_selection15 = currentValue15;
+            }
+        });
+    });
+</script>

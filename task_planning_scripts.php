@@ -750,14 +750,14 @@ if (isset($_POST['type']) && $_POST['type'] == 'work_parts')
   // SELECT DISTINCT sheettask_id FROM `task_id` where comb_grpid='test-roh-A32-laser_Combination 1' and process_name='laser cutting';
 
 
-  $get_parts = $conn->prepare("SELECT distinct sheettask_id, part_name from task_id where batchno=? and comb_grpid = ? and tdatefm is null and process_name='laser cutting'");
+  $get_parts = $conn->prepare("SELECT distinct sheettask_id from task_id where batchno=? and comb_grpid = ? and tdatefm is null and process_name='laser cutting'");
   $get_parts->bind_param('ss', $batch_no, $workprocesses);
   $get_parts->execute();
   $get_parts_res = $get_parts->get_result();
   echo '<option value="" selected disabled>Select Part Name</option>';
   while ($get_parts_row = $get_parts_res->fetch_assoc())
   {
-    echo '<option value="' . $get_parts_row['sheettask_id'] . '">' . $get_parts_row['part_name'] . '</option>';
+    echo '<option value="' . $get_parts_row['sheettask_id'] . '">' . $get_parts_row['sheettask_id'] . '</option>';
   }
 }
 

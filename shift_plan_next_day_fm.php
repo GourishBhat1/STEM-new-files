@@ -68,6 +68,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 // Otherwise, just get tomorrow's date
                 $desiredDate = date('Y-m-d', strtotime('tomorrow'));
             }
+
+
+            // $desiredDate = date('Y-m-d');
             ?>
 
 
@@ -102,7 +105,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                             <br>
 
                             <label for="">Enter Number of Associates</label>
-                            <input type="number">
+                            <!-- \\ -->
+                            <input id="gen_no_of_associates" type="number" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
 
 
                             <br>
@@ -158,13 +162,15 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         <div class="form-row">
                             <div class="col">
                                 <label for="">Shift 1 Number of Associates</label>
-                                <input type="number">
+                                <!-- \\ -->
+                                <input id="s1noofassoc" type="number" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col">
                                 <label for="">Shift 2 Number of Associates</label>
-                                <input type="number">
+                                <!-- \\ -->
+                                <input id="s2noofassoc" type="number" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
                             </div>
                         </div>
                         <!-- [[ update shift]] -->
@@ -2533,3 +2539,82 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 </div><!-- app-main__outer close -->
 
 <?php include 'footer.php'; ?>
+
+
+
+
+
+<!-- !! scripts for limits-->
+
+
+<!-- 1 shift type general shift associates -->
+
+<script>
+    $(document).ready(function() {
+        var last_valid_selection1 = null;
+
+        // Initialize with zero value or set it directly in the HTML as shown above
+        // $('#gen_no_of_associates').val(0);
+
+        // Handle change in number of associates
+        $('#gen_no_of_associates').on('input', function() {
+            // Since this input only affects conditions but doesn't need immediate action,
+            // there's no need to place logic directly here for now.
+        });
+
+        // Handle input changes for the username field, dynamically using the number of associates
+        $('#genshiftusername').on('input', function() {
+            var value1 = parseInt($('#gen_no_of_associates').val(), 10); // Ensure it's an integer
+            var currentValue1 = $(this).val();
+            if (currentValue1.length > value1) {
+                $(this).val(last_valid_selection1);
+            } else {
+                last_valid_selection1 = currentValue1;
+            }
+        });
+    });
+</script>
+
+
+
+
+<!-- 6 shift 1 no of associates -->
+
+<script>
+    $(document).ready(function() {
+        var last_valid_selection6 = null;
+        $('#s1noofassoc').on('input', function() {});
+        $('#shift1username').on('input', function() {
+            var value6 = parseInt($('#s1noofassoc').val(), 10);
+            var currentValue6 = $(this).val();
+            if (currentValue6.length > value6) {
+                $(this).val(last_valid_selection6);
+            } else {
+                last_valid_selection6 = currentValue6;
+            }
+        });
+    });
+</script>
+
+
+
+
+
+
+<!-- 7 shift 2 no of associates -->
+
+<script>
+    $(document).ready(function() {
+        var last_valid_selection7 = null;
+        $('#s2noofassoc').on('input', function() {});
+        $('#shift2username').on('input', function() {
+            var value7 = parseInt($('#s2noofassoc').val(), 10);
+            var currentValue7 = $(this).val();
+            if (currentValue7.length > value7) {
+                $(this).val(last_valid_selection7);
+            } else {
+                last_valid_selection7 = currentValue7;
+            }
+        });
+    });
+</script>
