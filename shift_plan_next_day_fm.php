@@ -104,9 +104,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                             <br>
                             <br>
 
-                            <label for="">Enter Number of Associates</label>
+                            <label for="">Enter Number of Team Members</label>
                             <!-- \\ -->
-                            <input id="gen_no_of_associates" type="number" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                            <input id="gen_no_of_associates" type="number" value="0" min="0" step="1">
 
 
                             <br>
@@ -161,16 +161,16 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         <hr>
                         <div class="form-row">
                             <div class="col">
-                                <label for="">Shift 1 Number of Associates</label>
+                                <label for="">Shift 1 Number of Team Members</label>
                                 <!-- \\ -->
-                                <input id="s1noofassoc" type="number" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                                <input id="s1noofassoc" type="number" value="0" min="0" step="1">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col">
-                                <label for="">Shift 2 Number of Associates</label>
+                                <label for="">Shift 2 Number of Team Members</label>
                                 <!-- \\ -->
-                                <input id="s2noofassoc" type="number" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                                <input id="s2noofassoc" type="number" value="0" min="0" step="1">
                             </div>
                         </div>
                         <!-- [[ update shift]] -->
@@ -463,11 +463,12 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             <div class="container border border-secondary shadow-sm p-3 mb-5 bg-white rounded" id="gen_shift_users" style="display:none;">
                 <div class="form-row">
                     <div class="col">
-                        <label for="">Select General Shift Associates</label>
+                        <label for="">Select General Shift Team</label>
                         <select class="form-control select" multiple id="genshiftusername" name="genshiftusername[]">
                             <?php
                             // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                            $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+                            // $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+                            $select_users = $conn->prepare("SELECT * FROM user_detail where user_type = 'Associates' or user_type = 'Executives' order by user_type DESC;");
                             $select_users->execute();
                             $select_users_res = $select_users->get_result();
                             while ($select_users_row = $select_users_res->fetch_assoc())
@@ -475,7 +476,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 // $barcode[] = $select_users_row['barcode'];
                                 // $username[] = $select_users_row['fullname'];
                             ?>
-                                <option value="<?php echo $select_users_row['user_name']; ?>"><?php echo $select_users_row['fullname']; ?></option>
+                                <option value="<?php echo $select_users_row['user_name']; ?>"><?php echo $select_users_row['fullname'] . ' - ' . $select_users_row['user_type']; ?></option>
                             <?php
                             }
                             //selected users to be removed from stack
@@ -490,7 +491,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <div class="form-row">
                     <div class="col">
                         <!-- [[ button to assign shift associates general shift]] -->
-                        <button type="button" id="gen_submit">Assign Shift Associates</button>
+                        <button type="button" id="gen_submit">Assign Team</button>
                     </div>
                 </div>
             </div>
@@ -517,11 +518,12 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             <div class="container border border-secondary shadow-sm p-3 mb-5 bg-white rounded" id="shift_users" style="display:none;">
                 <div class="form-row">
                     <div class="col">
-                        <label for="">Shift 1 Associates</label>
+                        <label for="">Shift 1 Team</label>
                         <select class="form-control select" multiple id="shift1username" name="shift1username[]">
                             <?php
                             // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                            $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+                            // $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+                            $select_users = $conn->prepare("SELECT * FROM user_detail where user_type = 'Associates' or user_type = 'Executives' order by user_type DESC;");
                             $select_users->execute();
                             $select_users_res = $select_users->get_result();
                             while ($select_users_row = $select_users_res->fetch_assoc())
@@ -529,7 +531,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 // $barcode[] = $select_users_row['barcode'];
                                 // $username[] = $select_users_row['fullname'];
                             ?>
-                                <option value="<?php echo $select_users_row['user_name']; ?>"><?php echo $select_users_row['fullname']; ?></option>
+                                <option value="<?php echo $select_users_row['user_name']; ?>"><?php echo $select_users_row['fullname'] . ' - ' . $select_users_row['user_type']; ?></option>
                             <?php
                             }
                             //selected users to be removed from stack
@@ -541,11 +543,12 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
                 <div class="form-row">
                     <div class="col">
-                        <label for="">Shift 2 Associates</label>
+                        <label for="">Shift 2 Team</label>
                         <select class="form-control select" multiple id="shift2username" name="shift2username[]">
                             <?php
                             // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                            $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+                            // $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+                            $select_users = $conn->prepare("SELECT * FROM user_detail where user_type = 'Associates' or user_type = 'Executives' order by user_type DESC;");
                             $select_users->execute();
                             $select_users_res = $select_users->get_result();
                             while ($select_users_row = $select_users_res->fetch_assoc())
@@ -553,7 +556,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 // $barcode[] = $select_users_row['barcode'];
                                 // $username[] = $select_users_row['fullname'];
                             ?>
-                                <option value="<?php echo $select_users_row['user_name']; ?>"><?php echo $select_users_row['fullname']; ?></option>
+                                <option value="<?php echo $select_users_row['user_name']; ?>"><?php echo $select_users_row['fullname'] . ' - ' . $select_users_row['user_type']; ?></option>
                             <?php
                             }
                             //selected users to be removed from stack
@@ -566,7 +569,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <div class="form-row">
                     <div class="col">
                         <!-- [[ button to assign shift associates in multi shift - use this in general shift]] -->
-                        <button type="button" id="multi_submit">Assign Shift Associates</button>
+                        <button type="button" id="multi_submit">Assign Team</button>
                     </div>
                 </div>
             </div>

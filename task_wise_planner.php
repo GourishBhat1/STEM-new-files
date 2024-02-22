@@ -85,9 +85,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
               <br>
               <br>
 
-              <label for="">Enter Number of Associates</label>
+              <label for="">Enter Number of Team Members</label>
               <!-- \\ -->
-              <input id="gen_no_of_associates" type="number" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+              <input id="gen_no_of_associates" type="number" value="0" min="0" step="1">
 
 
               <br>
@@ -157,16 +157,16 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             <hr>
             <div class="form-row">
               <div class="col">
-                <label for="">Shift 1 Number of Associates</label>
+                <label for="">Shift 1 Number of Team Members</label>
                 <!-- \\ -->
-                <input type="number" id="s1noofassoc" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                <input type="number" id="s1noofassoc" value="0" min="0" step="1">
               </div>
             </div>
             <div class="form-row">
               <div class="col">
-                <label for="">Shift 2 Number of Associates</label>
+                <label for="">Shift 2 Number of Team Members</label>
                 <!-- \\ -->
-                <input type="number" id="s2noofassoc" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                <input type="number" id="s2noofassoc" value="0" min="0" step="1">
               </div>
             </div>
 
@@ -378,11 +378,12 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       <div class="container border border-secondary shadow-sm p-3 mb-5 bg-white rounded" id="gen_shift_users" style="display:none;">
         <div class="form-row">
           <div class="col">
-            <label for="">Select General Shift Associates</label>
+            <label for="">Select General Shift Team</label>
             <select class="form-control select" multiple id="genshiftusername" name="genshiftusername[]">
               <?php
               // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-              $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+              // $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+              $select_users = $conn->prepare("SELECT * FROM user_detail where user_type = 'Associates' or user_type = 'Executives' order by user_type DESC;");
               $select_users->execute();
               $select_users_res = $select_users->get_result();
               while ($select_users_row = $select_users_res->fetch_assoc())
@@ -390,7 +391,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 // $barcode[] = $select_users_row['barcode'];
                 // $username[] = $select_users_row['fullname'];
               ?>
-                <option value="<?php echo $select_users_row['user_name']; ?>"><?php echo $select_users_row['fullname']; ?></option>
+                <option value="<?php echo $select_users_row['user_name']; ?>"><?php echo $select_users_row['fullname'] . ' - ' . $select_users_row['user_type']; ?></option>
               <?php
               }
               //selected users to be removed from stack
@@ -406,7 +407,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
           <div class="col">
 
             <!-- [[ button to assign shift associates general shift]] -->
-            <button type="button" id="gen_submit">Assign Shift Associates</button>
+            <button type="button" id="gen_submit">Assign Team</button>
           </div>
         </div>
       </div>
@@ -435,11 +436,12 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       <div class="container border border-secondary shadow-sm p-3 mb-5 bg-white rounded" id="shift_users" style="display:none;">
         <div class="form-row">
           <div class="col">
-            <label for="">Shift 1 Associates</label>
+            <label for="">Shift 1 Team</label>
             <select class="form-control select" multiple id="shift1username" name="shift1username[]">
               <?php
               // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-              $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+              // $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+              $select_users = $conn->prepare("SELECT * FROM user_detail where user_type = 'Associates' or user_type = 'Executives' order by user_type DESC;");
               $select_users->execute();
               $select_users_res = $select_users->get_result();
               while ($select_users_row = $select_users_res->fetch_assoc())
@@ -447,7 +449,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 // $barcode[] = $select_users_row['barcode'];
                 // $username[] = $select_users_row['fullname'];
               ?>
-                <option value="<?php echo $select_users_row['user_name']; ?>"><?php echo $select_users_row['fullname']; ?></option>
+                <option value="<?php echo $select_users_row['user_name']; ?>"><?php echo $select_users_row['fullname'] . ' - ' . $select_users_row['user_type']; ?></option>
               <?php
               }
               //selected users to be removed from stack
@@ -459,11 +461,12 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
         <div class="form-row">
           <div class="col">
-            <label for="">Shift 2 Associates</label>
+            <label for="">Shift 2 Team</label>
             <select class="form-control select" multiple id="shift2username" name="shift2username[]">
               <?php
               // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-              $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+              // $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+              $select_users = $conn->prepare("SELECT * FROM user_detail where user_type = 'Associates' or user_type = 'Executives' order by user_type DESC;");
               $select_users->execute();
               $select_users_res = $select_users->get_result();
               while ($select_users_row = $select_users_res->fetch_assoc())
@@ -471,7 +474,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 // $barcode[] = $select_users_row['barcode'];
                 // $username[] = $select_users_row['fullname'];
               ?>
-                <option value="<?php echo $select_users_row['user_name']; ?>"><?php echo $select_users_row['fullname']; ?></option>
+                <option value="<?php echo $select_users_row['user_name']; ?>"><?php echo $select_users_row['fullname'] . ' - ' . $select_users_row['user_type']; ?></option>
               <?php
               }
               //selected users to be removed from stack
@@ -485,7 +488,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
           <div class="col">
 
             <!-- [[ button to assign shift associates in multi shift - use this in general shift]] -->
-            <button type="button" id="multi_submit">Assign Shift Associates</button>
+            <button type="button" id="multi_submit">Assign Team</button>
           </div>
         </div>
       </div>
@@ -589,7 +592,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <input type="time" class="form-control" id="process_start_time">
                 <label for="">Number of Associates</label>
                 <!-- \\ -->
-                <input type="number" class="form-control" id="process_users" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                <input type="number" class="form-control" id="process_users" value="0" min="0" step="1">
 
                 <label for="">Associates</label>
                 <select class="form-control" id="username" name="username[]" multiple>
@@ -597,7 +600,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 </select>
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary" id="process_assign">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="process_assign">Assign</button>
               </div>
 
             </div>
@@ -669,7 +672,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <input type="time" class="form-control" id="workstation_start_time">
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary" id="workstation_assign">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="workstation_assign">Assign</button>
               </div>
             </div>
 
@@ -736,14 +739,14 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <input type="time" class="form-control" id="material_start_time">
                 <label for="">Number of Associates</label>
                 <!-- \\ -->
-                <input type="number" class="form-control" id="material_user_count" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                <input type="number" class="form-control" id="material_user_count" value="0" min="0" step="1">
                 <label for="">Associates</label>
                 <select class="form-control" multiple id="material_username">
 
                 </select>
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary" id="material_assign">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="material_assign">Assign</button>
               </div>
             </div>
 
@@ -805,14 +808,14 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <input type="time" id="team_start_time">
                 <label for="">No of Associates</label>
                 <!-- \\ -->
-                <input type="number" id="team_count">
+                <input type="number" id="team_count" value="0" min="0" step="1">
                 <label for="">Associates</label>
-                <select class="form-control" multiple id="team_username" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                <select class="form-control" multiple id="team_username">
                 </select>
 
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary" id="team_assign">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="team_assign">Assign</button>
               </div>
             </div>
 
@@ -870,13 +873,13 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <input type="time" id="model_start_time">
                 <label for="">No of Associates</label>
                 <!-- \\ -->
-                <input type="number" id="model_user_count">
+                <input type="number" id="model_user_count" value="0" min="0" step="1">
                 <label for="">Associates</label>
-                <select class="form-control" multiple id="model_username" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                <select class="form-control" multiple id="model_username">
                 </select>
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary" id="model_assign">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="model_assign">Assign</button>
               </div>
             </div>
 
@@ -967,7 +970,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <input type="time" class="form-control" id="process_start_time1">
                 <label for="">Number of Associates</label>
                 <!-- \\ -->
-                <input type="number" class="form-control" id="process_users1" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                <input type="number" class="form-control" id="process_users1" value="0" min="0" step="1">
 
                 <label for="">Associates</label>
                 <select class="form-control" id="username1" name="username[]" multiple>
@@ -975,7 +978,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 </select>
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary" id="process_assign1">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="process_assign1">Assign</button>
               </div>
 
             </div>
@@ -1048,7 +1051,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <input type="time" class="form-control" id="workstation_start_time1">
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary" id="workstation_assign1">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="workstation_assign1">Assign</button>
               </div>
             </div>
 
@@ -1115,14 +1118,14 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <input type="time" class="form-control" id="material_start_time1">
                 <label for="">Number of Associates</label>
                 <!-- \\ -->
-                <input type="number" class="form-control" id="material_user_count1" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                <input type="number" class="form-control" id="material_user_count1" value="0" min="0" step="1">
                 <label for="">Associates</label>
                 <select class="form-control" multiple id="material_username1">
 
                 </select>
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary" id="material_assign1">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="material_assign1">Assign</button>
               </div>
             </div>
 
@@ -1184,14 +1187,14 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <input type="time" id="team_start_time1">
                 <label for="">No of Associates</label>
                 <!-- \\ -->
-                <input type="number" id="team_count1" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                <input type="number" id="team_count1" value="0" min="0" step="1">
                 <label for="">Associates</label>
                 <select class="form-control" multiple id="team_username1">
                 </select>
 
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary" id="team_assign1">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="team_assign1">Assign</button>
               </div>
             </div>
 
@@ -1249,13 +1252,13 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <input type="time" id="model_start_time1">
                 <label for="">No of Associates</label>
                 <!-- \\ -->
-                <input type="number" id="model_user_count1" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                <input type="number" id="model_user_count1" value="0" min="0" step="1">
                 <label for="">Associates</label>
                 <select class="form-control" multiple id="model_username1">
                 </select>
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary" id="model_assign1">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="model_assign1">Assign</button>
               </div>
             </div>
 
@@ -1346,7 +1349,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <input type="time" class="form-control" id="process_start_time2">
                 <label for="">Number of Associates</label>
                 <!-- \\ -->
-                <input type="number" class="form-control" id="process_users2" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                <input type="number" class="form-control" id="process_users2" value="0" min="0" step="1">
 
                 <label for="">Associates</label>
                 <select class="form-control" id="username2" name="username[]" multiple>
@@ -1354,7 +1357,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 </select>
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary" id="process_assign2">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="process_assign2">Assign</button>
               </div>
 
             </div>
@@ -1428,7 +1431,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <input type="time" class="form-control" id="workstation_start_time2">
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary" id="workstation_assign2">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="workstation_assign2">Assign</button>
               </div>
             </div>
 
@@ -1495,14 +1498,14 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <input type="time" class="form-control" id="material_start_time2">
                 <label for="">Number of Associates</label>
                 <!-- \\ -->
-                <input type="number" class="form-control" id="material_user_count2" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                <input type="number" class="form-control" id="material_user_count2" value="0" min="0" step="1">
                 <label for="">Associates</label>
                 <select class="form-control" multiple id="material_username2">
 
                 </select>
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary" id="material_assign2">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="material_assign2">Assign</button>
               </div>
             </div>
 
@@ -1564,14 +1567,14 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <input type="time" id="team_start_time2">
                 <label for="">No of Associates</label>
                 <!-- \\ -->
-                <input type="number" id="team_count2" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                <input type="number" id="team_count2" value="0" min="0" step="1">
                 <label for="">Associates</label>
                 <select class="form-control" multiple id="team_username2">
                 </select>
 
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary" id="team_assign2">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="team_assign2">Assign</button>
               </div>
             </div>
 
@@ -1629,13 +1632,13 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 <input type="time" id="model_start_time2">
                 <label for="">No of Associates</label>
                 <!-- \\ -->
-                <input type="number" id="model_user_count2" value="0" min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+                <input type="number" id="model_user_count2" value="0" min="0" step="1">
                 <label for="">Associates</label>
                 <select class="form-control" multiple id="model_username2">
                 </select>
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary" id="model_assign2">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="model_assign2">Assign</button>
               </div>
             </div>
 
@@ -2208,19 +2211,47 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       // --------- processwise - general shift---------
 
       // ---------Process wise start---------
+      // $('#process_assign').on('click', function() {
+      //   var process_user_arr = $('#username option:selected').toArray().map(item => item.value);
+      //   var proc_user_arr = JSON.stringify(process_user_arr);
+      //   // console.log(json_select_arr);
+      //   // console.log($('#username option:selected').length);
+      //   var processes = $('#process_parts').val();
+      //   var process_start_time = $('#process_start_time').val();
+
+
+
+      //   var fixdate = $('#fixdate').val();
+      //   var data = "process_start_time=" + process_start_time + "&processes=" + processes + "&username=" + proc_user_arr + "&fixdate=" + fixdate + "&type=process";
+      //   console.log(data);
+      //   $.ajax({
+      //     type: "POST",
+      //     url: "task_planning_scripts.php",
+      //     data: data,
+      //     success: function(res) {
+      //       console.log(res);
+      //       $('#processes').val('').trigger('change');
+      //       $('#username').val('').trigger('change');
+      //     }
+      //   });
+      // });
+      // ---------Process wise end---------
+
+      // ---------Process wise start---------
       $('#process_assign').on('click', function() {
+        var $this = $('.AssignXButton'); // target all assign buttons
+        $this.prop('disabled', true); // Disable the button when clicked
+
         var process_user_arr = $('#username option:selected').toArray().map(item => item.value);
         var proc_user_arr = JSON.stringify(process_user_arr);
-        // console.log(json_select_arr);
-        // console.log($('#username option:selected').length);
+
         var processes = $('#process_parts').val();
         var process_start_time = $('#process_start_time').val();
-
-
-
         var fixdate = $('#fixdate').val();
+
         var data = "process_start_time=" + process_start_time + "&processes=" + processes + "&username=" + proc_user_arr + "&fixdate=" + fixdate + "&type=process";
         console.log(data);
+
         $.ajax({
           type: "POST",
           url: "task_planning_scripts.php",
@@ -2229,9 +2260,14 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             console.log(res);
             $('#processes').val('').trigger('change');
             $('#username').val('').trigger('change');
+            $this.prop('disabled', false); // Re-enable the button on AJAX success
+          },
+          error: function() {
+            $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
           }
         });
       });
+
       // ---------Process wise end---------
 
       // --------- processwise selection data - shift 1 - start---------
@@ -2334,6 +2370,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
       // ---------Process wise shift1 start---------
       $('#process_assign1').on('click', function() {
+        var $this = $('.AssignXButton'); // target all assign buttons
+        $this.prop('disabled', true); // Disable the button when clicked
         var process_user_arr = $('#username1 option:selected').toArray().map(item => item.value);
         var proc_user_arr = JSON.stringify(process_user_arr);
         // console.log(json_select_arr);
@@ -2354,6 +2392,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             console.log(res);
             $('#processes1').val('').trigger('change');
             $('#username1').val('').trigger('change');
+            $this.prop('disabled', false); // Re-enable the button on AJAX success
+          },
+          error: function() {
+            $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
           }
         });
       });
@@ -2459,6 +2501,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
       // ---------Process wise shift2 start---------
       $('#process_assign2').on('click', function() {
+        var $this = $('.AssignXButton'); // target all assign buttons
+        $this.prop('disabled', true); // Disable the button when clicked
         var process_user_arr = $('#username2 option:selected').toArray().map(item => item.value);
         var proc_user_arr = JSON.stringify(process_user_arr);
         // console.log(json_select_arr);
@@ -2479,6 +2523,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             console.log(res);
             $('#processes2').val('').trigger('change');
             $('#username2').val('').trigger('change');
+            $this.prop('disabled', false); // Re-enable the button on AJAX success
+          },
+          error: function() {
+            $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
           }
         });
       });
@@ -2538,6 +2586,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       // -----------workstation wise start-----------
       $('#workstation_assign').on('click', function() {
         // console.log(this.value);
+        var $this = $('.AssignXButton'); // target all assign buttons
+        $this.prop('disabled', true); // Disable the button when clicked
+
 
         var workstation = $('#workstation').val();
         var workprocesses = $('#work_parts').val();
@@ -2557,6 +2608,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#work_parts').val('').trigger('change');
             $('#workstation_start_time').val('00:00');
             $('#work_unit_time').empty();
+            $this.prop('disabled', false); // Re-enable the button on AJAX success
+          },
+          error: function() {
+            $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
           }
         });
       });
@@ -2616,6 +2671,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       // -----------workstation wise shift 1 start-----------
       $('#workstation_assign1').on('click', function() {
         // console.log(this.value);
+        var $this = $('.AssignXButton'); // target all assign buttons
+        $this.prop('disabled', true); // Disable the button when clicked
+
 
         var workstation = $('#workstation1').val();
         var workprocesses = $('#work_parts1').val();
@@ -2635,6 +2693,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#work_parts1').val('').trigger('change');
             $('#workstation_start_time1').val('00:00');
             $('#work_unit_time1').empty();
+            $this.prop('disabled', false); // Re-enable the button on AJAX success
+          },
+          error: function() {
+            $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
           }
         });
       });
@@ -2694,6 +2756,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       // -----------workstation wise shift 2 start-----------
       $('#workstation_assign2').on('click', function() {
         // console.log(this.value);
+        var $this = $('.AssignXButton'); // target all assign buttons
+        $this.prop('disabled', true); // Disable the button when clicked
+
 
         var workstation = $('#workstation2').val();
         var workprocesses = $('#work_parts2').val();
@@ -2713,6 +2778,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#work_parts2').val('').trigger('change');
             $('#workstation_start_time2').val('00:00');
             $('#work_unit_time2').empty();
+            $this.prop('disabled', false); // Re-enable the button on AJAX success
+          },
+          error: function() {
+            $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
           }
         });
       });
@@ -2806,6 +2875,12 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       // ---------material wise start---------
       $('#material_assign').on('click', function() {
 
+        // AssignXButton
+
+        var $this = $('.AssignXButton'); // Cache the button
+        $this.prop('disabled', true); // Disable the button when clicked
+
+
         var material = $('#material').val();
         var material_model = $('#material_process').val();
         var material_username = $('#material_username option:selected').toArray().map(item => item.value);
@@ -2821,12 +2896,16 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
           data: data,
           success: function(res) {
             console.log(res);
-            $('#material').empty();
+            $('#material').val('').trigger('change');
             $('#material_model').empty();
             $('#material_process').empty();
             $('#material_username').empty();
             $('#material_unit_time').empty();
             $('#material_start_time').val('00:00');
+            $this.prop('disabled', false); // Re-enable the button on AJAX success
+          },
+          error: function() {
+            $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
           }
         });
 
@@ -2926,6 +3005,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       // ---------material wise shift 1 start---------
       $('#material_assign1').on('click', function() {
 
+        var $this = $('.AssignXButton'); // target all assign buttons
+        $this.prop('disabled', true); // Disable the button when clicked
+
+
         var material = $('#material1').val();
         var material_model = $('#material_process1').val();
         var material_username = $('#material_username1 option:selected').toArray().map(item => item.value);
@@ -2941,12 +3024,16 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
           data: data,
           success: function(res) {
             console.log(res);
-            $('#material1').empty();
+            $('#material1').val('').trigger('change');
             $('#material_model1').empty();
             $('#material_process1').empty();
             $('#material_username1').empty();
             $('#material_unit_time1').empty();
             $('#material_start_time1').val('00:00');
+            $this.prop('disabled', false); // Re-enable the button on AJAX success
+          },
+          error: function() {
+            $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
           }
         });
 
@@ -3046,6 +3133,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       // ---------material wise shift 2 start---------
       $('#material_assign2').on('click', function() {
 
+        var $this = $('.AssignXButton'); // target all assign buttons
+        $this.prop('disabled', true); // Disable the button when clicked
+
+
         var material = $('#material2').val();
         var material_model = $('#material_process2').val();
         var material_username = $('#material_username2 option:selected').toArray().map(item => item.value);
@@ -3061,12 +3152,16 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
           data: data,
           success: function(res) {
             console.log(res);
-            $('#material2').empty();
+            $('#material2').val('').trigger('change');
             $('#material_model2').empty();
             $('#material_process2').empty();
             $('#material_username2').empty();
             $('#material_unit_time2').empty();
             $('#material_start_time2').val('00:00');
+            $this.prop('disabled', false); // Re-enable the button on AJAX success
+          },
+          error: function() {
+            $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
           }
         });
 
@@ -3166,6 +3261,11 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
       // -----------team wise start------------
       $('#team_assign').on('click', function() {
+        // AssignXButton
+
+        var $this = $('.AssignXButton'); // Cache the button
+        $this.prop('disabled', true); // Disable the button when clicked
+
         var teams = $('#teams').val();
         var team_model = $('#team_model').val();
         var team_process = $('#team_process').val();
@@ -3190,6 +3290,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#team_start_time').val('00:00');
             $('#team_username').empty();
 
+            $this.prop('disabled', false); // Re-enable the button on AJAX success
+          },
+          error: function() {
+            $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
           }
         });
 
@@ -3290,6 +3394,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
       // -----------team wise shift 1 start------------
       $('#team_assign1').on('click', function() {
+        var $this = $('.AssignXButton'); // target all assign buttons
+        $this.prop('disabled', true); // Disable the button when clicked
+
         var teams = $('#teams1').val();
         var team_model = $('#team_model1').val();
         var team_process = $('#team_process1').val();
@@ -3313,7 +3420,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#team_count1').empty();
             $('#team_start_time1').val('00:00');
             $('#team_username1').empty();
-
+            $this.prop('disabled', false); // Re-enable the button on AJAX success
+          },
+          error: function() {
+            $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
           }
         });
 
@@ -3414,6 +3524,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
       // -----------team wise shift 2 start------------
       $('#team_assign2').on('click', function() {
+        var $this = $('.AssignXButton'); // target all assign buttons
+        $this.prop('disabled', true); // Disable the button when clicked
+
         var teams = $('#teams2').val();
         var team_model = $('#team_model2').val();
         var team_process = $('#team_process2').val();
@@ -3438,6 +3551,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#team_start_time2').val('00:00');
             $('#team_username2').empty();
 
+            $this.prop('disabled', false); // Re-enable the button on AJAX success
+          },
+          error: function() {
+            $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
           }
         });
 
@@ -3525,6 +3642,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
       // ---------model wise start---------
       $('#model_assign').on('click', function() {
+        var $this = $('.AssignXButton'); // target all assign buttons
+        $this.prop('disabled', true); // Disable the button when clicked
+
         var model = $('#models').val();
         var model_process = $('#model_process').val();
         var model_username = $('#model_username option:selected').toArray().map(item => item.value);
@@ -3548,6 +3668,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#model_start_time').val('00:00');
             $('#model_username').empty();
 
+            $this.prop('disabled', false); // Re-enable the button on AJAX success
+          },
+          error: function() {
+            $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
           }
         });
 
@@ -3618,6 +3742,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
       // ---------model wise shift 1 start---------
       $('#model_assign1').on('click', function() {
+        var $this = $('.AssignXButton'); // target all assign buttons
+        $this.prop('disabled', true); // Disable the button when clicked
+
         var model = $('#models1').val();
         var model_process = $('#model_process1').val();
         var model_username = $('#model_username1 option:selected').toArray().map(item => item.value);
@@ -3640,6 +3767,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#model_user_count1').empty();
             $('#model_start_time1').val('00:00');
             $('#model_username1').empty();
+            $this.prop('disabled', false); // Re-enable the button on AJAX success
+          },
+          error: function() {
+            $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
           }
         });
 
@@ -3710,6 +3841,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
       // ---------model wise shift 2 start---------
       $('#model_assign2').on('click', function() {
+        var $this = $('.AssignXButton'); // target all assign buttons
+        $this.prop('disabled', true); // Disable the button when clicked
+
         var model = $('#models2').val();
         var model_process = $('#model_process2').val();
         var model_username = $('#model_username2 option:selected').toArray().map(item => item.value);
@@ -3732,6 +3866,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#model_user_count2').empty();
             $('#model_start_time2').val('00:00');
             $('#model_username2').empty();
+            $this.prop('disabled', false); // Re-enable the button on AJAX success
+          },
+          error: function() {
+            $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
           }
         });
 
@@ -3838,7 +3976,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
         setInterval(function() {
           var fixdate = $('#fixdate').val();
           var data = "fixdate=" + fixdate + "&type=associate_gauge";
-          console.log(data);
+          // console.log(data);
           $.ajax({
             type: "POST",
             url: "task_planning_scripts.php",
@@ -3850,11 +3988,11 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             }
           });
 
-        }, 3000);
+        }, 180000); // 180,000 milliseconds = 3 minutes
         setInterval(function() {
           var fixdate = $('#fixdate').val();
           var data = "fixdate=" + fixdate + "&type=work_gauge";
-          console.log(data);
+          // console.log(data);
           $.ajax({
             type: "POST",
             url: "task_planning_scripts.php",
@@ -3865,7 +4003,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
               updateWorkChart(numericValue);
             }
           });
-        }, 3000);
+        }, 180000); // 180,000 milliseconds = 3 minutes
       }
     </script>
 
@@ -3937,8 +4075,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 <script>
   $(document).ready(function() {
     var last_valid_selection3 = null;
-    $('#material_user_count').on('input', function() {});
-    $('#material_username').on('input', function() {
+    $('#material_user_count').on('change', function() {});
+    $('#material_username').on('change', function() {
       var value3 = parseInt($('#material_user_count').val(), 10);
       var currentValue3 = $(this).val();
       if (currentValue3.length > value3) {
@@ -3955,8 +4093,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 <script>
   $(document).ready(function() {
     var last_valid_selection4 = null;
-    $('#team_count').on('input', function() {});
-    $('#team_username').on('input', function() {
+    $('#team_count').on('change', function() {});
+    $('#team_username').on('change', function() {
       var value4 = parseInt($('#team_count').val(), 10);
       var currentValue4 = $(this).val();
       if (currentValue4.length > value4) {
