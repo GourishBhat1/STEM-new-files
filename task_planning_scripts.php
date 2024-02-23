@@ -808,6 +808,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'material_models')
 
 if (isset($_POST['type']) && $_POST['type'] == 'material_process')
 {
+  $material_name = $_POST['material'];
   $material_model = $_POST['material_model'];
 
   $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
@@ -816,8 +817,8 @@ if (isset($_POST['type']) && $_POST['type'] == 'material_process')
   $get_current_batch_row = $get_current_batch_res->fetch_assoc();
   $batch_no = $get_current_batch_row['batchno'];
 
-  $fetch_process = $conn->prepare('SELECT DISTINCT stageid, process_name from task_id where batchno=? and model_name = ? and tdatefm is null');
-  $fetch_process->bind_param('ss', $batch_no, $material_model);
+  $fetch_process = $conn->prepare('SELECT DISTINCT stageid, process_name from task_id where batchno=? and model_name = ? and material_name = ? and tdatefm is null');
+  $fetch_process->bind_param('sss', $batch_no, $material_model, $material_name);
   $fetch_process->execute();
   $fetch_process_res = $fetch_process->get_result();
   echo '<option value="" selected disabled>Select Process</option>';
