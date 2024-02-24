@@ -244,7 +244,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
           </div>
           <div class="col-3">
             <h5>Team Change</h5>
-            <label for="">Associates</label>
+            <!-- <label for="">Associates</label> -->
+            <label for="">Team</label>
             <select class="form-control" id="team_assoc">
               <?php
               // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
@@ -2954,9 +2955,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       });
 
       $('#material_model1').on('change', function() {
+        var material = $('#material1').val();
         var material_model = $('#material_model1').val();
 
-        var data = "material_model=" + material_model + "&type=material_process";
+        var data = "material=" + material + "&material_model=" + material_model + "&type=material_process";
         console.log(data);
         $.ajax({
           type: "POST",
@@ -3082,9 +3084,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       });
 
       $('#material_model2').on('change', function() {
+        var material = $('#material2').val();
         var material_model = $('#material_model2').val();
 
-        var data = "material_model=" + material_model + "&type=material_process";
+        var data = "material=" + material + "&material_model=" + material_model + "&type=material_process";
         console.log(data);
         $.ajax({
           type: "POST",

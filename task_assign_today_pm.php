@@ -53,6 +53,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
             <?php
             $todaysDate = date('Y-m-d');
+            // $todaysDate = '2024-02-16';
             ?>
             <div class="row text-center">
                 <form method="post" class="col-4">
@@ -543,6 +544,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
 
                             </div>
+
                             <div class="col-sm col-md-6 col-lg-6 card card-danger card-outline">
                                 <header>
                                     <center>Select Associates</center>
@@ -609,6 +611,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
                                 </div>
                             </div>
+                            <!-- ,,, -->
                             <div class="col-sm col-md-6 col-lg-6 card card-danger card-outline">
                                 <header>
                                     <center>Select Associates</center>
@@ -664,9 +667,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                     <option selected disabled>Select Process</option>
                                 </select>
 
-                                <div id="unit_time_details">
 
-                                </div>
 
 
                                 <!-- GENERAL SHIFT -->
@@ -687,7 +688,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 <input type="time" class="form-control" id="process_start_time">
 
                                 <label for="">Unit Time</label>
-                                <div id="user_unit_time"></div>
+                                <div id="user_unit_time_details">
+
+                                </div>
 
 
 
@@ -1841,6 +1844,40 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 $('#process_start_time').val('00:00');
             });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             // GENERAL SHIFT
 
             $('#model_processes').on('change', function() {
@@ -1881,12 +1918,55 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 });
             });
 
-            // GENERAL SHIFT
 
-            $('#process_users').on('change', function() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            // ``
+
+            // GENERAL SHIFT
+            // Code to output start time, no of associates and list of associates in General Shift - Process Planner
+
+            $('#process_parts').on('change', function() {
+                var fixdate = $('#fixdate').val();
                 var model_name = $('#processes').val();
-                var process_start_time = $('#process_start_time').val();
-                var data = "model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_users";
+                var stageid = $('#process_parts').val(); // stage id
+
+                var data = "model_name=" + model_name + "&fixdate=" + fixdate + "&stageid=" + stageid + "&type=process_users";
                 $.ajax({
                     type: "POST",
                     url: "task_assign_today_pm_scripts.php",
@@ -1894,7 +1974,13 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     data: data,
                     success: function(res) {
                         console.log(res);
-                        $('#username').html(res);
+                        var obj = jQuery.parseJSON(res);
+                        var start_time = obj.start_time;
+                        var no_of_asssoc = obj.no_of_asssoc;
+                        var list_of_asssoc = obj.list_of_asssoc;
+                        $('#process_start_time').val(start_time);
+                        $('#process_users').val(no_of_asssoc);
+                        $('#username').html(list_of_asssoc);
                     }
                 });
             });
@@ -2019,10 +2105,21 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 });
             });
 
-            $('#process_users1').on('change', function() {
+
+
+            // ``
+            // Code to output start time, no of associates and list of associates in Shift 1 - Process Planner
+
+
+            $('#process_parts1').on('change', function() {
+                // var model_name = $('#processes1').val();
+                // var process_start_time = $('#process_start_time1').val();
+
+                var fixdate = $('#fixdate').val();
                 var model_name = $('#processes1').val();
-                var process_start_time = $('#process_start_time1').val();
-                var data = "model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_users";
+                var stageid = $('#process_parts1').val(); // stage id
+
+                var data = "model_name=" + model_name + "&fixdate=" + fixdate + "&stageid=" + stageid + "&type=process_users";
                 $.ajax({
                     type: "POST",
                     url: "task_assign_today_pm_scripts.php",
@@ -2030,7 +2127,13 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     data: data,
                     success: function(res) {
                         console.log(res);
-                        $('#username1').html(res);
+                        var obj = jQuery.parseJSON(res);
+                        var start_time = obj.start_time;
+                        var no_of_asssoc = obj.no_of_asssoc;
+                        var list_of_asssoc = obj.list_of_asssoc;
+                        $('#process_start_time1').val(start_time);
+                        $('#process_users1').val(no_of_asssoc);
+                        $('#username1').html(list_of_asssoc);
                     }
                 });
             });
@@ -2155,10 +2258,20 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 });
             });
 
-            $('#process_users2').on('change', function() {
+
+            // ``
+            // Code to output start time, no of associates and list of associates in Shift 2 - Process Planner
+
+
+            $('#process_parts2').on('change', function() {
+                // var model_name = $('#processes2').val();
+                // var process_start_time = $('#process_start_time2').val();
+
+                var fixdate = $('#fixdate').val();
                 var model_name = $('#processes2').val();
-                var process_start_time = $('#process_start_time2').val();
-                var data = "model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_users";
+                var stageid = $('#process_parts2').val(); // stage id
+
+                var data = "model_name=" + model_name + "&fixdate=" + fixdate + "&stageid=" + stageid + "&type=process_users";
                 $.ajax({
                     type: "POST",
                     url: "task_assign_today_pm_scripts.php",
@@ -2166,7 +2279,13 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     data: data,
                     success: function(res) {
                         console.log(res);
-                        $('#username2').html(res);
+                        var obj = jQuery.parseJSON(res);
+                        var start_time = obj.start_time;
+                        var no_of_asssoc = obj.no_of_asssoc;
+                        var list_of_asssoc = obj.list_of_asssoc;
+                        $('#process_start_time2').val(start_time);
+                        $('#process_users2').val(no_of_asssoc);
+                        $('#username2').html(list_of_asssoc);
                     }
                 });
             });
@@ -2490,8 +2609,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#material_model').on('change', function() {
                 var fixdate = $('#fixdate').val();
                 var material_model = $('#material_model').val();
+                var material = $('#material').val();
 
-                var data = "material_model=" + material_model + "&fixdate=" + fixdate + "&type=material_process";
+                var data = "material=" + material + "&material_model=" + material_model + "&fixdate=" + fixdate + "&type=material_process";
                 console.log(data);
                 $.ajax({
                     type: "POST",
@@ -2537,6 +2657,36 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     }
                 });
             });
+
+
+
+            // ``
+            // Code to output start time, no of associates and list of associates in General Shift - Material Planner
+            $('#material_process').on('change', function() {
+                var fixdate = $('#fixdate').val();
+                var model_name = $('#material_model').val();
+                var stageid = $('#material_process').val(); // stage id
+
+                var data = "model_name=" + model_name + "&fixdate=" + fixdate + "&stageid=" + stageid + "&type=process_users";
+                $.ajax({
+                    type: "POST",
+                    url: "task_assign_today_pm_scripts.php",
+                    dateType: 'JSON',
+                    data: data,
+                    success: function(res) {
+                        console.log(res);
+                        var obj = jQuery.parseJSON(res);
+                        var start_time = obj.start_time;
+                        var no_of_asssoc = obj.no_of_asssoc;
+                        var list_of_asssoc = obj.list_of_asssoc;
+                        $('#material_start_time').val(start_time);
+                        $('#material_user_count').val(no_of_asssoc);
+                        $('#material_username').html(list_of_asssoc);
+                    }
+                });
+            });
+
+
             // ------------material wise data fetch -general-end-----------
 
             // ---------material wise start---------
@@ -2618,8 +2768,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#material_model1').on('change', function() {
                 var fixdate = $('#fixdate').val();
                 var material_model = $('#material_model1').val();
+                var material = $('#material1').val();
 
-                var data = "material_model=" + material_model + "&fixdate=" + fixdate + "&type=material_process";
+                var data = "material=" + material + "&material_model=" + material_model + "&fixdate=" + fixdate + "&type=material_process";
                 console.log(data);
                 $.ajax({
                     type: "POST",
@@ -2665,6 +2816,38 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     }
                 });
             });
+
+
+
+
+            // ``
+
+            // Code to output start time, no of associates and list of associates in  Shift 1 - Material Planner
+            $('#material_process1').on('change', function() {
+                var fixdate = $('#fixdate').val();
+                var model_name = $('#material_model1').val();
+                var stageid = $('#material_process1').val(); // stage id
+
+                var data = "model_name=" + model_name + "&fixdate=" + fixdate + "&stageid=" + stageid + "&type=process_users";
+                $.ajax({
+                    type: "POST",
+                    url: "task_assign_today_pm_scripts.php",
+                    dateType: 'JSON',
+                    data: data,
+                    success: function(res) {
+                        console.log(res);
+                        var obj = jQuery.parseJSON(res);
+                        var start_time = obj.start_time;
+                        var no_of_asssoc = obj.no_of_asssoc;
+                        var list_of_asssoc = obj.list_of_asssoc;
+                        $('#material_start_time1').val(start_time);
+                        $('#material_user_count1').val(no_of_asssoc);
+                        $('#material_username1').html(list_of_asssoc);
+                    }
+                });
+            });
+
+
             // ------------material wise data fetch -shift 1-end-----------
 
             // ---------material wise shift 1 start---------
@@ -2746,8 +2929,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#material_model2').on('change', function() {
                 var fixdate = $('#fixdate').val();
                 var material_model = $('#material_model2').val();
+                var material = $('#material2').val();
 
-                var data = "material_model=" + material_model + "&fixdate=" + fixdate + "&type=material_process";
+                var data = "material=" + material + "&material_model=" + material_model + "&fixdate=" + fixdate + "&type=material_process";
                 console.log(data);
                 $.ajax({
                     type: "POST",
@@ -2793,6 +2977,37 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     }
                 });
             });
+
+
+
+            // ``
+
+            // Code to output start time, no of associates and list of associates in General Shift - Material Planner
+            $('#material_process2').on('change', function() {
+                var fixdate = $('#fixdate').val();
+                var model_name = $('#material_model2').val();
+                var stageid = $('#material_process2').val(); // stage id
+
+                var data = "model_name=" + model_name + "&fixdate=" + fixdate + "&stageid=" + stageid + "&type=process_users";
+                $.ajax({
+                    type: "POST",
+                    url: "task_assign_today_pm_scripts.php",
+                    dateType: 'JSON',
+                    data: data,
+                    success: function(res) {
+                        console.log(res);
+                        var obj = jQuery.parseJSON(res);
+                        var start_time = obj.start_time;
+                        var no_of_asssoc = obj.no_of_asssoc;
+                        var list_of_asssoc = obj.list_of_asssoc;
+                        $('#material_start_time2').val(start_time);
+                        $('#material_user_count2').val(no_of_asssoc);
+                        $('#material_username2').html(list_of_asssoc);
+                    }
+                });
+            });
+
+
             // ------------material wise data fetch -shift 2-end-----------
 
             // ---------material wise shift 2 start---------
@@ -2908,10 +3123,17 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 });
             });
 
-            $('#team_count').on('change', function() {
-                var team = $('#teams').val();
 
-                var data = "team=" + team + "&type=team_username";
+            // ```
+            // code to output the three - gen shift team planner
+
+            $('#team_process').on('change', function() {
+                var team = $('#teams').val();
+                var fixdate = $('#fixdate').val();
+                var team_model = $('#team_model').val();
+                var team_process = $('#team_process').val();
+
+                var data = "team_model=" + team_model + "&fixdate=" + fixdate + "&team=" + team + "&team_process=" + team_process + "&type=team_username";
                 console.log(data);
                 $.ajax({
                     type: "POST",
@@ -2919,7 +3141,13 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     data: data,
                     success: function(res) {
                         console.log(res);
-                        $('#team_username').html(res);
+                        var obj = jQuery.parseJSON(res);
+                        var start_time = obj.start_time;
+                        var no_of_asssoc = obj.no_of_asssoc;
+                        var list_of_asssoc = obj.list_of_asssoc;
+                        $('#team_start_time').val(start_time);
+                        $('#team_count').val(no_of_asssoc);
+                        $('#team_username').html(list_of_asssoc);
                     }
                 });
             });
@@ -3040,10 +3268,33 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 });
             });
 
-            $('#team_count1').on('change', function() {
-                var team = $('#teams1').val();
+            // $('#team_count1').on('change', function() {
+            //     var team = $('#teams1').val();
 
-                var data = "team=" + team + "&type=team_username";
+            //     var data = "team=" + team + "&type=team_username";
+            //     console.log(data);
+            //     $.ajax({
+            //         type: "POST",
+            //         url: "task_assign_today_pm_scripts.php",
+            //         data: data,
+            //         success: function(res) {
+            //             console.log(res);
+            //             $('#team_username1').html(res);
+            //         }
+            //     });
+            // });
+
+
+            // ```
+            // code to output the three - shift 1 team planner
+
+            $('#team_process1').on('change', function() {
+                var team = $('#teams1').val();
+                var fixdate = $('#fixdate').val();
+                var team_model = $('#team_model1').val();
+                var team_process = $('#team_process1').val();
+
+                var data = "team_model=" + team_model + "&fixdate=" + fixdate + "&team=" + team + "&team_process=" + team_process + "&type=team_username";
                 console.log(data);
                 $.ajax({
                     type: "POST",
@@ -3051,7 +3302,13 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     data: data,
                     success: function(res) {
                         console.log(res);
-                        $('#team_username1').html(res);
+                        var obj = jQuery.parseJSON(res);
+                        var start_time = obj.start_time;
+                        var no_of_asssoc = obj.no_of_asssoc;
+                        var list_of_asssoc = obj.list_of_asssoc;
+                        $('#team_start_time1').val(start_time);
+                        $('#team_count1').val(no_of_asssoc);
+                        $('#team_username1').html(list_of_asssoc);
                     }
                 });
             });
@@ -3172,10 +3429,32 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 });
             });
 
-            $('#team_count2').on('change', function() {
-                var team = $('#teams2').val();
+            // $('#team_count2').on('change', function() {
+            //     var team = $('#teams2').val();
 
-                var data = "team=" + team + "&type=team_username";
+            //     var data = "team=" + team + "&type=team_username";
+            //     console.log(data);
+            //     $.ajax({
+            //         type: "POST",
+            //         url: "task_assign_today_pm_scripts.php",
+            //         data: data,
+            //         success: function(res) {
+            //             console.log(res);
+            //             $('#team_username2').html(res);
+            //         }
+            //     });
+            // });
+
+            // ```
+            // code to output the three -  shift 2 team planner
+
+            $('#team_process2').on('change', function() {
+                var team = $('#teams2').val();
+                var fixdate = $('#fixdate').val();
+                var team_model = $('#team_model2').val();
+                var team_process = $('#team_process2').val();
+
+                var data = "team_model=" + team_model + "&fixdate=" + fixdate + "&team=" + team + "&team_process=" + team_process + "&type=team_username";
                 console.log(data);
                 $.ajax({
                     type: "POST",
@@ -3183,7 +3462,13 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     data: data,
                     success: function(res) {
                         console.log(res);
-                        $('#team_username2').html(res);
+                        var obj = jQuery.parseJSON(res);
+                        var start_time = obj.start_time;
+                        var no_of_asssoc = obj.no_of_asssoc;
+                        var list_of_asssoc = obj.list_of_asssoc;
+                        $('#team_start_time2').val(start_time);
+                        $('#team_count2').val(no_of_asssoc);
+                        $('#team_username2').html(list_of_asssoc);
                     }
                 });
             });
@@ -3269,10 +3554,15 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 });
             });
 
-            $('#model_process').on('change', function() {
-                var model_process = $('#models').val();
+            // ````
+            // code to display the three - gen shift model planner
 
-                var data = "model_process=" + model_process + "&type=model_process";
+            $('#model_process').on('change', function() {
+                var model_process = $('#model_process').val();
+                var models = $('#models').val();
+                var fixdate = $('#fixdate').val();
+
+                var data = "models=" + models + "&fixdate=" + fixdate + "&model_process=" + model_process + "&type=model_process";
                 console.log(data);
                 $.ajax({
                     type: "POST",
@@ -3280,7 +3570,13 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     data: data,
                     success: function(res) {
                         console.log(res);
-                        $('#model_username').html(res);
+                        var obj = jQuery.parseJSON(res);
+                        var start_time = obj.start_time;
+                        var no_of_asssoc = obj.no_of_asssoc;
+                        var list_of_asssoc = obj.list_of_asssoc;
+                        $('#model_start_time').val(start_time);
+                        $('#model_user_count').val(no_of_asssoc);
+                        $('#model_username').html(list_of_asssoc);
                     }
                 });
             });
@@ -3387,10 +3683,40 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 });
             });
 
-            $('#model_process1').on('change', function() {
-                var model_process = $('#models1').val();
+            // $('#model_process1').on('change', function() {
+            //     var model_process = $('#models1').val();
 
-                var data = "model_process=" + model_process + "&type=model_process";
+            //     var data = "model_process=" + model_process + "&type=model_process";
+            //     console.log(data);
+            //     $.ajax({
+            //         type: "POST",
+            //         url: "task_assign_today_pm_scripts.php",
+            //         data: data,
+            //         success: function(res) {
+            //             console.log(res);
+            //             $('#model_username1').html(res);
+            //         }
+            //     });
+            // });
+
+
+            // model_process
+            // model_username
+            // model_unit_time
+            // model_assign
+
+
+
+
+            // ````
+            // code to display the three -  shift 1 model planner
+
+            $('#model_process1').on('change', function() {
+                var model_process = $('#model_process1').val();
+                var models = $('#models1').val();
+                var fixdate = $('#fixdate').val();
+
+                var data = "models=" + models + "&fixdate=" + fixdate + "&model_process=" + model_process + "&type=model_process";
                 console.log(data);
                 $.ajax({
                     type: "POST",
@@ -3398,14 +3724,18 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     data: data,
                     success: function(res) {
                         console.log(res);
-                        $('#model_username1').html(res);
+                        var obj = jQuery.parseJSON(res);
+                        var start_time = obj.start_time;
+                        var no_of_asssoc = obj.no_of_asssoc;
+                        var list_of_asssoc = obj.list_of_asssoc;
+                        $('#model_start_time1').val(start_time);
+                        $('#model_user_count1').val(no_of_asssoc);
+                        $('#model_username1').html(list_of_asssoc);
                     }
                 });
             });
-            // model_process
-            // model_username
-            // model_unit_time
-            // model_assign
+
+
             // ----------model wise selection data - shift 1-  end----------
 
             // ---------model wise shift 1 start---------
@@ -3487,10 +3817,38 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 });
             });
 
-            $('#model_process2').on('change', function() {
-                var model_process = $('#models2').val();
+            // $('#model_process2').on('change', function() {
+            //     var model_process = $('#models2').val();
 
-                var data = "model_process=" + model_process + "&type=model_process";
+            //     var data = "model_process=" + model_process + "&type=model_process";
+            //     console.log(data);
+            //     $.ajax({
+            //         type: "POST",
+            //         url: "task_assign_today_pm_scripts.php",
+            //         data: data,
+            //         success: function(res) {
+            //             console.log(res);
+            //             $('#model_username2').html(res);
+            //         }
+            //     });
+            // });
+            // model_process
+            // model_username
+            // model_unit_time
+            // model_assign
+
+
+
+
+            // ````
+            // code to display the three - shift 2 model planner
+
+            $('#model_process2').on('change', function() {
+                var model_process = $('#model_process2').val();
+                var models = $('#models2').val();
+                var fixdate = $('#fixdate').val();
+
+                var data = "models=" + models + "&fixdate=" + fixdate + "&model_process=" + model_process + "&type=model_process";
                 console.log(data);
                 $.ajax({
                     type: "POST",
@@ -3498,14 +3856,22 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     data: data,
                     success: function(res) {
                         console.log(res);
-                        $('#model_username2').html(res);
+                        var obj = jQuery.parseJSON(res);
+                        var start_time = obj.start_time;
+                        var no_of_asssoc = obj.no_of_asssoc;
+                        var list_of_asssoc = obj.list_of_asssoc;
+                        $('#model_start_time2').val(start_time);
+                        $('#model_user_count2').val(no_of_asssoc);
+                        $('#model_username2').html(list_of_asssoc);
                     }
                 });
             });
-            // model_process
-            // model_username
-            // model_unit_time
-            // model_assign
+
+
+
+
+
+
             // ----------model wise selection data - shift 2-  end----------
 
             // ---------model wise shift 2 start---------
@@ -3558,6 +3924,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             // select associates
 
             // in the below code, in "data: data", left side data is ajax syntax & right side data is the value in the data variable
+
+            // fixdate => user
             $(document).ready(function() {
                 var fixdate = $('#fixdate').val();
 
@@ -3612,6 +3980,54 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     }
                 });
             });
+
+
+
+
+            // GENERAL SHIFT
+
+            $('#user_process').on('change', function() {
+                var fixdate = $('#fixdate').val();
+                var user = $('#user').val();
+                var user_model = $('#user_model').val();
+                var user_process = $('#user_process').val();
+
+                var data = "user=" + user + "&user_model=" + user_model + "&user_process=" + user_process + "&fixdate=" + fixdate + "&type=get_user_parts";
+                console.log(data);
+                $.ajax({
+                    type: "POST",
+                    url: "task_assign_today_pm_scripts.php",
+                    dateType: 'JSON',
+                    data: data,
+                    success: function(res) {
+                        console.log(res);
+                        $('#user_parts').html(res);
+                    }
+                });
+            });
+
+
+            // 4. user parts => user unit time
+            // GENERAL SHIFT
+
+            $('#user_parts').on('change', function() {
+                var parts = $('#user_parts').val();
+
+                var data = "parts=" + parts + "&type=user_unit_time_details";
+                console.log(data);
+                $.ajax({
+                    type: "POST",
+                    url: "task_assign_today_pm_scripts.php",
+                    dateType: 'JSON',
+                    data: data,
+                    success: function(res) {
+                        console.log(res);
+                        $('#user_unit_time_details').html(res);
+                    }
+                });
+            });
+
+
 
 
             // ----------------------user wise general end----------------------

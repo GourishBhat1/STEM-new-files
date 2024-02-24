@@ -71,6 +71,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
 
             // $desiredDate = date('Y-m-d');
+            // $desiredDate = '2024-02-16';
             ?>
 
 
@@ -326,7 +327,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         <select class="form-control" id="team_assoc">
                             <?php
                             // SELECT * FROM `task_id` where model_name='pythagoras' and process_name='Sand belt finishing' and part_name='Corner round after pasting' and batchno='test64646-766'
-                            $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+                            // $select_users = $conn->prepare("SELECT * FROM user_detail where role = 'Associates' and teamname is not null;");
+                            $select_users = $conn->prepare("SELECT * FROM user_detail where user_type = 'Associates' or user_type = 'Executives' order by user_type DESC;");
                             $select_users->execute();
                             $select_users_res = $select_users->get_result();
                             while ($select_users_row = $select_users_res->fetch_assoc())
@@ -334,7 +336,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                                 // $barcode[] = $select_users_row['barcode'];
                                 // $username[] = $select_users_row['fullname'];
                             ?>
-                                <option value="<?php echo $select_users_row['user_name']; ?>"><?php echo $select_users_row['fullname']; ?></option>
+                                <option value="<?php echo $select_users_row['user_name']; ?>"><?php echo $select_users_row['fullname'] . ' - ' . $select_users_row['user_type']; ?></option>
                             <?php
                             }
                             //selected users to be removed from stack
