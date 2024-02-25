@@ -1529,7 +1529,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'shift_cards')
       FROM
           task_id t
       JOIN
-          shift_user_plan s ON t.user = s.username AND DATE(t.tdatefm) = s.shiftdate
+          shift_user_plan s ON DATE(t.tdatefm) = s.shiftdate
       WHERE
           (DATE(t.tdatefm) = ?) AND
           (
@@ -1646,7 +1646,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'shift_cards')
                 $get_shift_res = $get_shift->get_result();
                 $get_shift_row = $get_shift_res->fetch_assoc();
 
-                print_r($get_shift_row);
+                // print_r($get_shift_row);
                 $temp_s_time = $get_shift_row['shiftdate'] . " " . $get_shift_row['start_time'];
                 $temp_e_time = $get_shift_row['shiftdate'] . " " . $get_shift_row['end_time'];
 
@@ -1684,7 +1684,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'shift_cards')
       FROM
           task_id t
       JOIN
-          shift_user_plan s ON t.user = s.username AND DATE(t.tdatefm) = s.shiftdate
+          shift_user_plan s ON DATE(t.tdatefm) = s.shiftdate
       WHERE
           (DATE(t.tdatefm) = ?) AND
           (
