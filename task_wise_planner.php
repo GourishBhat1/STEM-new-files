@@ -399,7 +399,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
               //selected users to be removed from stack
               ?>
             </select>
-            <span id="shift1display"></span>
+            <span id="generaldisplay"></span>
           </div>
         </div>
 
@@ -1774,6 +1774,12 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       var user_count = <?php echo $get_user_count_row['user_count']; ?>;
       console.log(user_count);
 
+      $('#genshiftusername').on('change', function() {
+        var shift1user = $('#genshiftusername option:selected').length + " associates selected";
+        // console.log(shift1user);
+        $('#generaldisplay').html(shift1user);
+      });
+
       $('#shift1username').on('change', function() {
         var shift1user = $('#shift1username option:selected').length + " associates selected";
         // console.log(shift1user);
@@ -2198,7 +2204,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       $('#process_users').on('change', function() {
         var model_name = $('#processes').val();
         var process_start_time = $('#process_start_time').val();
-        var data = "model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_users";
+        var stageid = $('#process_parts').val();
+        var fixdate = $('#fixdate').val();
+        var data = "fixdate=" + fixdate + "&stageid=" + stageid + "&model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_users";
+        console.log(data);
         $.ajax({
           type: "POST",
           url: "task_planning_scripts.php",
@@ -3606,7 +3615,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
         });
       });
 
-      $('#model_process').on('change', function() {
+      $('#model_user_count').on('change', function() {
         var model_process = $('#models').val();
 
         var data = "model_process=" + model_process + "&type=model_process";
@@ -3622,7 +3631,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
         });
       });
 
-      $('#model_start_time').on('change', function() {
+      $('#model_process').on('change', function() {
         var model_process = $('#model_process').val();
 
         var data = "model_process=" + model_process + "&type=model_unit_time";
@@ -3724,7 +3733,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
         });
       });
 
-      $('#model_process1').on('change', function() {
+      $('#model_user_count1').on('change', function() {
         var model_process = $('#models1').val();
 
         var data = "model_process=" + model_process + "&type=model_process";
@@ -3736,6 +3745,22 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
           success: function(res) {
             console.log(res);
             $('#model_username1').html(res);
+          }
+        });
+      });
+
+      $('#model_process1').on('change', function() {
+        var model_process = $('#model_process1').val();
+
+        var data = "model_process=" + model_process + "&type=model_unit_time";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#model_unit_time1').html(res);
           }
         });
       });
@@ -3823,7 +3848,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
         });
       });
 
-      $('#model_process2').on('change', function() {
+      $('#model_user_count2').on('change', function() {
         var model_process = $('#models2').val();
 
         var data = "model_process=" + model_process + "&type=model_process";
@@ -3835,6 +3860,22 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
           success: function(res) {
             console.log(res);
             $('#model_username2').html(res);
+          }
+        });
+      });
+
+      $('#model_process2').on('change', function() {
+        var model_process = $('#model_process2').val();
+
+        var data = "model_process=" + model_process + "&type=model_unit_time";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#model_unit_time2').html(res);
           }
         });
       });

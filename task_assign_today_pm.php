@@ -52,8 +52,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
 
             <?php
-            $todaysDate = date('Y-m-d');
-            // $todaysDate = '2024-02-16';
+            // $todaysDate = date('Y-m-d');
+            $todaysDate = '2024-02-16';
             ?>
             <div class="row text-center">
                 <form method="post" class="col-4">
@@ -1597,6 +1597,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             // --------shift user selection count start---------
             var user_count = <?php echo $get_user_count_row['user_count']; ?>;
             console.log(user_count);
+
 
             $('#shift1username').on('change', function() {
                 var shift1user = $('#shift1username option:selected').length + " associates selected";

@@ -58,19 +58,19 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             // Code for getting tomorrow's date. If today is saturday then get day after tomorrow's date
 
             // Check if today is Saturday (date('w') returns '6')
-            if (date('w') == 6)
-            {
-                // If today is Saturday, get the date of the day after tomorrow
-                $desiredDate = date('Y-m-d', strtotime('+2 days'));
-            }
-            else
-            {
-                // Otherwise, just get tomorrow's date
-                $desiredDate = date('Y-m-d', strtotime('tomorrow'));
-            }
+            // if (date('w') == 6)
+            // {
+            //     // If today is Saturday, get the date of the day after tomorrow
+            //     $desiredDate = date('Y-m-d', strtotime('+2 days'));
+            // }
+            // else
+            // {
+            //     // Otherwise, just get tomorrow's date
+            //     $desiredDate = date('Y-m-d', strtotime('tomorrow'));
+            // }
 
 
-            // $desiredDate = date('Y-m-d');
+            $desiredDate = date('Y-m-d');
             // $desiredDate = '2024-02-16';
             ?>
 
@@ -484,7 +484,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                             //selected users to be removed from stack
                             ?>
                         </select>
-                        <span id="shift1display"></span>
+                        <span id="generaldisplay"></span>
                     </div>
                 </div>
 
@@ -682,6 +682,11 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             var user_count = <?php echo $get_user_count_row['user_count']; ?>;
             console.log(user_count);
 
+            $('#genshiftusername').on('change', function() {
+                var shift1user = $('#genshiftusername option:selected').length + " associates selected";
+                // console.log(shift1user);
+                $('#generaldisplay').html(shift1user);
+            });
             $('#shift1username').on('change', function() {
                 var shift1user = $('#shift1username option:selected').length + " associates selected";
                 // console.log(shift1user);

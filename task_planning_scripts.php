@@ -708,7 +708,9 @@ if (isset($_POST['type']) && $_POST['type'] == 'unit_time')
 if (isset($_POST['type']) && $_POST['type'] == 'process_users')
 {
   $model_name = $_POST['model_name'];
-  $process_start_time = $_POST['process_start_time'];
+  $process_start_time = date("H:i:s", strtotime($_POST['process_start_time']));
+  $stageid = $_POST['stageid'];
+  $fixdate = $_POST['fixdate'];
 
   $select_team = $conn->prepare("SELECT * FROM model where model_name = ?;");
   $select_team->bind_param('s', $model_name);
@@ -720,17 +722,59 @@ if (isset($_POST['type']) && $_POST['type'] == 'process_users')
   $get_users->bind_param('s', $select_team_row['teamname']);
   $get_users->execute();
   $get_users_res = $get_users->get_result();
+
+
+  //code to check if user is assigned work in that start time and end time
+  $get_time_est = $conn->prepare("SELECT SEC_TO_TIME( SUM( TIME_TO_SEC( unit_time ) ) ) AS estimate_time from task_id where stageid = ?");
+  $get_time_est->bind_param('s', $stageid);
+  $get_time_est->execute();
+  $get_time_est_res = $get_time_est->get_result();
+  $get_time_est_row = $get_time_est_res->fetch_assoc();
+
+  $time = $process_start_time;
+  $time2 = $get_time_est_row['estimate_time'];
+  echo $time2;
+
+  $secs = strtotime($time2) - strtotime("00:00:00");
+  $end_time = date("H:i:s", strtotime($time) + $secs);
+  echo $time;
+  echo $end_time;
+
+  //check if user is already assigned task in start time and end time
+  // if num_rows == 0 then run the code
+  // $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
+  // $get_current_batch->execute();
+  // $get_current_batch_res = $get_current_batch->get_result();
+  // $get_current_batch_row = $get_current_batch_res->fetch_assoc();
+  // $batch_no = $get_current_batch_row['batchno'];
+  // echo $batch_no;
+
+  $check_assigned_task = $conn->prepare("SELECT NOT EXISTS (
+    SELECT 1
+    FROM task_id
+    WHERE user = ?
+      AND DATE(tdatefm) = DATE(?)
+      AND (
+          (start_time < ? AND end_time > ?) OR
+          (start_time < ? AND end_time > ?) OR
+          (start_time >= ? AND end_time <= ?)
+      )
+) AS is_available;");
+
+
   //add only users assigned for shift
   echo '<option value="" selected disabled>Select Associate</option>';
   while ($get_users_row = $get_users_res->fetch_assoc())
   {
-    // $get_time = $conn->prepare('SELECT DISTINCT start_time, est_complete_time from task_id where user = ?');
-    // $get_time->bind_param('s', $get_users_row['user_name']);
-    // $get_time->execute();
-    // $get_time_res = $get_time->get_result;
-    // $get_time_row = $get_time->fetch_assoc();
-    //better this login; users occupied for that time should not display
-    echo '<option value="' . $get_users_row['user_name'] . '">' . $get_users_row['fullname'] . '</option>';
+    $check_assigned_task->bind_param('ssssssss', $get_users_row['user_name'], $fixdate, $process_start_time, $process_start_time, $end_time, $end_time, $process_start_time, $end_time);
+    $check_assigned_task->execute();
+    $check_assigned_task_res = $check_assigned_task->get_result();
+    $check_assigned_task_row = $check_assigned_task_res->fetch_assoc();
+
+    if ($check_assigned_task_row['is_available'] == '1')
+    {
+      echo '<option value="' . $get_users_row['user_name'] . '">' . $get_users_row['fullname'] . '</option>';
+    }
   }
 }
 // -------process wise scripts - gen shift - end ------

@@ -1201,17 +1201,24 @@ if (isset($_POST['type']) && $_POST['type'] == 'user_fetch')
     while ($select_users_row = $select_users_res->fetch_assoc())
     {
         // echo $select_users_row['user_name'];
-        $get_sum_time = $conn->prepare('SELECT SEC_TO_TIME(AVG(TIME_TO_SEC(est_complete_time))) AS est_complete_time from task_id WHERE user = ? and batchno = ? and est_complete_time is not null and date(plandtfm) = ?');
-        $get_sum_time->bind_param('sss', $select_users_row['user_name'], $get_current_batch_row['batchno'], $fixdate);
+        // $get_sum_time = $conn->prepare('SELECT distinct est_complete_time from task_id WHERE user = ? and batchno = ? and est_complete_time is not null and date(plandtfm) = ?');
+        $get_sum_time = $conn->prepare('SELECT distinct est_complete_time from task_id WHERE user = ? and batchno = ? and est_complete_time is not null');
+        // $get_sum_time->bind_param('sss', $select_users_row['user_name'], $get_current_batch_row['batchno'], $fixdate);
+        $get_sum_time->bind_param('ss', $select_users_row['user_name'], $get_current_batch_row['batchno']);
         $get_sum_time->execute();
         $get_sum_time_res = $get_sum_time->get_result();
-        $get_sum_time_row = $get_sum_time_res->fetch_assoc();
+
 
         if (!empty($get_sum_time_row['est_complete_time']))
         {
-            $times[] = $get_sum_time_row['est_complete_time'];
-            // $times = ['02:30:00', '03:15:00', '01:45:00', '02:00:00'];
-            print_r($times);
+
+            while ($get_sum_time_row = $get_sum_time_res->fetch_assoc())
+            {
+                $times[] = $get_sum_time_row['est_complete_time'];
+                // $times = ['02:30:00', '03:15:00', '01:45:00', '02:00:00'];
+                print_r($times);
+            }
+
             // Calculate the total seconds
             $totalSeconds = 0;
             foreach ($times as $time)
@@ -1222,6 +1229,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'user_fetch')
 
             // Calculate the total hours
             $totalHours = $totalSeconds / 3600;
+
 
             // Divide by 8 hours to get the integer value
             $integerValue = (int)($totalHours / 8);
