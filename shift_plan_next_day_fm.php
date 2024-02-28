@@ -70,8 +70,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             // }
 
 
-            $desiredDate = date('Y-m-d');
-            // $desiredDate = '2024-02-16';
+            // $desiredDate = date('Y-m-d');
+            $desiredDate = '2024-02-16';
             ?>
 
 

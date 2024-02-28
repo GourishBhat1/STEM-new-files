@@ -254,7 +254,7 @@ if (isset($_POST['type']) && $_POST['type'] == "process")
         // echo "\n";
 
         // echo "SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".$task_split_count.";";
-        $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit " . ceil($task_split_count) . ";");
+        $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and assign_datepm is null limit " . ceil($task_split_count) . ";");
         $assign_task_id->bind_param('s', $processes);
         $assign_task_id->execute();
         $assign_task_id_res = $assign_task_id->get_result();
@@ -345,7 +345,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'material')
         // echo "\n";
 
         // echo "SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".$task_split_count.";";
-        $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit " . ceil($task_split_count) . ";");
+        $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and assign_datepm is null limit " . ceil($task_split_count) . ";");
         $assign_task_id->bind_param('s', $material_model);
         $assign_task_id->execute();
         $assign_task_id_res = $assign_task_id->get_result();
@@ -408,7 +408,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'team')
         // echo "\n";
 
         // echo "SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".$task_split_count.";";
-        $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit " . ceil($task_split_count) . ";");
+        $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and assign_datepm is null limit " . ceil($task_split_count) . ";");
         $assign_task_id->bind_param('s', $team_process);
         $assign_task_id->execute();
         $assign_task_id_res = $assign_task_id->get_result();
@@ -475,7 +475,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'model')
         // echo "\n";
 
         // echo "SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit ".$task_split_count.";";
-        $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and tdatefm is null limit " . ceil($task_split_count) . ";");
+        $assign_task_id = $conn->prepare("SELECT taskid FROM task_id WHERE stageid = ? and assign_datepm is null limit " . ceil($task_split_count) . ";");
         $assign_task_id->bind_param('s', $model_process);
         $assign_task_id->execute();
         $assign_task_id_res = $assign_task_id->get_result();
@@ -1201,15 +1201,15 @@ if (isset($_POST['type']) && $_POST['type'] == 'user_fetch')
     while ($select_users_row = $select_users_res->fetch_assoc())
     {
         // echo $select_users_row['user_name'];
-        // $get_sum_time = $conn->prepare('SELECT distinct est_complete_time from task_id WHERE user = ? and batchno = ? and est_complete_time is not null and date(plandtfm) = ?');
-        $get_sum_time = $conn->prepare('SELECT distinct est_complete_time from task_id WHERE user = ? and batchno = ? and est_complete_time is not null');
-        // $get_sum_time->bind_param('sss', $select_users_row['user_name'], $get_current_batch_row['batchno'], $fixdate);
-        $get_sum_time->bind_param('ss', $select_users_row['user_name'], $get_current_batch_row['batchno']);
+        $get_sum_time = $conn->prepare('SELECT distinct est_complete_time from task_id WHERE user = ? and batchno = ? and est_complete_time is not null and date(plandtfm) = ?');
+        // $get_sum_time = $conn->prepare('SELECT distinct est_complete_time from task_id WHERE user = ? and batchno = ? and est_complete_time is not null');
+        $get_sum_time->bind_param('sss', $select_users_row['user_name'], $get_current_batch_row['batchno'], $fixdate);
+        // $get_sum_time->bind_param('ss', $select_users_row['user_name'], $get_current_batch_row['batchno']);
         $get_sum_time->execute();
         $get_sum_time_res = $get_sum_time->get_result();
 
 
-        if (!empty($get_sum_time_row['est_complete_time']))
+        if ($get_sum_time_res->num_rows > 0)
         {
 
             while ($get_sum_time_row = $get_sum_time_res->fetch_assoc())
@@ -1240,6 +1240,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'user_fetch')
             if ($integerValue < 8)
             {
                 echo '<option value="' . $select_users_row['user_name'] . '">' . $select_users_row['fullname'] . '/ Total Hours: ' . number_format((float)$totalHours, 2, '.', '') . '</option>';
+                // echo '<option value="' . $select_users_row['user_name'] . '">' . $select_users_row['fullname'] . '/ Total Hours: ' . $totalHours . '</option>';
             }
             unset($times);
         }
@@ -1309,12 +1310,13 @@ if (isset($_POST['type']) && $_POST['type'] == 'user_process')
     echo '<option value="" selected disabled>Select Process</option>';
     while ($team_process_row = $team_process_res->fetch_assoc())
     {
-        echo '<option value="' . $team_process_row['stageid'] . '">' . $team_process_row['process_name'] . '</option>';
+        echo '<option value="' . $team_process_row['process_name'] . '">' . $team_process_row['process_name'] . '</option>';
     }
 }
 
 
 // 4. Get options from user process and output options in user parts
+
 
 if (isset($_POST['type']) && $_POST['type'] == 'get_user_parts')
 {
@@ -1323,18 +1325,41 @@ if (isset($_POST['type']) && $_POST['type'] == 'get_user_parts')
     $model_name = $_POST['user_model'];
     $processes = $_POST['user_process'];
 
-    // echo $select_users_row['user_name'];
-    $get_sum_time = $conn->prepare('SELECT SEC_TO_TIME(AVG(TIME_TO_SEC(est_complete_time))) AS est_complete_time from task_id WHERE stageid = ? and batchno = ? and est_complete_time is not null and date(plandtfm) = ?');
-    $get_sum_time->bind_param('sss', $stageid, $get_current_batch_row['batchno'], $fixdate);
+    $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
+    $get_current_batch->execute();
+    $get_current_batch_res = $get_current_batch->get_result();
+    $get_current_batch_row = $get_current_batch_res->fetch_assoc();
+    $batch_no = $get_current_batch_row['batchno'];
+
+    // today's work for 1 batch
+    $get_sum_time = $conn->prepare('SELECT distinct est_complete_time from task_id WHERE user = ? and batchno = ? and est_complete_time is not null and date(plandtfm) = ?');
+    // $get_sum_time = $conn->prepare('SELECT distinct est_complete_time from task_id WHERE user = ? and batchno = ? and est_complete_time is not null');
+    $get_sum_time->bind_param('sss', $user, $get_current_batch_row['batchno'], $fixdate);
+    // $get_sum_time->bind_param('ss', $select_users_row['user_name'], $get_current_batch_row['batchno']);
     $get_sum_time->execute();
     $get_sum_time_res = $get_sum_time->get_result();
-    $get_sum_time_row = $get_sum_time_res->fetch_assoc();
 
-    if (!empty($get_sum_time_row['est_complete_time']))
+
+    // store stage id and part name in 2 different arrays
+
+    // while ($get_sum_time_row = $get_sum_time_res->fetch_assoc())
+    // {
+    //   $stage_ids[] = $get_sum_time_row['stageid'];
+    //   $part_names[] = $get_sum_time_row['part_name'];
+    // }
+
+
+
+    if ($get_sum_time_res->num_rows > 0)
     {
-        $times[] = $get_sum_time_row['est_complete_time'];
-        // $times = ['02:30:00', '03:15:00', '01:45:00', '02:00:00'];
-        print_r($times);
+
+        while ($get_sum_time_row = $get_sum_time_res->fetch_assoc())
+        {
+            $times[] = $get_sum_time_row['est_complete_time'];
+            // $times = ['02:30:00', '03:15:00', '01:45:00', '02:00:00'];
+            print_r($times);
+        }
+
         // Calculate the total seconds
         $totalSeconds = 0;
         foreach ($times as $time)
@@ -1343,33 +1368,32 @@ if (isset($_POST['type']) && $_POST['type'] == 'get_user_parts')
             $totalSeconds += $hours * 3600 + $minutes * 60 + $seconds;
         }
 
-        // Calculate the total hours
-        $totalHours = $totalSeconds / 3600;
+        $remaining_shift_time = 28800 - $totalSeconds;
+        echo $remaining_shift_time;
+    }
 
-        // Divide by 8 hours to get the integer value
-        $integerValue = (int)($totalHours / 8);
 
-        // Output the result
-        // echo "Total Hours: $totalHours\n";
-        // echo "Integer Value (Total Hours / 8): $integerValue\n";
-        if ($integerValue < 8)
+
+    $get_parts = $conn->prepare("SELECT distinct stageid, part_name from task_id where batchno=? and model_name = ? and process_name = ? and assign_datepm is null");
+    $get_parts->bind_param('sss', $batch_no, $model_name, $processes);
+    $get_parts->execute();
+    $get_parts_res = $get_parts->get_result();
+    echo '<option value="" selected disabled>Select Part Name</option>';
+    while ($get_parts_row = $get_parts_res->fetch_assoc())
+    {
+        // query to get sum of unit time in seconts for particular stageid
+        $get_task_count = $conn->prepare("SELECT  SUM( TIME_TO_SEC( unit_time ) ) AS estimate_time from task_id where stageid = ?");
+        $get_task_count->bind_param('s', $get_parts_row['stageid']);
+        $get_task_count->execute();
+        $get_task_count_res = $get_task_count->get_result();
+        $get_task_count_row = $get_task_count_res->fetch_assoc();
+
+        echo $get_task_count_row['estimate_time'];
+
+        // if totalSeconds < sum of unit time, then echo
+        if ($remaining_shift_time > $get_task_count_row['estimate_time'])
         {
-        }
 
-
-        $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
-        $get_current_batch->execute();
-        $get_current_batch_res = $get_current_batch->get_result();
-        $get_current_batch_row = $get_current_batch_res->fetch_assoc();
-        $batch_no = $get_current_batch_row['batchno'];
-
-        $get_parts = $conn->prepare("SELECT distinct stageid, part_name from task_id where batchno=? and model_name = ? and process_name = ? and tdatefm is not null and date(plandtfm) = ?");
-        $get_parts->bind_param('ssss', $batch_no, $model_name, $processes, $fixdate);
-        $get_parts->execute();
-        $get_parts_res = $get_parts->get_result();
-        echo '<option value="" selected disabled>Select Part Name</option>';
-        while ($get_parts_row = $get_parts_res->fetch_assoc())
-        {
             echo '<option value="' . $get_parts_row['stageid'] . '">' . $get_parts_row['part_name'] . '</option>';
         }
     }
@@ -1380,71 +1404,95 @@ if (isset($_POST['type']) && $_POST['type'] == 'get_user_parts')
 
 if (isset($_POST['type']) && $_POST['type'] == 'user_unit_time_details')
 {
+
+
     $stageid = $_POST['parts'];
 
+    $get_task_count = $conn->prepare("SELECT count(taskid) as task_count, SEC_TO_TIME( SUM( TIME_TO_SEC( unit_time ) ) ) AS estimate_time from task_id where stageid = ?");
+    $get_task_count->bind_param('s', $stageid);
+    $get_task_count->execute();
+    $get_task_count_res = $get_task_count->get_result();
+    $get_task_count_row = $get_task_count_res->fetch_assoc();
+
+    $get_unit_time = $conn->prepare('SELECT DISTINCT unit_time from task_id WHERE stageid = ?');
+    $get_unit_time->bind_param('s', $stageid);
+    $get_unit_time->execute();
+    $get_unit_time_res = $get_unit_time->get_result();
+    $get_unit_time_row = $get_unit_time_res->fetch_assoc();
+
+    echo "<strong>Number of Tasks:" . $get_task_count_row['task_count'] . "</strong><br>";
+    echo "<strong>Unit Time:" . $get_unit_time_row['unit_time'] . "</strong><br>";
+    echo "<strong>Estimate time to completion :" . $get_task_count_row['estimate_time'] . "</strong><br>";
 
 
 
 
 
-    // echo $select_users_row['user_name'];
-    $get_sum_time = $conn->prepare('SELECT SEC_TO_TIME(AVG(TIME_TO_SEC(est_complete_time))) AS est_complete_time from task_id WHERE stageid = ? and batchno = ? and est_complete_time is not null and date(plandtfm) = ?');
-    $get_sum_time->bind_param('sss', $stageid, $get_current_batch_row['batchno'], $fixdate);
-    $get_sum_time->execute();
-    $get_sum_time_res = $get_sum_time->get_result();
-    $get_sum_time_row = $get_sum_time_res->fetch_assoc();
-
-    if (!empty($get_sum_time_row['est_complete_time']))
-    {
-        $times[] = $get_sum_time_row['est_complete_time'];
-        // $times = ['02:30:00', '03:15:00', '01:45:00', '02:00:00'];
-        print_r($times);
-        // Calculate the total seconds
-        $totalSeconds = 0;
-        foreach ($times as $time)
-        {
-            list($hours, $minutes, $seconds) = explode(':', $time);
-            $totalSeconds += $hours * 3600 + $minutes * 60 + $seconds;
-        }
-
-        // Calculate the total hours
-        $totalHours = $totalSeconds / 3600;
-
-        // Divide by 8 hours to get the integer value
-        $integerValue = (int)($totalHours / 8);
-
-        // Output the result
-        // echo "Total Hours: $totalHours\n";
-        // echo "Integer Value (Total Hours / 8): $integerValue\n";
-        if ($integerValue < 8)
-        {
-            // echo '<option value="' . $select_users_row['user_name'] . '">' . $select_users_row['fullname'] . '/ Total Hours: ' . number_format((float)$totalHours, 2, '.', '') . '</option>';
+    // $stageid = $_POST['parts'];
 
 
 
 
 
 
+    // // echo $select_users_row['user_name'];
+    // $get_sum_time = $conn->prepare('SELECT SEC_TO_TIME(AVG(TIME_TO_SEC(est_complete_time))) AS est_complete_time from task_id WHERE stageid = ? and batchno = ? and est_complete_time is not null and date(plandtfm) = ?');
+    // $get_sum_time->bind_param('sss', $stageid, $get_current_batch_row['batchno'], $fixdate);
+    // $get_sum_time->execute();
+    // $get_sum_time_res = $get_sum_time->get_result();
+    // $get_sum_time_row = $get_sum_time_res->fetch_assoc();
+
+    // if (!empty($get_sum_time_row['est_complete_time']))
+    // {
+    //     $times[] = $get_sum_time_row['est_complete_time'];
+    //     // $times = ['02:30:00', '03:15:00', '01:45:00', '02:00:00'];
+    //     print_r($times);
+    //     // Calculate the total seconds
+    //     $totalSeconds = 0;
+    //     foreach ($times as $time)
+    //     {
+    //         list($hours, $minutes, $seconds) = explode(':', $time);
+    //         $totalSeconds += $hours * 3600 + $minutes * 60 + $seconds;
+    //     }
+
+    //     // Calculate the total hours
+    //     $totalHours = $totalSeconds / 3600;
+
+    //     // Divide by 8 hours to get the integer value
+    //     $integerValue = (int)($totalHours / 8);
+
+    //     // Output the result
+    //     // echo "Total Hours: $totalHours\n";
+    //     // echo "Integer Value (Total Hours / 8): $integerValue\n";
+    //     if ($integerValue < 8)
+    //     {
+    //         // echo '<option value="' . $select_users_row['user_name'] . '">' . $select_users_row['fullname'] . '/ Total Hours: ' . number_format((float)$totalHours, 2, '.', '') . '</option>';
 
 
-            $get_task_count = $conn->prepare("SELECT count(taskid) as task_count, SEC_TO_TIME( SUM( TIME_TO_SEC( unit_time ) ) ) AS estimate_time from task_id where stageid = ?");
-            $get_task_count->bind_param('s', $stageid);
-            $get_task_count->execute();
-            $get_task_count_res = $get_task_count->get_result();
-            $get_task_count_row = $get_task_count_res->fetch_assoc();
 
-            $get_unit_time = $conn->prepare('SELECT DISTINCT unit_time from task_id WHERE stageid = ?');
-            $get_unit_time->bind_param('s', $stageid);
-            $get_unit_time->execute();
-            $get_unit_time_res = $get_unit_time->get_result();
-            $get_unit_time_row = $get_unit_time_res->fetch_assoc();
 
-            echo "<strong>Number of Tasks:" . $get_task_count_row['task_count'] . "</strong><br>";
-            echo "<strong>Unit Time:" . $get_unit_time_row['unit_time'] . "</strong><br>";
-            echo "<strong>Estimate time to completion :" . $get_task_count_row['estimate_time'] . "</strong><br>";
-        }
-        unset($times);
-    }
+
+
+
+
+    //         $get_task_count = $conn->prepare("SELECT count(taskid) as task_count, SEC_TO_TIME( SUM( TIME_TO_SEC( unit_time ) ) ) AS estimate_time from task_id where stageid = ?");
+    //         $get_task_count->bind_param('s', $stageid);
+    //         $get_task_count->execute();
+    //         $get_task_count_res = $get_task_count->get_result();
+    //         $get_task_count_row = $get_task_count_res->fetch_assoc();
+
+    //         $get_unit_time = $conn->prepare('SELECT DISTINCT unit_time from task_id WHERE stageid = ?');
+    //         $get_unit_time->bind_param('s', $stageid);
+    //         $get_unit_time->execute();
+    //         $get_unit_time_res = $get_unit_time->get_result();
+    //         $get_unit_time_row = $get_unit_time_res->fetch_assoc();
+
+    //         echo "<strong>Number of Tasks:" . $get_task_count_row['task_count'] . "</strong><br>";
+    //         echo "<strong>Unit Time:" . $get_unit_time_row['unit_time'] . "</strong><br>";
+    //         echo "<strong>Estimate time to completion :" . $get_task_count_row['estimate_time'] . "</strong><br>";
+    //     }
+    //     unset($times);
+    // }
 }
 
 
