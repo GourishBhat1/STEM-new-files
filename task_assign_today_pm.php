@@ -1,7 +1,9 @@
 <?php
 include 'hadder.php';
 include '../function.php';
-$conn = new mysqli("stemlearning.in", "steml1og_stemftest", "7V2WDw385ykQ+)N", "steml1og_stemftest") or die('Cannot connect to db');
+$conn = new mysqli("localhost", "root", "", "steml1og_stemf") or die('Cannot connect to db');
+
+// $conn = new mysqli("stemlearning.in", "steml1og_stemftest", "7V2WDw385ykQ+)N", "steml1og_stemftest") or die('Cannot connect to db');
 $date = date('Y-m-d');
 $datet = date('Y-m-d H:i:s');
 
@@ -636,86 +638,70 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
                         </div>
                     </div>
+                <!-- User Planner -->
+            <div class="tab-pane" id="tabs-6" role="tabpanel">
+            <div class="row">
+              <div class="col-sm col-md-6 col-lg-6 card card-primary card-outline">
+                <header>
+                  <center>Associate Wise Tab</center>
+                </header>
+                <hr>
+                <label for="">Associates Having Less Than 8 Hours Work</label>
+                <select class="form-control" id="user" name="user">
+
+                </select>
+
+                <!-- GENERAL SHIFT -->
+                <label for="">Select User Models</label>
+                <select class="form-control" id="user_model">
+                  <option selected disabled>Select Models</option>
+                </select>
+
+                <!-- GENERAL SHIFT -->
+                <label for="">Select User Process</label>
+                <select class="form-control" id="user_process">
+                  <option selected disabled>Select Process</option>
+                </select>
 
 
 
 
+                <!-- GENERAL SHIFT -->
+                <label for="">Select User Parts</label>
+                <select class="form-control" id="user_parts">
+                  <option selected disabled>Select Parts</option>
+                </select>
 
 
 
-                    <div class="tab-pane" id="tabs-6" role="tabpanel">
-                        <div class="row">
-                            <div class="col-sm col-md-6 col-lg-6 card card-primary card-outline">
-                                <header>
-                                    <center>Associate Wise Tab</center>
-                                </header>
-                                <hr>
-                                <label for="">Associates Having Less Than 8 Hours Work</label>
-                                <select class="form-control" id="user" name="user">
+              </div>
+              <div class="col-sm col-md-6 col-lg-6 card card-danger card-outline">
+                <header>
+                  <center>Displaying Time</center>
+                </header>
+                <hr>
+                <label for="">Start Time</label>
+                <input type="time" class="form-control" id="user_start_time">
 
-                                </select>
+                <label for="">Unit Time</label>
+                <div id="user_unit_time_details">
 
-                                <!-- GENERAL SHIFT -->
-                                <label for="">Select User Models</label>
-                                <select class="form-control" id="user_model">
-                                    <option selected disabled>Select Models</option>
-                                </select>
-
-                                <!-- GENERAL SHIFT -->
-                                <label for="">Select User Process</label>
-                                <select class="form-control" id="user_process">
-                                    <option selected disabled>Select Process</option>
-                                </select>
+                </div>
 
 
 
+              </div>
+              <div class="text-center">
+                <button type="button" class="btn btn-primary AssignXButton" id="user_assign">Assign</button>
+              </div>
 
-                                <!-- GENERAL SHIFT -->
-                                <label for="">Select User Parts</label>
-                                <select class="form-control" id="user_parts">
-                                    <option selected disabled>Select Parts</option>
-                                </select>
+            </div>
+            <div id="process_gen_card" class="shift_assign_unassign">
 
+            </div>
 
-
-                            </div>
-                            <div class="col-sm col-md-6 col-lg-6 card card-danger card-outline">
-                                <header>
-                                    <center>Displaying Time</center>
-                                </header>
-                                <hr>
-                                <label for="">Start Time</label>
-                                <input type="time" class="form-control" id="process_start_time">
-
-                                <label for="">Unit Time</label>
-                                <div id="user_unit_time_details">
-
-                                </div>
-
-
-
-                            </div>
-                            <div class="text-center">
-                                <button type="button" class="btn btn-primary AssignXButton" id="process_assign">Assign</button>
-                            </div>
-
-                        </div>
-                        <div id="process_gen_card" class="shift_assign_unassign">
-
-                        </div>
-
-                        <!-- GENERAL -->
-                    </div>
-
-
-
-
-
-
-
-
-
-
+            <!-- GENERAL -->
+          </div>
                 </div>
             </div>
             <hr>
@@ -747,6 +733,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#tabs-52" role="tab">Model Planner</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#tabs-62" role="tab">User Planner</a>
                     </li>
                 </ul><!-- Tab panes -->
 
@@ -1106,6 +1095,72 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         </div>
 
                     </div>
+
+                    <div class="tab-pane" id="tabs-62" role="tabpanel">
+            <div class="row">
+              <div class="col-sm col-md-6 col-lg-6 card card-primary card-outline">
+                <header>
+                  <center>Associate Wise Tab</center>
+                </header>
+                <hr>
+                <label for="">Associates Having Less Than 8 Hours Work</label>
+                <select class="form-control" id="user1" name="user">
+
+                </select>
+
+                <!-- GENERAL SHIFT -->
+                <label for="">Select User Models</label>
+                <select class="form-control" id="user_model1">
+                  <option selected disabled>Select Models</option>
+                </select>
+
+                <!-- GENERAL SHIFT -->
+                <label for="">Select User Process</label>
+                <select class="form-control" id="user_process1">
+                  <option selected disabled>Select Process</option>
+                </select>
+
+
+
+
+                <!-- GENERAL SHIFT -->
+                <label for="">Select User Parts</label>
+                <select class="form-control" id="user_parts1">
+                  <option selected disabled>Select Parts</option>
+                </select>
+
+
+
+              </div>
+              <div class="col-sm col-md-6 col-lg-6 card card-danger card-outline">
+                <header>
+                  <center>Displaying Time</center>
+                </header>
+                <hr>
+                <label for="">Start Time</label>
+                <input type="time" class="form-control" id="process_start_time1">
+
+                <label for="">Unit Time</label>
+                <div id="user_unit_time_details1">
+
+                </div>
+
+
+
+              </div>
+              <div class="text-center">
+                <button type="button" class="btn btn-primary AssignXButton" id="process_assign1">Assign</button>
+              </div>
+
+            </div>
+            <div id="process_gen_card1" class="shift_assign_unassign">
+
+            </div>
+
+            <!-- GENERAL -->
+          </div>
+
+        </div>
                 </div>
             </div>
             <hr>
@@ -1138,6 +1193,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#tabs-53" role="tab">Model Planner</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#tabs-63" role="tab">User Planner</a>
                     </li>
                 </ul><!-- Tab panes -->
 
@@ -1501,7 +1559,67 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         </div>
 
                     </div>
+
+                     <!-- User planning -->
+                     <div class="tab-pane" id="tabs-63" role="tabpanel">
+              <div class="row">
+                <div class="col-sm col-md-6 col-lg-6 card card-primary card-outline">
+                  <header>
+                    <center>Associate Wise Tab</center>
+                  </header>
+                  <hr>
+                  <label for="">Associates Having Less Than 8 Hours Work</label>
+                  <select class="form-control" id="user2" name="user">
+
+                  </select>
+
+                  <!-- GENERAL SHIFT -->
+                  <label for="">Select User Models</label>
+                  <select class="form-control" id="user_model2">
+                    <option selected disabled>Select Models</option>
+                  </select>
+
+                  <!-- GENERAL SHIFT -->
+                  <label for="">Select User Process</label>
+                  <select class="form-control" id="user_process2">
+                    <option selected disabled>Select Process</option>
+                  </select>
+
+
+
+
+                  <!-- GENERAL SHIFT -->
+                  <label for="">Select User Parts</label>
+                  <select class="form-control" id="user_parts2">
+                    <option selected disabled>Select Parts</option>
+                  </select>
+
+
+
                 </div>
+                <div class="col-sm col-md-6 col-lg-6 card card-danger card-outline">
+                  <header>
+                    <center>Displaying Time</center>
+                  </header>
+                  <hr>
+                  <label for="">Start Time</label>
+                  <input type="time" class="form-control" id="user_start_time2">
+
+                  <label for="">Unit Time</label>
+                  <div id="user_unit_time_details2">
+
+                  </div>
+
+
+
+                </div>
+                <div class="text-center">
+                  <button type="button" class="btn btn-primary AssignXButton" id="process_assign2">Assign</button>
+                </div>
+
+              </div>
+              <div id="process_gen_card2" class="shift_assign_unassign">
+            </div>
 
                 <br><br>
 
@@ -1919,6 +2037,60 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 });
             });
 
+            $('#process_users').on('change', function() {
+                var model_name = $('#processes').val();
+                var process_start_time = $('#process_start_time').val();
+                var stageid = $('#process_parts').val();
+                var fixdate = $('#fixdate').val();
+                var data = "fixdate=" + fixdate + "&stageid=" + stageid + "&model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_time";
+                console.log(data);
+                $.ajax({
+                type: "POST",
+                url: "task_assign_today_pm_scripts.php",
+                dateType: 'JSON',
+                data: data,
+                success: function(res) {
+                    console.log(res);
+                    $('#username').html(res);
+                }
+                });
+            });
+            $('#process_users1').on('change', function() {
+                var model_name = $('#processes1').val();
+                var process_start_time = $('#process_start_time1').val();
+                var stageid = $('#process_parts1').val();
+                var fixdate = $('#fixdate').val();
+                var data = "fixdate=" + fixdate + "&stageid=" + stageid + "&model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_time";
+                console.log(data);
+                $.ajax({
+                type: "POST",
+                url: "task_assign_today_pm_scripts.php",
+                dateType: 'JSON',
+                data: data,
+                success: function(res) {
+                    console.log(res);
+                    $('#username1').html(res);
+                }
+                });
+            });
+            $('#process_users2').on('change', function() {
+                var model_name = $('#processes2').val();
+                var process_start_time = $('#process_start_time2').val();
+                var stageid = $('#process_parts2').val();
+                var fixdate = $('#fixdate').val();
+                var data = "fixdate=" + fixdate + "&stageid=" + stageid + "&model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_time";
+                console.log(data);
+                $.ajax({
+                type: "POST",
+                url: "task_assign_today_pm_scripts.php",
+                dateType: 'JSON',
+                data: data,
+                success: function(res) {
+                    console.log(res);
+                    $('#username2').html(res);
+                }
+                });
+            });
 
 
 
@@ -2625,11 +2797,15 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 });
             });
 
+       
+            
             $('#material_user_count').on('change', function() {
                 var material_model = $('#material_model').val();
                 var material_start_time = $('#material_start_time').val();
-
-                var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
+                var fixdate = $('#fixdate').val();
+                var material_process = $('#material_process').val();
+                var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_time&fixdate=" + fixdate + "&material_process=" + material_process  ;  
+                // var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
                 console.log(data);
                 $.ajax({
                     type: "POST",
@@ -2641,7 +2817,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     }
                 });
             });
-
+            
             $('#material_process').on('change', function() {
                 var material_process = $('#material_process').val();
 
@@ -2787,8 +2963,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#material_user_count1').on('change', function() {
                 var material_model = $('#material_model1').val();
                 var material_start_time = $('#material_start_time1').val();
-
-                var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
+                var fixdate = $('#fixdate').val();
+                var material_process = $('#material_process1').val();
+                var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_time&fixdate=" + fixdate + "&material_process=" + material_process  ;  
+                // var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
                 console.log(data);
                 $.ajax({
                     type: "POST",
@@ -2800,6 +2978,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     }
                 });
             });
+           
 
             $('#material_process1').on('change', function() {
                 var material_process = $('#material_process1').val();
@@ -2948,8 +3127,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             $('#material_user_count2').on('change', function() {
                 var material_model = $('#material_model2').val();
                 var material_start_time = $('#material_start_time2').val();
-
-                var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
+                var fixdate = $('#fixdate').val();
+                var material_process = $('#material_process2').val();
+                var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_time&fixdate=" + fixdate + "&material_process=" + material_process  ;  
+                // var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
                 console.log(data);
                 $.ajax({
                     type: "POST",
@@ -2961,7 +3142,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     }
                 });
             });
-
+         
             $('#material_process2').on('change', function() {
                 var material_process = $('#material_process2').val();
 
@@ -3062,7 +3243,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 $('#team_count').val('');
                 $('#team_start_time').val('00:00');
                 $('#team_username').empty();
-
+1
                 var data = "team=" + team + "&fixdate=" + fixdate + "&type=team_model";
                 console.log(data);
                 $.ajax({
@@ -3127,14 +3308,39 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
             // ```
             // code to output the three - gen shift team planner
+            // $('#team_count1').on('change', function() {
+            //     var team = $('#teams').val();
+            //     var fixdate = $('#fixdate').val();
+            //     var team_model = $('#team_model').val();
+            //     var team_process = $('#team_process').val();
 
-            $('#team_process').on('change', function() {
+            //     var data = "team_model=" + team_model + "&fixdate=" + fixdate + "&team=" + team + "&team_process=" + team_process + "&type=team_time";
+            //     console.log(data);
+            //     $.ajax({
+            //         type: "POST",
+            //         url: "task_assign_today_pm_scripts.php",
+            //         data: data,
+            //         success: function(res) {
+            //             console.log(res);
+            //             var obj = jQuery.parseJSON(res);
+            //             var start_time = obj.start_time;
+            //             var no_of_asssoc = obj.no_of_asssoc;
+            //             var list_of_asssoc = obj.list_of_asssoc;
+            //             $('#team_start_time').val(start_time);
+            //             $('#team_count').val(no_of_asssoc);
+            //             $('#team_username').html(list_of_asssoc);
+            //         }
+            //     });
+            // });
+            $('#team_count').on('change', function() {
                 var team = $('#teams').val();
-                var fixdate = $('#fixdate').val();
                 var team_model = $('#team_model').val();
+                var team_start_time = $('#team_start_time').val();
+                var fixdate = $('#fixdate').val();
                 var team_process = $('#team_process').val();
 
-                var data = "team_model=" + team_model + "&fixdate=" + fixdate + "&team=" + team + "&team_process=" + team_process + "&type=team_username";
+                var data = "team=" + team + "&team_model=" + team_model + "&type=team_time&fixdate=" + fixdate + "&team_process=" + team_process + "&team_start_time="+team_start_time  ;  
+                // var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
                 console.log(data);
                 $.ajax({
                     type: "POST",
@@ -3142,17 +3348,53 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     data: data,
                     success: function(res) {
                         console.log(res);
-                        var obj = jQuery.parseJSON(res);
-                        var start_time = obj.start_time;
-                        var no_of_asssoc = obj.no_of_asssoc;
-                        var list_of_asssoc = obj.list_of_asssoc;
-                        $('#team_start_time').val(start_time);
-                        $('#team_count').val(no_of_asssoc);
-                        $('#team_username').html(list_of_asssoc);
+                        $('#team_username').html(res);
+                    }
+                });
+            });
+            $('#team_count1').on('change', function() {
+                var team = $('#teams1').val();
+                var team_model = $('#team_model1').val();
+                var team_start_time = $('#team_start_time1').val();
+                var fixdate = $('#fixdate').val();
+                var team_process = $('#team_process1').val();
+
+                var data = "team=" + team + "&team_model=" + team_model + "&type=team_time&fixdate=" + fixdate + "&team_process=" + team_process + "&team_start_time="+team_start_time  ;  
+                // var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
+                console.log(data);
+                $.ajax({
+                    type: "POST",
+                    url: "task_assign_today_pm_scripts.php",
+                    data: data,
+                    success: function(res) {
+                        console.log(res);
+                        $('#team_username1').html(res);
+                    }
+                });
+            });
+            $('#team_count2').on('change', function() {
+                var team = $('#teams2').val();
+                var team_model = $('#team_model2').val();
+                var team_start_time = $('#team_start_time2').val();
+                var fixdate = $('#fixdate').val();
+                var team_process = $('#team_process2').val();
+
+                var data = "team=" + team + "&team_model=" + team_model + "&type=team_time&fixdate=" + fixdate + "&team_process=" + team_process + "&team_start_time="+team_start_time  ;  
+                // var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
+                console.log(data);
+                $.ajax({
+                    type: "POST",
+                    url: "task_assign_today_pm_scripts.php",
+                    data: data,
+                    success: function(res) {
+                        console.log(res);
+                        $('#team_username2').html(res);
                     }
                 });
             });
 
+            
+        
             // ---------team selection data - general- end---------
 
             // -----------team wise start------------
@@ -3254,7 +3496,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
             $('#team_process1').on('change', function() {
                 var team_process = $('#team_process1').val();
-
+                var fixdate = $('#fixdate').val();
+                var material_process = $('#team_process1').val();
+                
                 var data = "team_process=" + team_process + "&type=team_unit_time";
                 console.log(data);
                 $.ajax({
@@ -3268,6 +3512,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     }
                 });
             });
+            team_count1
 
             // $('#team_count1').on('change', function() {
             //     var team = $('#teams1').val();
@@ -3594,6 +3839,64 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                     success: function(res) {
                         console.log(res);
                         $('#model_unit_time').html(res);
+                    }
+                });
+            });
+            $('#model_user_count').on('change', function() {
+                var model = $('#models').val();
+                var fixdate = $('#fixdate').val();
+                var model_start_time = $('#model_start_time').val();
+                var model_process = $('#model_process').val();
+                var data = "model=" + model + "&type=model_time&fixdate=" + fixdate + "&model_process=" + model_process + "&model_start_time="+model_start_time  ;  
+                // var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
+                console.log(data);
+                $.ajax({
+                    type: "POST",
+                    url: "task_assign_today_pm_scripts.php",
+                    data: data,
+                    success: function(res) {
+                        console.log(res);
+                        $('#model_username').html(res);
+                    }
+                });
+            });
+            $('#model_user_count1').on('change', function() {
+                var model = $('#models1').val();
+                var fixdate = $('#fixdate').val();
+
+                var model_start_time = $('#model_start_time1').val();
+                var model_process = $('#model_process1').val();
+
+                var data = "model=" + model + "&type=model_time&fixdate=" + fixdate + "&model_process=" + model_process + "&model_start_time="+model_start_time  ;  
+                // var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
+                console.log(data);
+                $.ajax({
+                    type: "POST",
+                    url: "task_assign_today_pm_scripts.php",
+                    data: data,
+                    success: function(res) {
+                        console.log(res);
+                        $('#model_username1').html(res);
+                    }
+                });
+            });
+            $('#model_user_count2').on('change', function() {
+                var model = $('#models2').val();
+                var fixdate = $('#fixdate').val();
+
+                var model_start_time = $('#model_start_time2').val();
+                var model_process = $('#model_process2').val();
+
+                var data = "model=" + model + "&type=model_time&fixdate=" + fixdate + "&model_process=" + model_process + "&model_start_time="+model_start_time  ;  
+                // var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
+                console.log(data);
+                $.ajax({
+                    type: "POST",
+                    url: "task_assign_today_pm_scripts.php",
+                    data: data,
+                    success: function(res) {
+                        console.log(res);
+                        $('#model_username2').html(res);
                     }
                 });
             });
@@ -3927,111 +4230,236 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             // in the below code, in "data: data", left side data is ajax syntax & right side data is the value in the data variable
 
             // fixdate => user
-            $(document).ready(function() {
-                var fixdate = $('#fixdate').val();
+            // GENERAL
+      // select associates
 
-                var data = "fixdate=" + fixdate + "&type=user_fetch";
-                console.log(data);
-                $.ajax({
-                    type: "POST",
-                    url: "task_assign_today_pm_scripts.php",
-                    data: data,
-                    success: function(res) {
-                        console.log(res);
-                        $('#user').html(res);
-                    }
-                });
-            });
+      // in the below code, in "data: data", left side data is ajax syntax & right side data is the value in the data variable
 
+        // GENERAL
+      // select associates
 
-            // GENERAL SHIFT
-            $('#user').on('change', function() {
-                var fixdate = $('#fixdate').val();
-                var user = $('#user').val();
+      // in the below code, in "data: data", left side data is ajax syntax & right side data is the value in the data variable
 
-                var data = "user=" + user + "&fixdate=" + fixdate + "&type=user_model";
-                console.log(data);
-                $.ajax({
-                    type: "POST",
-                    url: "task_assign_today_pm_scripts.php",
-                    data: data,
-                    success: function(res) {
-                        console.log(res);
-                        $('#user_model').html(res);
-                    }
-                });
-            });
+      // fixdate => user
+      $('#fixdate').on('change', function() {
+        var fixdate = $('#fixdate').val();
+
+        var data = "fixdate=" + fixdate + "&type=user_fetch";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user1').html(res);
+          }
+        });
+      });
 
 
+      // GENERAL SHIFT
+      $('#user1').on('change', function() {
+        var fixdate = $('#fixdate').val();
+        var user = $('#user1').val();
 
-            // GENERAL SHIFT
-            $('#user_model').on('change', function() {
-                var fixdate = $('#fixdate').val();
-                var user_model = $('#user_model').val();
+        var data = "user=" + user + "&fixdate=" + fixdate + "&type=user_model";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_model1').html(res);
+          }
+        });
+      });
 
-                var data = "user_model=" + user_model + "&fixdate=" + fixdate + "&type=user_process";
-                console.log(data);
-                $.ajax({
-                    type: "POST",
-                    url: "task_assign_today_pm_scripts.php",
-                    data: data,
-                    success: function(res) {
-                        console.log(res);
-                        $('#user_process').html(res);
-                    }
-                });
-            });
+      // GENERAL SHIFT
+      $('#user_model1').on('change', function() {
+        var fixdate = $('#fixdate').val();
+        var user_model = $('#user_model1').val();
 
-
-
-
-            // GENERAL SHIFT
-
-            $('#user_process').on('change', function() {
-                var fixdate = $('#fixdate').val();
-                var user = $('#user').val();
-                var user_model = $('#user_model').val();
-                var user_process = $('#user_process').val();
-
-                var data = "user=" + user + "&user_model=" + user_model + "&user_process=" + user_process + "&fixdate=" + fixdate + "&type=get_user_parts";
-                console.log(data);
-                $.ajax({
-                    type: "POST",
-                    url: "task_assign_today_pm_scripts.php",
-                    dateType: 'JSON',
-                    data: data,
-                    success: function(res) {
-                        console.log(res);
-                        $('#user_parts').html(res);
-                    }
-                });
-            });
-
-
-            // 4. user parts => user unit time
-            // GENERAL SHIFT
-
-            $('#user_parts').on('change', function() {
-                var parts = $('#user_parts').val();
-
-                var data = "parts=" + parts + "&type=user_unit_time_details";
-                console.log(data);
-                $.ajax({
-                    type: "POST",
-                    url: "task_assign_today_pm_scripts.php",
-                    dateType: 'JSON',
-                    data: data,
-                    success: function(res) {
-                        console.log(res);
-                        $('#user_unit_time_details').html(res);
-                    }
-                });
-            });
+        var data = "user_model=" + user_model + "&fixdate=" + fixdate + "&type=user_process";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_process1').html(res);
+          }
+        });
+      });
 
 
 
 
-            // ----------------------user wise general end----------------------
+      // GENERAL SHIFT
+
+      $('#user_process1').on('change', function() {
+        var fixdate = $('#fixdate').val();
+        var user = $('#user1').val();
+        var user_model = $('#user_model1').val();
+        var user_process = $('#user_process1').val();
+
+        var data = "user=" + user + "&user_model=" + user_model + "&user_process=" + user_process + "&fixdate=" + fixdate + "&type=get_user_parts";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          dateType: 'JSON',
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_parts1').html(res);
+          }
+        });
+      });
+
+
+      // 4. user parts => user unit time
+      // GENERAL SHIFT
+
+      $('#user_parts1').on('change', function() {
+        var parts = $('#user_parts1').val();
+
+        var data = "parts=" + parts + "&type=user_unit_time_details";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          dateType: 'JSON',
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_unit_time_details1').html(res);
+          }
+        });
+      });
+
+
+
+
+      // ----------------------user wise general end----------------------
+
+
+            // ----------------------user wise general start----------------------
+ 
+      // GENERAL
+      // select associates
+
+      // in the below code, in "data: data", left side data is ajax syntax & right side data is the value in the data variable
+
+      // fixdate => user
+      $('#fixdate').on('change', function() {
+        var fixdate = $('#fixdate').val();
+
+        var data = "fixdate=" + fixdate + "&type=user_fetch";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user2').html(res);
+          }
+        });
+      });
+
+
+      // GENERAL SHIFT
+      $('#user2').on('change', function() {
+        var fixdate = $('#fixdate').val();
+        var user = $('#user2').val();
+
+        var data = "user=" + user + "&fixdate=" + fixdate + "&type=user_model";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_model2').html(res);
+          }
+        });
+      });
+
+
+
+      // GENERAL SHIFT
+      $('#user_model2').on('change', function() {
+        var fixdate = $('#fixdate').val();
+        var user_model = $('#user_model2').val();
+
+        var data = "user_model=" + user_model + "&fixdate=" + fixdate + "&type=user_process";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_process2').html(res);
+          }
+        });
+      });
+
+
+
+
+      // GENERAL SHIFT
+
+      $('#user_process2').on('change', function() {
+        var fixdate = $('#fixdate').val();
+        var user = $('#user2').val();
+        var user_model = $('#user_model2').val();
+        var user_process = $('#user_process2').val();
+
+        var data = "user=" + user + "&user_model=" + user_model + "&user_process=" + user_process + "&fixdate=" + fixdate + "&type=get_user_parts";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          dateType: 'JSON',
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_parts2').html(res);
+          }
+        });
+      });
+
+
+      // 4. user parts => user unit time
+      // GENERAL SHIFT
+
+      $('#user_parts2').on('change', function() {
+        var parts = $('#user_parts2').val();
+
+        var data = "parts=" + parts + "&type=user_unit_time_details";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          dateType: 'JSON',
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_unit_time_details2').html(res);
+          }
+        });
+      });
+
+
+
+
+      // ----------------------user wise general end----------------------
+    
         </script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script>
@@ -4141,7 +4569,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                         }
                     });
 
-                }, 3000);
+                }, 180000);
                 setInterval(function() {
                     var fixdate = $('#fixdate').val();
                     var data = "fixdate=" + fixdate + "&type=work_gauge";
@@ -4156,7 +4584,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                             updateWorkChart(numericValue);
                         }
                     });
-                }, 3000);
+                }, 180000);
             }
         </script>
 
@@ -4184,7 +4612,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 <script>
     $(document).ready(function() {
         var last_valid_selection2 = null;
-        $('#process_users').on('input', function() {});
+        $('#process_users').on('input', function() {
+        });
         $('#username').on('input', function() {
             var value2 = parseInt($('#process_users').val(), 10);
             var currentValue2 = $(this).val();
@@ -4430,3 +4859,5 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
         });
     });
 </script>
+
+

@@ -1,5 +1,6 @@
 <?php
-$conn = new mysqli("stemlearning.in", "steml1og_stemftest", "7V2WDw385ykQ+)N", "steml1og_stemftest") or die('Cannot connect to db');
+$conn = new mysqli("localhost", "root", "", "steml1og_stemf") or die('Cannot connect to db');
+// $conn = new mysqli("stemlearning.in", "steml1og_stemftest", "7V2WDw385ykQ+)N", "steml1og_stemftest") or die('Cannot connect to db');
 
 //get day number wrt target date and batch creation date
 if (isset($_POST['type']) && $_POST['type'] == "batch_diff")
@@ -629,29 +630,6 @@ if (isset($_POST['type']) && $_POST['type'] == 'model')
 
 // -------------------select fetch scripts---------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // -------process wise scripts - gen shift - start ------
 if (isset($_POST['type']) && $_POST['type'] == 'model_fetch')
 {
@@ -781,8 +759,8 @@ if (isset($_POST['type']) && $_POST['type'] == 'process_users')
           (start_time < ? AND end_time > ?) OR
           (start_time < ? AND end_time > ?) OR
           (start_time >= ? AND end_time <= ?)
-          )
-        ) AS is_available;");
+      )
+) AS is_available;");
 
 
   //add only users assigned for shift
@@ -801,26 +779,6 @@ if (isset($_POST['type']) && $_POST['type'] == 'process_users')
   }
 }
 // -------process wise scripts - gen shift - end ------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // ------------workstation wise scripts - gen shift - start-------------
 if (isset($_POST['type']) && $_POST['type'] == 'work_parts')
@@ -871,24 +829,6 @@ if (isset($_POST['type']) && $_POST['type'] == 'work_unit_time')
 }
 // ------------workstation wise scripts - gen shift - end-------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // -------------material wise scripts - gen shift - start-------------
 if (isset($_POST['type']) && $_POST['type'] == 'material_models')
 {
@@ -937,6 +877,9 @@ if (isset($_POST['type']) && $_POST['type'] == 'material_users')
 {
   $model_name = $_POST['material_model'];
   $process_start_time = $_POST['material_start_time'];
+  $fixdate = $_POST['fixdate'];
+  $stageid = $_POST['material_process'];
+
 
   $select_team = $conn->prepare("SELECT * FROM model where model_name = ?;");
   $select_team->bind_param('s', $model_name);
@@ -948,18 +891,71 @@ if (isset($_POST['type']) && $_POST['type'] == 'material_users')
   $get_users->bind_param('s', $select_team_row['teamname']);
   $get_users->execute();
   $get_users_res = $get_users->get_result();
+
+   //code to check if user is assigned work in that start time and end time
+   $get_time_est = $conn->prepare("SELECT SEC_TO_TIME( SUM( TIME_TO_SEC( unit_time ) ) ) AS estimate_time from task_id where stageid = ?");
+   $get_time_est->bind_param('s', $stageid);
+   $get_time_est->execute();
+   $get_time_est_res = $get_time_est->get_result();
+   $get_time_est_row = $get_time_est_res->fetch_assoc();
+ 
+   $time = $process_start_time;
+   $time2 = $get_time_est_row['estimate_time'];
+   echo $time2;
+ 
+   $secs = strtotime($time2) - strtotime("00:00:00");
+   $end_time = date("H:i:s", strtotime($time) + $secs);
+   echo $time;
+   echo $end_time;
+ 
+   //check if user is already assigned task in start time and end time
+   // if num_rows == 0 then run the code
+   // $get_current_batch = $conn->prepare('SELECT * FROM current_batch WHERE 1');
+   // $get_current_batch->execute();
+   // $get_current_batch_res = $get_current_batch->get_result();
+   // $get_current_batch_row = $get_current_batch_res->fetch_assoc();
+   // $batch_no = $get_current_batch_row['batchno'];
+   // echo $batch_no;
+ 
+   $check_assigned_task = $conn->prepare("SELECT NOT EXISTS (
+     SELECT 1
+     FROM task_id
+     WHERE user = ?
+       AND DATE(tdatefm) = DATE(?)
+       AND (
+           (start_time < ? AND end_time > ?) OR
+           (start_time < ? AND end_time > ?) OR
+           (start_time >= ? AND end_time <= ?)
+       )
+ ) AS is_available;");
+ 
+ 
+   //add only users assigned for shift
+   echo '<option value="" selected disabled>Select Associate</option>';
+   while ($get_users_row = $get_users_res->fetch_assoc())
+   {
+     $check_assigned_task->bind_param('ssssssss', $get_users_row['user_name'], $fixdate, $process_start_time, $process_start_time, $end_time, $end_time, $process_start_time, $end_time);
+     $check_assigned_task->execute();
+     $check_assigned_task_res = $check_assigned_task->get_result();
+     $check_assigned_task_row = $check_assigned_task_res->fetch_assoc();
+ 
+     if ($check_assigned_task_row['is_available'] == '1')
+     {
+       echo '<option value="' . $get_users_row['user_name'] . '">' . $get_users_row['fullname'] . '</option>';
+     }
+   }
   //add only users assigned for shift
-  echo '<option value="" selected disabled>Select Associate</option>';
-  while ($get_users_row = $get_users_res->fetch_assoc())
-  {
-    // $get_time = $conn->prepare('SELECT DISTINCT start_time, est_complete_time from task_id where user = ?');
-    // $get_time->bind_param('s', $get_users_row['user_name']);
-    // $get_time->execute();
-    // $get_time_res = $get_time->get_result;
-    // $get_time_row = $get_time->fetch_assoc();
-    //better this login; users occupied for that time should not display
-    echo '<option value="' . $get_users_row['user_name'] . '">' . $get_users_row['fullname'] . '</option>';
-  }
+  // echo '<option value="" selected disabled>Select Associate</option>';
+  // while ($get_users_row = $get_users_res->fetch_assoc())
+  // {
+  //   // $get_time = $conn->prepare('SELECT DISTINCT start_time, est_complete_time from task_id where user = ?');
+  //   // $get_time->bind_param('s', $get_users_row['user_name']);
+  //   // $get_time->execute();
+  //   // $get_time_res = $get_time->get_result;
+  //   // $get_time_row = $get_time->fetch_assoc();
+  //   //better this login; users occupied for that time should not display
+  //   echo '<option value="' . $get_users_row['user_name'] . '">' . $get_users_row['fullname'] . '</option>';
+  // }
 }
 
 if (isset($_POST['type']) && $_POST['type'] == 'material_unit_time')
@@ -983,32 +979,6 @@ if (isset($_POST['type']) && $_POST['type'] == 'material_unit_time')
   echo "<strong>Estimate time to completion :" . $get_task_count_row['estimate_time'] . "</strong><br>";
 }
 // -------------material wise scripts - gen shift - end-------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // --------------team wise scripts - general - start--------------
 if (isset($_POST['type']) && $_POST['type'] == 'team_model')
 {
@@ -1096,27 +1066,6 @@ if (isset($_POST['type']) && $_POST['type'] == 'team_username')
 }
 
 // --------------team wise scripts - general - end--------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // ---------model wise scripts - general shift - start----------
 if (isset($_POST['type']) && $_POST['type'] == 'models')
 {
@@ -1189,35 +1138,6 @@ if (isset($_POST['type']) && $_POST['type'] == 'model_unit_time')
   echo "<strong>Estimate time to completion :" . $get_task_count_row['estimate_time'] . "</strong><br>";
 }
 // ---------model wise scripts - general shift - end----------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // --------------user wise scripts - general - start--------------
 
@@ -1468,32 +1388,34 @@ if (isset($_POST['type']) && $_POST['type'] == 'user_unit_time_details')
   echo "<strong>Estimate time to completion :" . $get_task_count_row['estimate_time'] . "</strong><br>";
 }
 
+if (isset($_POST['type']) && $_POST['type'] == 'user_assign'){
 
+
+$user = $_POST['user'];
+$user_model = $_POST['user_model'];
+$user_parts = $_POST['user_parts'];
+$user_start_time = $_POST['user_start_time'];
+$fixdate = $_POST['fixdate'];
+
+$get_time_est = $conn->prepare("SELECT SEC_TO_TIME( SUM( TIME_TO_SEC( unit_time ) ) ) AS estimate_time from task_id where stageid = ?");
+  $get_time_est->bind_param('s', $user_parts);
+  $get_time_est->execute();
+  $get_time_est_res = $get_time_est->get_result();
+  $get_time_est_row = $get_time_est_res->fetch_assoc();
+
+  $time = $user_start_time;
+  $time2 = $get_time_est_row['estimate_time'];
+
+  $secs = strtotime($time2) - strtotime("00:00:00");
+  $end_time = date("H:i:s", strtotime($time) + $secs);
+
+  $update_task_wise = $conn->prepare('UPDATE task_id SET user = ?, tdatefm = ?, start_time = ?, est_complete_time = ?, end_time = ? WHERE stageid = ?');
+      $update_task_wise->bind_param('ssssss', $user, $fixdate, $user_start_time, $get_time_est_row['estimate_time'], $end_time,$user_parts );
+      $update_task_wise->execute();
+}
 
 
 // --------------user wise scripts - general - end--------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // -------------process shift card - general - start-------------
 if (isset($_POST['type']) && $_POST['type'] == 'shift_cards')
@@ -1930,4 +1852,5 @@ if (isset($_POST['type']) && $_POST['type'] == 'shift_cards')
         echo $integerValue;
       }
       // ---------workstation guage chart end----------
+
           ?>

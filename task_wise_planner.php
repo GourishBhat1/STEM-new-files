@@ -1,7 +1,9 @@
 <?php
 include 'hadder.php';
 include '../function.php';
-$conn = new mysqli("stemlearning.in", "steml1og_stemftest", "7V2WDw385ykQ+)N", "steml1og_stemftest") or die('Cannot connect to db');
+$conn = new mysqli("localhost", "root", "", "steml1og_stemf") or die('Cannot connect to db');
+
+// $conn = new mysqli("stemlearning.in", "steml1og_stemftest", "7V2WDw385ykQ+)N", "steml1og_stemftest") or die('Cannot connect to db');
 $date = date('Y-m-d');
 $datet = date('Y-m-d H:i:s');
 
@@ -894,6 +896,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             </div>
           </div>
 
+          <!-- swara -->
+          <!-- User Planner -->
           <div class="tab-pane" id="tabs-6" role="tabpanel">
             <div class="row">
               <div class="col-sm col-md-6 col-lg-6 card card-primary card-outline">
@@ -936,7 +940,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 </header>
                 <hr>
                 <label for="">Start Time</label>
-                <input type="time" class="form-control" id="process_start_time">
+                <input type="time" class="form-control" id="user_start_time">
 
                 <label for="">Unit Time</label>
                 <div id="user_unit_time_details">
@@ -947,7 +951,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
               </div>
               <div class="text-center">
-                <button type="button" class="btn btn-primary AssignXButton" id="process_assign">Assign</button>
+                <button type="button" class="btn btn-primary AssignXButton" id="user_assign">Assign</button>
               </div>
 
             </div>
@@ -958,6 +962,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
             <!-- GENERAL -->
           </div>
 
+        </div>
+      </div>
         </div>
       </div>
       <hr>
@@ -982,6 +988,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
           </li>
           <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#tabs-52" role="tab">Model Planner</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tabs-62" role="tab">User Planner</a>
           </li>
         </ul><!-- Tab panes -->
 
@@ -1037,7 +1046,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
                 </header>
                 <hr>
                 <label for="">Start Time</label>
-                <input type="time" class="form-control" id="process_start_time1">
+                <input type="time" class="form-control" id="user_start_time1">
                 <label for="">Number of Associates</label>
                 <!-- \\ -->
                 <input type="number" class="form-control" id="process_users1" value="0" min="0" step="1">
@@ -1053,7 +1062,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
             </div>
 
-            <div id="process_shift1_card" class="shift1_assign_unassign">
+            <div id="process_shift1_card1" class="shift1_assign_unassign">
 
             </div>
 
@@ -1339,6 +1348,72 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
           </div>
         </div>
+        <div class="tab-pane" id="tabs-62" role="tabpanel">
+            <div class="row">
+              <div class="col-sm col-md-6 col-lg-6 card card-primary card-outline">
+                <header>
+                  <center>Associate Wise Tab</center>
+                </header>
+                <hr>
+                <label for="">Associates Having Less Than 8 Hours Work</label>
+                <select class="form-control" id="user1" name="user">
+
+                </select>
+
+                <!-- GENERAL SHIFT -->
+                <label for="">Select User Models</label>
+                <select class="form-control" id="user_model1">
+                  <option selected disabled>Select Models</option>
+                </select>
+
+                <!-- GENERAL SHIFT -->
+                <label for="">Select User Process</label>
+                <select class="form-control" id="user_process1">
+                  <option selected disabled>Select Process</option>
+                </select>
+
+
+
+
+                <!-- GENERAL SHIFT -->
+                <label for="">Select User Parts</label>
+                <select class="form-control" id="user_parts1">
+                  <option selected disabled>Select Parts</option>
+                </select>
+
+
+
+              </div>
+              <div class="col-sm col-md-6 col-lg-6 card card-danger card-outline">
+                <header>
+                  <center>Displaying Time</center>
+                </header>
+                <hr>
+                <label for="">Start Time</label>
+                <input type="time" class="form-control" id="process_start_time1">
+
+                <label for="">Unit Time</label>
+                <div id="user_unit_time_details1">
+
+                </div>
+
+
+
+              </div>
+              <div class="text-center">
+                <button type="button" class="btn btn-primary AssignXButton" id="process_assign1">Assign</button>
+              </div>
+
+            </div>
+            <div id="process_gen_card1" class="shift_assign_unassign">
+
+            </div>
+
+            <!-- GENERAL -->
+          </div>
+
+        </div>
+      </div>
       </div>
       <hr>
       <div class="container border border-secondary shadow-sm p-3 mb-5 bg-white rounded shift_cards" style="display:none;">
@@ -1362,6 +1437,9 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
           </li>
           <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#tabs-53" role="tab">Model Planner</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tabs-63" role="tab">User Planner</a>
           </li>
         </ul><!-- Tab panes -->
 
@@ -1655,7 +1733,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
           </div>
 
           <!-- model planning -->
-          <div class="tab-pane" id="tabs-53" role="tabpanel">
+          <div class="tab-pane" id="tabs-53" role="tabpanel">          
+
 
             <div class="row">
               <div class="col-sm col-md-6 col-lg-6 card card-primary card-outline">
@@ -1718,6 +1797,74 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
             </div>
 
+          
+         
+            <div class="tab-pane" id="tabs-63" role="tabpanel">
+            <div class="row">
+              <div class="col-sm col-md-6 col-lg-6 card card-primary card-outline">
+                <header>
+                  <center>Associate Wise Tab</center>
+                </header>
+                <hr>
+                <label for="">Associates Having Less Than 8 Hours Work</label>
+                <select class="form-control" id="user2" name="user">
+
+                </select>
+
+                <!-- GENERAL SHIFT -->
+                <label for="">Select User Models</label>
+                <select class="form-control" id="user_model2">
+                  <option selected disabled>Select Models</option>
+                </select>
+
+                <!-- GENERAL SHIFT -->
+                <label for="">Select User Process</label>
+                <select class="form-control" id="user_process2">
+                  <option selected disabled>Select Process</option>
+                </select>
+
+
+
+
+                <!-- GENERAL SHIFT -->
+                <label for="">Select User Parts</label>
+                <select class="form-control" id="user_parts2">
+                  <option selected disabled>Select Parts</option>
+                </select>
+
+
+
+              </div>
+              <div class="col-sm col-md-6 col-lg-6 card card-danger card-outline">
+                <header>
+                  <center>Displaying Time</center>
+                </header>
+                <hr>
+                <label for="">Start Time</label>
+                <input type="time" class="form-control" id="user_start_time2">
+
+                <label for="">Unit Time</label>
+                <div id="user_unit_time_details2">
+
+                </div>
+
+
+
+              </div>
+              <div class="text-center">
+                <button type="button" class="btn btn-primary AssignXButton" id="process_assign2">Assign</button>
+              </div>
+
+            </div>
+            <div id="process_gen_card2" class="shift_assign_unassign">
+
+            </div>
+
+            <!-- GENERAL -->
+          </div>
+
+         
+         
           </div>
         </div>
 
@@ -2433,7 +2580,12 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       $('#process_users1').on('change', function() {
         var model_name = $('#processes1').val();
         var process_start_time = $('#process_start_time1').val();
-        var data = "model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_users";
+        var stageid = $('#process_parts').val();
+        var fixdate = $('#fixdate').val();
+        var data = "fixdate=" + fixdate + "&stageid=" + stageid + "&model_name=" + model_name + 
+        "&process_start_time=" + process_start_time + "&type=process_users";
+        
+        // var data = "model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_users";
         $.ajax({
           type: "POST",
           url: "task_planning_scripts.php",
@@ -2564,7 +2716,12 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       $('#process_users2').on('change', function() {
         var model_name = $('#processes2').val();
         var process_start_time = $('#process_start_time2').val();
-        var data = "model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_users";
+        var stageid = $('#process_parts').val();
+        var fixdate = $('#fixdate').val();
+        var data = "fixdate=" + fixdate + "&stageid=" + stageid + "&model_name=" + model_name + 
+        "&process_start_time=" + process_start_time + "&type=process_users";
+        
+        // var data = "model_name=" + model_name + "&process_start_time=" + process_start_time + "&type=process_users";
         $.ajax({
           type: "POST",
           url: "task_planning_scripts.php",
@@ -2920,8 +3077,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       $('#material_user_count').on('change', function() {
         var material_model = $('#material_model').val();
         var material_start_time = $('#material_start_time').val();
+        var fixdate = $('#fixdate').val();
+        var material_process = $('#material_process').val();
 
-        var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
+        var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users&fixdate="+fixdate+ "&material_process" +material_process ;
         console.log(data);
         $.ajax({
           type: "POST",
@@ -2930,6 +3089,8 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
           success: function(res) {
             console.log(res);
             $('#material_username').html(res);
+
+            
           }
         });
       });
@@ -3051,8 +3212,12 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       $('#material_user_count1').on('change', function() {
         var material_model = $('#material_model1').val();
         var material_start_time = $('#material_start_time1').val();
+        var fixdate = $('#fixdate').val();
+        var material_process = $('#material_process1').val();
 
-        var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
+        var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users&fixdate="+fixdate+ "material_process" +material_process ;
+
+        // var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
         console.log(data);
         $.ajax({
           type: "POST",
@@ -3163,6 +3328,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       $('#material_model2').on('change', function() {
         var material = $('#material2').val();
         var material_model = $('#material_model2').val();
+        var fixdate = $('#fixdate').val();
+        var material_process = $('#material_process').val();
+
+        var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users&fixdate="+fixdate+ "material_process" +material_process ;
 
         var data = "material=" + material + "&material_model=" + material_model + "&type=material_process";
         console.log(data);
@@ -3180,8 +3349,12 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       $('#material_user_count2').on('change', function() {
         var material_model = $('#material_model2').val();
         var material_start_time = $('#material_start_time2').val();
+        var fixdate = $('#fixdate').val();
+        var material_process = $('#material_process2').val();
 
-        var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
+        var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users&fixdate="+fixdate+ "material_process" +material_process ;
+
+        // var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users";
         console.log(data);
         $.ajax({
           type: "POST",
@@ -3325,8 +3498,12 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
       $('#team_count').on('change', function() {
         var team = $('#teams').val();
+        var fixdate = $('#fixdate').val();
+        var material_process = $('#material_process').val();
 
-        var data = "team=" + team + "&type=team_username";
+        var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users&fixdate="+fixdate+ "material_process" +material_process ;
+
+        // var data = "team=" + team + "&type=team_username";
         console.log(data);
         $.ajax({
           type: "POST",
@@ -3458,8 +3635,11 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
       $('#team_count1').on('change', function() {
         var team = $('#teams1').val();
+        var fixdate = $('#fixdate').val();
+        var material_process = $('#material_process1').val();
 
-        var data = "team=" + team + "&type=team_username";
+        var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users&fixdate="+fixdate+ "material_process" +material_process ;
+        // var data = "team=" + team + "&type=team_username";
         console.log(data);
         $.ajax({
           type: "POST",
@@ -3588,8 +3768,11 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
       $('#team_count2').on('change', function() {
         var team = $('#teams2').val();
+        var fixdate = $('#fixdate').val();
+        var material_process = $('#material_process2').val();
 
-        var data = "team=" + team + "&type=team_username";
+        var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users&fixdate="+fixdate+ "material_process" +material_process ;
+        // var data = "team=" + team + "&type=team_username";
         console.log(data);
         $.ajax({
           type: "POST",
@@ -3685,8 +3868,11 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
       $('#model_user_count').on('change', function() {
         var model_process = $('#models').val();
+        var fixdate = $('#fixdate').val();
+        var material_process = $('#material_process').val();
 
-        var data = "model_process=" + model_process + "&type=model_process";
+        var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users&fixdate="+fixdate+ "material_process" +material_process ;
+        // var data = "model_process=" + model_process + "&type=model_process";
         console.log(data);
         $.ajax({
           type: "POST",
@@ -3803,8 +3989,11 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
       $('#model_user_count1').on('change', function() {
         var model_process = $('#models1').val();
+        var fixdate = $('#fixdate').val();
+        var material_process = $('#material_process1').val();
 
-        var data = "model_process=" + model_process + "&type=model_process";
+        var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users&fixdate="+fixdate+ "material_process" +material_process ;
+        // var data = "model_process=" + model_process + "&type=model_process";
         console.log(data);
         $.ajax({
           type: "POST",
@@ -3918,8 +4107,11 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
 
       $('#model_user_count2').on('change', function() {
         var model_process = $('#models2').val();
+        var fixdate = $('#fixdate').val();
+        var material_process = $('#material_process2').val();
 
-        var data = "model_process=" + model_process + "&type=model_process";
+        var data = "material_model=" + material_model + "&material_start_time=" + material_start_time + "&type=material_users&fixdate="+fixdate+ "material_process" +material_process ;
+        // var data = "model_process=" + model_process + "&type=model_process";
         console.log(data);
         $.ajax({
           type: "POST",
@@ -3995,14 +4187,7 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
       // ---------model wise shift 2 end---------
 
 
-
-
-
-
-
-
-
-      // ----------------------user wise general start----------------------
+            // ----------------------user wise general start----------------------
 
 
       // GENERAL
@@ -4076,6 +4261,10 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
         var user = $('#user').val();
         var user_model = $('#user_model').val();
         var user_process = $('#user_process').val();
+        console.log(fixdate);
+        console.log(user);
+        console.log(user_model);
+        console.log(user_process);
 
         var data = "user=" + user + "&user_model=" + user_model + "&user_process=" + user_process + "&fixdate=" + fixdate + "&type=get_user_parts";
         console.log(data);
@@ -4112,10 +4301,403 @@ $get_user_count_row = $get_user_count_res->fetch_assoc();
         });
       });
 
+      $('#user_assign').on('click', function() {
+
+      // AssignXButton
+
+      var $this = $('.AssignXButton'); // Cache the button
+      $this.prop('disabled', true); // Disable the button when clicked
+      
+      var user = $('#user').val();
+      var user_model = $('#user_model').val();
+      var user_process = $('#user_process').val();
+      var user_parts = $('#user_parts').val();
+      var user_start_time = $('#user_start_time').val();
+      var fixdate = $('#fixdate').val();
+
+      var data = "user=" +user+ "&user_model="+user_model+ "&user_parts="+user_parts+ "&user_start_time="+user_start_time+ "&fixdate=" + fixdate + "&type=user_assign";
+      console.log(data);
+      $.ajax({
+        type: "POST",
+        url: "task_planning_scripts.php",
+        data: data,
+        success: function(res) {
+          console.log(res);
+          var data1 = "fixdate=" + fixdate + "&type=user_fetch";
+       
+          console.log(data1);
+
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data1,
+          success: function(res1) {
+            console.log(res1);
+            $('#user').html(res1);
+          }
+        });
+          $('#user').val('').trigger('change');
+          $('#user_model').empty();
+          $('#user_process').empty();
+          $('#user_parts').empty();
+          $('#user_unit_time_details').empty();
+          $('#user_start_time').val('00:00');
+          $this.prop('disabled', false); // Re-enable the button on AJAX success
+        },
+        error: function() {
+          $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
+        }
+      });
+
+      // console.log(material);
+      // console.log(material_model);
+      // console.log(material_username_arr);
+
+      });
+
+      // Shift1
+
+      $('#user_assign1').on('click', function() {
+
+// AssignXButton
+
+var $this = $('.AssignXButton'); // Cache the button
+$this.prop('disabled', true); // Disable the button when clicked
+
+var user = $('#user1').val();
+var user_model = $('#user_model1').val();
+var user_process = $('#user_process1').val();
+var user_parts = $('#user_parts1').val();
+var user_start_time = $('#user_start_time1').val();
+var fixdate = $('#fixdate').val();
+
+var data = "user=" +user+ "&user_model="+user_model+ "&user_parts="+user_parts+ "&user_start_time="+user_start_time+ "&fixdate=" + fixdate + "&type=user_assign";
+console.log(data);
+$.ajax({
+  type: "POST",
+  url: "task_planning_scripts.php",
+  data: data,
+  success: function(res) {
+    console.log(res);
+    var data1 = "fixdate=" + fixdate + "&type=user_fetch";
+ 
+    console.log(data1);
+
+  $.ajax({
+    type: "POST",
+    url: "task_planning_scripts.php",
+    data: data1,
+    success: function(res1) {
+      console.log(res1);
+      $('#user1').html(res1);
+    }
+  });
+    $('#user1').val('').trigger('change');
+    $('#user_model1').empty();
+    $('#user_process1').empty();
+    $('#user_parts1').empty();
+    $('#user_unit_time_details1').empty();
+    $('#user_start_time1').val('00:00');
+    $this.prop('disabled', false); // Re-enable the button on AJAX success
+  },
+  error: function() {
+    $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
+  }
+});
+
+// console.log(material);
+// console.log(material_model);
+// console.log(material_username_arr);
+
+});
+
+// shift2
+$('#user_assign2').on('click', function() {
+
+// AssignXButton
+
+var $this = $('.AssignXButton'); // Cache the button
+$this.prop('disabled', true); // Disable the button when clicked
+
+var user = $('#user2').val();
+var user_model = $('#user_model2').val();
+var user_process = $('#user_process2').val();
+var user_parts = $('#user_parts2').val();
+var user_start_time = $('#user_start_time2').val();
+var fixdate = $('#fixdate').val();
+
+var data = "user=" +user+ "&user_model="+user_model+ "&user_parts="+user_parts+ "&user_start_time="+user_start_time+ "&fixdate=" + fixdate + "&type=user_assign";
+console.log(data);
+$.ajax({
+  type: "POST",
+  url: "task_planning_scripts.php",
+  data: data,
+  success: function(res) {
+    console.log(res);
+    var data1 = "fixdate=" + fixdate + "&type=user_fetch";
+ 
+    console.log(data1);
+
+  $.ajax({
+    type: "POST",
+    url: "task_planning_scripts.php",
+    data: data1,
+    success: function(res1) {
+      console.log(res1);
+      $('#user2').html(res1);
+    }
+  });
+    $('#user2').val('').trigger('change');
+    $('#user_model2').empty();
+    $('#user_process2').empty();
+    $('#user_parts2').empty();
+    $('#user_unit_time_details2').empty();
+    $('#user_start_time2').val('00:00');
+    $this.prop('disabled', false); // Re-enable the button on AJAX success
+  },
+  error: function() {
+    $this.prop('disabled', false); // Consider re-enabling the button if AJAX fails
+  }
+});
+
+// console.log(material);
+// console.log(material_model);
+// console.log(material_username_arr);
+
+});
+
+      // ----------------------user wise general end----------------------
+
+      // ----------------------user wise general start----------------------
+ 
+      // GENERAL
+      // select associates
+
+      // in the below code, in "data: data", left side data is ajax syntax & right side data is the value in the data variable
+
+      // fixdate => user
+      $('#fixdate').on('change', function() {
+        var fixdate = $('#fixdate').val();
+
+        var data = "fixdate=" + fixdate + "&type=user_fetch";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user1').html(res);
+          }
+        });
+      });
+
+
+      // GENERAL SHIFT
+      $('#user1').on('change', function() {
+        var fixdate = $('#fixdate').val();
+        var user = $('#user1').val();
+
+        var data = "user=" + user + "&fixdate=" + fixdate + "&type=user_model";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_model1').html(res);
+          }
+        });
+      });
+
+
+
+      // GENERAL SHIFT
+      $('#user_model1').on('change', function() {
+        var fixdate = $('#fixdate').val();
+        var user_model = $('#user_model1').val();
+
+        var data = "user_model=" + user_model + "&fixdate=" + fixdate + "&type=user_process";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_process1').html(res);
+          }
+        });
+      });
+
+
+
+
+      // GENERAL SHIFT
+
+      $('#user_process1').on('change', function() {
+        var fixdate = $('#fixdate').val();
+        var user = $('#user1').val();
+        var user_model = $('#user_model1').val();
+        var user_process = $('#user_process1').val();
+
+        var data = "user=" + user + "&user_model=" + user_model + "&user_process=" + user_process + "&fixdate=" + fixdate + "&type=get_user_parts";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          dateType: 'JSON',
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_parts1').html(res);
+          }
+        });
+      });
+
+
+      // 4. user parts => user unit time
+      // GENERAL SHIFT
+
+      $('#user_parts1').on('change', function() {
+        var parts = $('#user_parts1').val();
+
+        var data = "parts=" + parts + "&type=user_unit_time_details";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          dateType: 'JSON',
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_unit_time_details1').html(res);
+          }
+        });
+      });
+
 
 
 
       // ----------------------user wise general end----------------------
+
+
+            // ----------------------user wise general start----------------------
+ 
+      // GENERAL
+      // select associates
+
+      // in the below code, in "data: data", left side data is ajax syntax & right side data is the value in the data variable
+
+      // fixdate => user
+      $('#fixdate').on('change', function() {
+        var fixdate = $('#fixdate').val();
+
+        var data = "fixdate=" + fixdate + "&type=user_fetch";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user2').html(res);
+          }
+        });
+      });
+
+
+      // GENERAL SHIFT
+      $('#user2').on('change', function() {
+        var fixdate = $('#fixdate').val();
+        var user = $('#user2').val();
+
+        var data = "user=" + user + "&fixdate=" + fixdate + "&type=user_model";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_model2').html(res);
+          }
+        });
+      });
+
+
+
+      // GENERAL SHIFT
+      $('#user_model2').on('change', function() {
+        var fixdate = $('#fixdate').val();
+        var user_model = $('#user_model2').val();
+
+        var data = "user_model=" + user_model + "&fixdate=" + fixdate + "&type=user_process";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_process2').html(res);
+          }
+        });
+      });
+
+
+
+
+      // GENERAL SHIFT
+
+      $('#user_process2').on('change', function() {
+        var fixdate = $('#fixdate').val();
+        var user = $('#user2').val();
+        var user_model = $('#user_model2').val();
+        var user_process = $('#user_process2').val();
+
+        var data = "user=" + user + "&user_model=" + user_model + "&user_process=" + user_process + "&fixdate=" + fixdate + "&type=get_user_parts";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          dateType: 'JSON',
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_parts2').html(res);
+          }
+        });
+      });
+
+
+      // 4. user parts => user unit time
+      // GENERAL SHIFT
+
+      $('#user_parts2').on('change', function() {
+        var parts = $('#user_parts2').val();
+
+        var data = "parts=" + parts + "&type=user_unit_time_details";
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "task_planning_scripts.php",
+          dateType: 'JSON',
+          data: data,
+          success: function(res) {
+            console.log(res);
+            $('#user_unit_time_details2').html(res);
+          }
+        });
+      });
+
+
+
+
+      // ----------------------user wise general end----------------------
+    
+
     </script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
